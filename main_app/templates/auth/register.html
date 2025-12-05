@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+
+{% block title %}Sign Up{% endblock %}
+{% block link %}<link rel="stylesheet" href="{{ url_for('static', filename='css/auth.css') }}"> {% endblock %}
+
+{% block content %}
+    <div class="auth-container">
+
+        <div class="form-group">
+            <h1>Sign Up</h1>
+            <form action="#" method="post" novalidate>
+                {{ form.hidden_tag() }}
+
+                <p class="username-tag">
+                    {{ form.username.label }} <br>
+                    {{ form.username(size=32) }} <br>
+                    
+                    {% for error in form.username.errors %}
+                        <span style="color: red;">{{ error }}</span>
+                    {% endfor %}
+                </p>
+
+                <p class="email-tag">
+                    {{ form.email.label }} <br>
+                    {{ form.email }} <br>
+
+                    {% for error in form.email.errors %}
+                        <span style="color: red;">{{ error }}</span>
+                    {% endfor %}
+                </p>
+
+                <p class="pass-tag">
+                    {{ form.password1.label }} <br>
+                    {{ form.password1 }} <br>
+
+                    {% for error in form.password1.errors %}
+                        <span style="color: red;">{{ error }}</span>
+                    {% endfor %}
+                </p>
+
+                <p class="pass-tag">
+                    {{ form.password2.label }} <br>
+                    {{ form.password2 }} <br>
+
+                    {% for error in form.password2.errors %}
+                        <span style="color: red;">{{ error }}</span>
+                    {% endfor %}
+                </p>
+                
+
+                <p class="submit-tag">{{ form.submit() }}</p>
+            </form>
+
+            <div class="hero">
+                <p class="have-an-account">Already have an account? <span class="signin"><a href="{{ url_for('auth_bp.sign_in') }}">Sign in</a></span></p>
+            </div>
+        </div>
+    </div>
+{% endblock %}

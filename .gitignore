@@ -1,0 +1,13 @@
+/__pycache__
+/.pytest_cache
+.env
+/venv
+/logs
+/uploaded_files
+/uploaded_test_files
+/instance
+config/__pycache__
+main_app/__pycache__
+tests/__pycache__
+main_app/main/__pycache__
+main_app/auth/__pycache__

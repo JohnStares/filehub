@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+
+{% block title %}Upload File{% endblock %}
+{% block link %}<link rel="stylesheet" href="{{ url_for('static', filename='css/upload.css') }}"> {% endblock %}
+
+{% block content %}
+    <div class="containter">
+        
+        <div class="form-group">
+            <h1>Upload File</h1>
+            <form class="form-group" method="post" enctype="multipart/form-data">
+                {{ form.hidden_tag() }}
+
+                <p class="full_name">
+                    {{ form.full_name.label }} <br>
+                    {{ form.full_name }} <br>
+                    {% for error in form.full_name.errors %}
+                        <span style="color: red;">{{ error }}</span>
+                    {% endfor %}
+                </p>
+
+                <p class="mat_no">
+                    {{ form.mat_no.label }} <br>
+                    {{ form.mat_no }} <br>
+                    {% for error in form.mat_no.errors %}
+                        <span style="color: red;">{{ error }}</span>
+                    {% endfor %}
+                </p>
+
+                <p class="level">
+                    {{ form.level.label }} <br>
+                    {{ form.level }} <br>
+                    {% for error in form.level.errors %}
+                        <span style="color: red;">{{ error }}</span>
+                    {% endfor %}
+                </p>
+
+                <p class="group">
+                    {{ form.group.label }} <br>
+                    {{ form.group }} <br>
+                    {% for error in form.group.errors %}
+                        <span style="color: red;">{{ error }}</span>
+                    {% endfor %}
+                </p>
+
+
+                <p class="file">
+                    {{ form.file.label }} <br>
+                    {{ form.file }} <br>
+                    {% for error in form.file.errors %}
+                        <span style="color: red;">{{ error }}</span>
+                    {% endfor %}
+                </p>
+
+                <p class="submit">{{ form.submit() }}</p>
+            </form>
+        </div>
+    </div>
+{% endblock %}

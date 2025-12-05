@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+
+{% block title %}Section{% endblock %}
+
+{% block link %}<link rel="stylesheet" href="{{ url_for('static', filename='css/section.css') }}"> {% endblock %}
+
+
+{% block content %}
+    <div class="container">
+
+        <div class="form-group">
+            <h1>Create Section</h1>
+            <form action="#" class="form-group" method="post">
+                {{ form.hidden_tag() }}
+
+                <p class="section">
+                    {{ form.section.label }} <br>
+                    {{ form.section }} <br>
+                    {% for error in form.section.errors %}
+                        <span style="color: red;">{{ error }}</span>
+                    {% endfor %}
+                </p>
+
+                <p class="sec-code">
+                    {{ form.section_code.label }} <br>
+                    {{ form.section_code }} <br>
+
+                    {% for error in form.section_code.errors %}
+                        <span style="color: red;">{{ error }}</span>
+                    {% endfor %}
+                </p>
+
+                <p class="exp-sub">
+                    {{ form.expected_submission.label }} <br>
+                    {{ form.expected_submission }} <br>
+                    {% for error in form.expected_submission.errors %}
+                        <span style="color: red;">{{ error }}</span>
+                    {% endfor %}
+                </p>
+
+                <p class="submit">{{ form.submit() }}</p>
+            </form>
+        </div>
+    </div>
+{% endblock %}

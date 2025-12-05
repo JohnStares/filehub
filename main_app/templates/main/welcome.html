@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome to FileHub - Seamless File Sharing</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/welcome.css') }}">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <div class="nav-container">
+            <div class="logo">
+                <i class="fas fa-folder-open">FileHub</i>
+            </div>
+            <div class="nav-buttons">
+                <a href="{{ url_for('auth_bp.sign_in') }}" class="nav-btn btn-signin">Sign In</a>
+                <a href="{{ url_for('auth_bp.sign_up') }}" class="nav-btn btn-signup">Sign Up</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <h1>📚 Welcome to FileHub</h1>
+        <p class="tagline">Seamless File Sharing Made Simple</p>
+        <p class="hero-description">
+            FileHub is your ultimate solution for collecting, organizing, and managing file submissions. 
+            Whether you're a teacher gathering assignments or a team lead collecting project files, 
+            FileHub makes it effortless.
+        </p>
+        <div class="hero-buttons">
+            <a href="{{ url_for('auth_bp.sign_up') }}" class="hero-btn hero-btn-primary">Get Started Free</a>
+            <a href="#features" class="hero-btn hero-btn-secondary">Learn More</a>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features" id="features">
+        <div class="features-container">
+            <h2 class="section-title">What is FileHub?</h2>
+            <p class="section-subtitle">
+                FileHub is a powerful file-sharing platform designed to streamline the process of collecting and managing files from multiple contributors.
+            </p>
+            
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-link"></i>
+                    </div>
+                    <h3>Shareable Links</h3>
+                    <p>Create unique submission links for each section. Share them with your students or team members for easy file uploads.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-folder-tree"></i>
+                    </div>
+                    <h3>Organized Sections</h3>
+                    <p>Create multiple sections for different projects, courses, or assignments. Keep everything neatly organized in one place.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-download"></i>
+                    </div>
+                    <h3>Bulk Downloads</h3>
+                    <p>Download all submissions from a section with a single click. Save time and avoid downloading files one by one.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <h3>Track Progress</h3>
+                    <p>Monitor submission progress in real-time.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <h3>Secure Storage</h3>
+                    <p>Your files are stored securely with proper authentication. Only you can access and manage your sections.</p>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">
+                        <i class="fas fa-mobile-alt"></i>
+                    </div>
+                    <h3>Mobile Friendly</h3>
+                    <p>Access FileHub from any device. Upload and download files on the go with our responsive design.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Why FileHub Section -->
+    <section class="why-section">
+        <div class="why-container">
+            <h2 class="section-title">Why Choose FileHub?</h2>
+            <p class="section-subtitle">FileHub solves the common frustrations of file collection and management</p>
+            
+            <div class="why-grid">
+                <div class="why-item">
+                    <i class="fas fa-clock"></i>
+                    <h3>Save Time</h3>
+                    <p>No more chasing people for files or managing countless email attachments.</p>
+                </div>
+
+                <div class="why-item">
+                    <i class="fas fa-users"></i>
+                    <h3>Easy for Everyone</h3>
+                    <p>Simple interface that anyone can use. No technical knowledge required.</p>
+                </div>
+
+                <div class="why-item">
+                    <i class="fas fa-bolt"></i>
+                    <h3>Fast & Reliable</h3>
+                    <p>Quick uploads and downloads. No complicated restrictions.</p>
+                </div>
+
+                <div class="why-item">
+                    <i class="fas fa-check-circle"></i>
+                    <h3>Professional</h3>
+                    <p>Present a clean, professional file collection system to your contributors.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- What to Expect Section -->
+    <section class="expect-section">
+        <div class="expect-container">
+            <h2 class="section-title">What to Expect</h2>
+            <p class="section-subtitle">Getting started with FileHub is quick and straightforward</p>
+            
+            <div class="expect-list">
+                <div class="expect-item">
+                    <div class="expect-number">1</div>
+                    <div class="expect-content">
+                        <h3>Create Your Account</h3>
+                        <p>Sign up in seconds with just your email and password. No credit card required.</p>
+                    </div>
+                </div>
+
+                <div class="expect-item">
+                    <div class="expect-number">2</div>
+                    <div class="expect-content">
+                        <h3>Create a Section</h3>
+                        <p>Set up your first section by giving it a name, code, and expected number of submissions.</p>
+                    </div>
+                </div>
+
+                <div class="expect-item">
+                    <div class="expect-number">3</div>
+                    <div class="expect-content">
+                        <h3>Share the Link</h3>
+                        <p>Copy your unique section link and share it with your students or team members via email, message, or any platform.</p>
+                    </div>
+                </div>
+
+                <div class="expect-item">
+                    <div class="expect-number">4</div>
+                    <div class="expect-content">
+                        <h3>Collect & Manage</h3>
+                        <p>Watch submissions roll in. View files, track progress, and download everything when you're ready.</p>
+                    </div>
+                </div>
+
+                <div class="expect-item">
+                    <div class="expect-number">5</div>
+                    <div class="expect-content">
+                        <h3>Download & Review</h3>
+                        <p>Download all files with one click or view them individually. Delete, organize, and manage as needed.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta-section">
+        <h2>Ready to Get Started?</h2>
+        <p>Join FileHub today and experience hassle-free file collection</p>
+        <div class="hero-buttons">
+            <a href="{{ url_for('auth_bp.sign_up') }}" class="hero-btn hero-btn-primary">Create Free Account</a>
+            <a href="{{ url_for('auth_bp.sign_in') }}" class="hero-btn hero-btn-secondary">Sign In</a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>About FileHub</h3>
+                    <p>FileHub is a modern file-sharing platform designed to make file collection simple, organized, and efficient for educators, teams, and organizations.</p>
+                    <div class="social-links">
+                        <a href="https://github.com/JohnStares" target="_blank" class="social-link" title="GitHub">
+                            <i class="fab fa-github"></i>
+                        </a>
+                        <a href="mailto:contact@filehub.com" class="social-link" title="Email">
+                            <i class="fas fa-envelope"></i>
+                        </a>
+                        <a href="https://linkedin.com/in/yourprofile" target="_blank" class="social-link" title="LinkedIn">
+                            <i class="fab fa-linkedin-in"></i>
+                        </a>
+                        <a href="https://twitter.com/yourhandle" target="_blank" class="social-link" title="Twitter">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div class="footer-section">
+                    <h3>Quick Links</h3>
+                    <div class="contact-info">
+                        <div class="contact-item">
+                            <i class="fas fa-user-plus"></i>
+                            <a href="{{ url_for('auth_bp.sign_up') }}">Sign Up</a>
+                        </div>
+                        <div class="contact-item">
+                            <i class="fas fa-sign-in-alt"></i>
+                            <a href="{{ url_for('auth_bp.sign_in') }}">Sign In</a>
+                        </div>
+                        <div class="contact-item">
+                            <i class="fas fa-question-circle"></i>
+                            <a href="/faq">FAQ</a>
+                        </div>
+                        <div class="contact-item">
+                            <i class="fas fa-file-alt"></i>
+                            <a href="/terms">Terms of Service</a>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="footer-section">
+                    <h3>Contact Us</h3>
+                    <div class="contact-info">
+                        <div class="contact-item">
+                            <i class="fas fa-envelope"></i>
+                            <a href="mailto:support@filehub.com">support@filehub.com</a>
+                        </div>
+                        <div class="contact-item">
+                            <i class="fab fa-github"></i>
+                            <a href="https://github.com/JohnStares/filehub" target="_blank">GitHub Repository</a>
+                        </div>
+                        <div class="contact-item">
+                            <i class="fas fa-globe"></i>
+                            <span>Available Worldwide</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <p>&copy; 2026 FileHub. All rights reserved. | Built with ❤️ for seamless file sharing</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

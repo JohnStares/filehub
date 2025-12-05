@@ -1,0 +1,209 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  font-family: Arial, sans-serif;
+}
+
+.containter {
+  width: 100%;
+  max-width: 500px;
+  padding: 20px;
+}
+
+.form-group {
+  background-color: white;
+  padding: 40px;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.form-group h1 {
+  color: black;
+  font-size: 32px;
+  font-weight: 600;
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.form-group form {
+  display: flex;
+  flex-direction: column;
+}
+
+.full_name,
+.mat_no,
+.level,
+.group,
+.file {
+  margin-bottom: 20px;
+}
+
+.full_name label,
+.mat_no label,
+.level label,
+.group label,
+.file label {
+  display: block;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 8px;
+}
+
+.full_name input,
+.mat_no input,
+.level input,
+.level select,
+.group input,
+.group select,
+.file input {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+  transition: border-color 0.3s;
+}
+
+.full_name input:focus,
+.mat_no input:focus,
+.level input:focus,
+.level select:focus,
+.group input:focus,
+.group select:focus,
+.file input:focus {
+  outline: none;
+  border-color: #007bff;
+}
+
+span[style*="color: red"] {
+  display: block;
+  color: red;
+  font-size: 12px;
+  margin-top: 4px;
+}
+
+.submit {
+  margin-top: 10px;
+  margin-bottom: 0;
+}
+
+.submit input {
+  width: 100%;
+  padding: 12px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.submit input:hover {
+  background-color: #0056b3;
+}
+
+/* Tablet and smaller screens */
+@media (max-width: 768px) {
+  .form-group {
+    padding: 30px;
+  }
+
+  .form-group h1 {
+    font-size: 28px;
+    margin-bottom: 25px;
+  }
+
+  .full_name,
+  .mat_no,
+  .level,
+  .group,
+  .file {
+    margin-bottom: 18px;
+  }
+
+  .full_name label,
+  .mat_no label,
+  .level label,
+  .group label,
+  .file label {
+    font-size: 15px;
+    margin-bottom: 6px;
+  }
+
+  .full_name input,
+  .mat_no input,
+  .level input,
+  .level select,
+  .group input,
+  .group select,
+  .file input {
+    padding: 9px 11px;
+    font-size: 13px;
+  }
+
+  .submit input {
+    padding: 11px;
+    font-size: 15px;
+  }
+}
+
+/* Mobile devices */
+@media (max-width: 480px) {
+  .containter {
+    padding: 15px;
+  }
+
+  .form-group {
+    padding: 20px;
+    border-radius: 6px;
+  }
+
+  .form-group h1 {
+    font-size: 24px;
+    margin-bottom: 20px;
+  }
+
+  .full_name,
+  .mat_no,
+  .level,
+  .group,
+  .file {
+    margin-bottom: 16px;
+  }
+
+  .full_name label,
+  .mat_no label,
+  .level label,
+  .group label,
+  .file label {
+    font-size: 14px;
+    margin-bottom: 5px;
+  }
+
+  .full_name input,
+  .mat_no input,
+  .level input,
+  .level select,
+  .group input,
+  .group select,
+  .file input {
+    padding: 8px 10px;
+    font-size: 12px;
+  }
+
+  .submit input {
+    padding: 10px;
+    font-size: 14px;
+  }
+}

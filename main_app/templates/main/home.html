@@ -1,0 +1,106 @@
+{% extends 'base.html' %}
+
+{% block title %}Home{% endblock %}
+{% block link %}<link rel="stylesheet" href="{{ url_for('static', filename='css/home.css') }}"> {% endblock %}
+
+{% block content %}
+    <div class="navbar">
+        <h1>📚 FileHub</h1>
+        <div class="navbar-right">
+            <span>{{ current_user.username }}</span>
+            <form action="{{ url_for('auth_bp.logout')}}" method="post">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <button>Logout</button>
+            </form>
+        </div>
+    </div>
+
+
+    <div class="container">
+
+        <div class="header">
+            <h2>Welcome back! 👋</h2>
+            <a href="{{ url_for('main_bp.create_section') }}"><button class="create-btn">+ Create New Section</button></a>
+        </div>
+
+        <div class="stats">
+            <div class="stat-card">
+                <h3>Active Sections</h3>
+                <div class="number">{{ sections|length }}</div>
+            </div>
+            <div class="stat-card">
+                <h3>Total Submissions</h3>
+                <div class="number">187</div>
+            </div>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Sections List -->
+            <div class="section-list">
+                <h3>📋 Active Sections</h3>
+                
+                <!-- Section 1 -->
+                 {% if sections %}
+                    {% for section in sections %}
+                        <div class="section-card">
+                            <div class="section-header">
+                                <div class="section-info">
+                                    <h4>{{ section.section_name }}</h4>
+                                    {% if section.section_code %}
+                                        <span class="section-code">{{ section.section_code }}</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                            <div class="deadline">⏱️ Closes in 6 hours</div>
+                            {% if section.expected_submission %}
+                                {% set dynamic_width = percentage(section.expected_submission, section.id) %}
+                                <div class="submission-progress">
+                                    <div class="progress-bar">
+                                        <div class="progress-fill" style="width: {{ dynamic_width }}%;"></div>
+                                    </div>
+                                        <div class="progress-text">{{ number_of_submissions(section.id) | length }} / {{ section.expected_submission }} students submitted</div>
+                                </div>
+                            {% endif %}
+                            <div class="section-actions">
+                                <a href="{{ url_for('main_bp.download_files', section_id=section.id, section_name=section.section_name) }}"><button class="btn-small btn-download">⬇️ Download All</button></a>
+                                <a href="{{ url_for('main_bp.view_files', section_id=section.id) }}"><button class="btn-small btn-view">👁️ View</button></a>
+                                <form action="{{ url_for('main_bp.delete_files', section_id=section.id) }}" method="post">
+                                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+                                    <button class="btn-small btn-delete" type="submit">❌ Delete All Files</button>
+                                </form>
+                            </div>
+                        </div>
+                    {% endfor %}
+                 {% endif %}
+
+            
+        <div class="activity-panel">
+            {% if sections %}
+                <h3>Section Links</h3>
+                <h4>Copy the exact link you need and send it to whoever you need file transfered</h4>
+                {% for section in sections %}
+                    <div class="activity-item">
+                        <div class="activity-item-header">
+                            <span class="activity-name">Link</span>
+                            <form action="{{ url_for('main_bp.delete_section', section_id=section.id)}}" method="post">
+                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
+                                <button class="activity-delete" type="submit">delete</button>
+                            </form>
+                        </div>
+    
+                        <div class="activity-detail">
+                            <a href="{{ url_base }}{{ url_for('main_bp.upload_file', username=current_user.username, section_name=section.section_name) }}">{{ url_base }}{{ url_for("main_bp.upload_file", username=current_user.username, section_name=section.section_name) }}</a></li>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p class="no-display">No section to display</p>
+            {% endif %}
+        </div>
+    </div>
+
+
+{% endblock %}

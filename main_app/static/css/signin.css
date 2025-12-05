@@ -1,0 +1,121 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  font-family: Arial, sans-serif;
+}
+
+.auth-containers {
+  width: 100%;
+  max-width: 500px;
+  padding: 20px;
+}
+
+.form-group {
+  background-color: white;
+  padding: 40px;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.form-group h1 {
+  color: black;
+  font-size: 32px;
+  font-weight: 600;
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+}
+
+.username-tag,
+.pass-tag {
+  margin-bottom: 20px;
+}
+
+.username-tag label,
+.pass-tag label {
+  display: block;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 8px;
+}
+
+.username-tag input,
+.pass-tag input {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+  transition: border-color 0.3s;
+}
+
+.username-tag input:focus,
+.pass-tag input:focus {
+  outline: none;
+  border-color: #007bff;
+}
+
+span[style*="color: red"] {
+  display: block;
+  color: red;
+  font-size: 12px;
+  margin-top: 4px;
+}
+
+.submit-tag {
+  margin-top: 10px;
+  margin-bottom: 20px;
+}
+
+.submit-tag input {
+  width: 100%;
+  padding: 12px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.submit-tag input:hover {
+  background-color: #0056b3;
+}
+
+.hero {
+  text-align: center;
+  padding-top: 15px;
+  border-top: 1px solid #eee;
+}
+
+.dont-an-account {
+  color: #666;
+  font-size: 14px;
+}
+
+.signup {
+  color: #007bff;
+  font-weight: 600;
+  cursor: pointer;
+  transition: color 0.3s;
+}
+
+.signup:hover {
+  color: #0056b3;
+  text-decoration: underline;
+}
