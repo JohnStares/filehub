@@ -4,8 +4,7 @@ from main_app.extensions import db
 from main_app.models import Submissions
 import sqlalchemy as sql
 import shutil
-from typing import Sequence, Callable, Optional
-import os
+from typing import Sequence, Callable
 
 
 def allowed_extension(filename: str) -> bool:
