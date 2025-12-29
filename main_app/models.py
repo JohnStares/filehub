@@ -20,7 +20,7 @@ class User(UserMixin, db.Model):
     sections: orm.Mapped[list["Section"]] = orm.relationship(
         "Section",
         back_populates="user",
-        cascade="all, delete-orphan"
+        cascade="all, delete-orphan" # Remember to change to passive_deletes=True in proudction
     )
 
 
@@ -54,7 +54,7 @@ class Section(db.Model):
     submissions: orm.Mapped[list["Submissions"]] = orm.relationship(
         "Submissions",
         back_populates="section",
-        cascade="all, delete-orphan"
+        cascade="all, delete-orphan" # Remember to change to passive_deletes=True in proudction
     )
 
 
@@ -72,7 +72,7 @@ class Submissions(db.Model):
     group: orm.Mapped[str] = orm.mapped_column(sql.String(20), nullable=True)
     original_filename: orm.Mapped[str] = orm.mapped_column(sql.String(30))
     stored_filename: orm.Mapped[str] = orm.mapped_column(sql.String(30))
-    file_path: orm.Mapped[str] = orm.mapped_column(sql.String(30), index=True, unique=True)
+    file_path: orm.Mapped[str] = orm.mapped_column(sql.String(250), index=True, unique=True)
     file_size: orm.Mapped[int] = orm.mapped_column(sql.Integer)
     uploaded_at: orm.Mapped[datetime] = orm.mapped_column(index=True, default=lambda: datetime.now(timezone.utc))
 
