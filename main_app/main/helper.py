@@ -175,6 +175,12 @@ def get_percentage(expected_submission: int, section_id: int, func: Callable[[in
 
 
 def restore_path(file_path: str) -> None:
+    """
+    Restores a file back to it's path
+    
+    :param file_path: A file path
+    :type file_path: str
+    """
     path = Path(file_path)
 
     sub_dir = path.parent.name
