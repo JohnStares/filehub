@@ -157,7 +157,7 @@ def delete_file_from_directory(file_path: str) -> bool:
     
 
 
-def get_percentage(expected_submission: int, section_id: int, func: Callable[[int], Sequence] = number_of_submissions) -> int:
+def get_percentage(expected_submission: int, section_id: int, func: Callable[[int], Sequence] = number_of_submissions) -> float | int:
     try:
         files = func(section_id)
 
