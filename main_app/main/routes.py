@@ -1,4 +1,4 @@
-from flask import request, render_template, url_for, redirect, flash, send_file, abort
+from flask import request, render_template, url_for, redirect, flash, send_file, abort, jsonify
 from flask_login import login_required, current_user
 import sqlalchemy as sql
 from werkzeug.utils import secure_filename
@@ -12,7 +12,7 @@ from main_app.models import Section, Submissions, User
 from .helper import (
     allowed_extension, save_uploaded_file, bytes_converter, delete_multiple_files, 
     delete_section_directory_and_its_files, number_of_submissions, delete_file_from_directory,
-    get_percentage, restore_path, reach_file_size
+    get_percentage, restore_path
 )
 
 from main_app.extensions import db, limiter
@@ -23,7 +23,12 @@ import io
 
 @main_bp.route("/")
 def welcome():
-    return render_template("main/welcome.html")
+    try:
+        current_app.logger.info("The welcome page is being accessed")
+        return render_template("main/welcome.html")
+    except Exception as e:
+        current_app.logger.error(f"An error occured on the welcome page. {str(e)}", exc_info=True)
+        return jsonify({"error": "Internal Issue. Please try again later"})
 
 
 @main_bp.route("/home", methods=["GET"])
@@ -31,12 +36,12 @@ def welcome():
 @login_required
 def home():
     try:
-        current_app.logger.info("The home route is being accessed.")
+        current_app.logger.info(f"The home route is being accessed by {current_user.username}.")
         existing_sections = db.session.scalars(sql.select(Section).where(Section.user_id == current_user.id)).all()
         return render_template("main/home.html", sections=existing_sections, url_base=request.host_url.rstrip("/"), number_of_submissions=number_of_submissions, percentage=get_percentage)
     except Exception as e:
         flash("An unexpected error occured, we are handling it.")
-        current_app.logger.error(f"Unexpected error occcured due to {str(e)}", exc_info=True)
+        current_app.logger.error(f"{current_user.username} got an unexpected error due to {str(e)}", exc_info=True)
         return redirect(url_for("main_bp.home"))
 
 
@@ -60,20 +65,23 @@ def create_section():
                 db.session.commit()
 
                 flash("Section created", "success")
-                current_app.logger.info("A successful post request is made")
+                current_app.logger.info(f"A successful post request is made by {current_user.username} on the create section route")
                 return redirect(url_for("main_bp.home"))
             
             flash("Invalid form!", "warning")
-            current_app.logger.warning(f"{current_user.username} made an invalid input on create-section route")
+            current_app.logger.warning(
+                f"{current_user.username} made an invalid input on create-section route."\
+                f"Error made is {form.errors}."
+            )
             return render_template("main/section.html", form=form)
         
         except Exception as e:
             db.session.rollback()
             flash("An error occured!", "error")
-            current_app.logger.exception(f"An error occured due to {str(e)}", exc_info=True)
+            current_app.logger.error(f"{current_user.username} got an error due to {str(e)}", exc_info=True)
             return render_template("main/section.html", form=form)
     
-    current_app.logger.info("The create-section route is being accessed")
+    current_app.logger.info(f"The create-section route is being accessed by {current_user.username}")
     return render_template("main/section.html", form=form)
 
 
@@ -87,7 +95,9 @@ def upload_file(username, section_name):
     
     if request.method == "POST":
         try:
-
+            current_app.logger.info(
+                f"A Post request is being made on the upload route."
+            )
             if form.validate_on_submit():
 
                 file = form.file.data
@@ -95,11 +105,6 @@ def upload_file(username, section_name):
                 if file.filename == "":
                     flash("Invalid file content", "error")
                     current_app.logger.warning(f"An empty filename was submitted")
-                    return render_template("main/upload.html", form=form)
-                
-                # Check if file size is correct
-                if not reach_file_size(file):
-                    flash("File size should be between 10KB to 25MB")
                     return render_template("main/upload.html", form=form)
 
 
@@ -121,7 +126,7 @@ def upload_file(username, section_name):
                     section_id=section.id, uploader_name=form.full_name.data,
                     mat_no=form.mat_no.data, level=form.level.data,
                     group=form.group.data, original_filename=filename,
-                    stored_filename=filename, file_path=str(file_path),
+                    stored_filename=f"{form.mat_no.data}_{filename}", file_path=str(file_path),
                     file_size=file_path.stat().st_size, 
                 )
 
@@ -154,7 +159,7 @@ def upload_file(username, section_name):
             delete_file_from_directory(path_to_file)
 
             flash("Internal server down", "warning")
-            current_app.logger.exception(f"An error occured due to {str(e)}", exc_info=True)
+            current_app.logger.error(f"An error occured due to {str(e)}", exc_info=True)
             return render_template("main/upload.html", form=form)
 
     if user and section:
@@ -171,6 +176,7 @@ def upload_file(username, section_name):
 @login_required
 def delete_section(section_id):
     try:
+        current_app.logger.info(f"{current_user.username} is attempting to delete a section with ID {section_id}")
         section = db.session.scalar(sql.select(Section).where(
             (Section.user_id == current_user.id) &
             (Section.id == section_id)
@@ -183,8 +189,8 @@ def delete_section(section_id):
                 db.session.delete(section)
                 db.session.commit()
 
-                flash("Section deleted successfully", "success")
-                current_app.logger.info("A section was successfully deleted")
+                flash("Section was deleted successfully", "success")
+                current_app.logger.info(f"A section-{section.section_name} was successfully deleted by {current_user.username}")
                 return redirect(url_for("main_bp.home"))
         
         flash("Unauthorized", "warning")
@@ -193,19 +199,19 @@ def delete_section(section_id):
     
     except PermissionError as p:
         flash("Permission Error", "warning")
-        current_app.logger.warning(f"Permission was denied while trying to delete a section due to {str(p)}", exc_info=True)
+        current_app.logger.warning(f"Permission was denied while trying to delete a section by {current_user.username} due to {str(p)}", exc_info=True)
         return redirect(url_for("main_bp.home"))
     
     except OSError as o:
         flash("OS Error", "warning")
-        current_app.logger.error(f"OSError ecountered due to {str(o)}", exc_info=True)
+        current_app.logger.error(f"OSError ecountered on file {section.section_name} by {current_user.username} due to {str(o)}", exc_info=True)
         return redirect(url_for("main_bp.home"))
 
         
     except Exception as e:
         flash("Internal Error", "warning")
         db.session.rollback()
-        current_app.logger.exception(f"An unexpected error occured due to {str(e)}", exc_info=True)
+        current_app.logger.error(f"An unexpected error occured on the delete-section route accessed by {current_user.username} due to {str(e)}", exc_info=True)
         return redirect(url_for("main_bp.home"))
 
 
@@ -237,7 +243,7 @@ def view_files(section_id):
             if files.has_prev else None
         
 
-        current_app.logger.info("View-files routes was accessed")
+        current_app.logger.info(f"View-files routes was accessed by {current_user.username}")
         return render_template("main/view-file.html", files=files, bytes_converter=bytes_converter, next=next_url, prev=prev_url)
     
     
@@ -254,6 +260,7 @@ def view_files(section_id):
 @login_required
 def download_files(section_id: str, section_name: str):
     try:
+        current_app.logger.info(f"{current_user.username} is trying yo download some files")
         files = db.session.scalars(
             sql.select(Submissions).join(Submissions.section).where(
                 (Submissions.section_id == section_id) &
@@ -263,6 +270,7 @@ def download_files(section_id: str, section_name: str):
 
         if not files or files is None:
             flash("No files in this category to download", "warning")
+            current_app.logger.info(f"{current_user.username} tried to download an empty file")
             return redirect(url_for("main_bp.home"))
 
         # create ZIP in memory
@@ -272,15 +280,16 @@ def download_files(section_id: str, section_name: str):
             for file in files:
                 file_path = file.file_path
 
-                new_filename = f"{file.uploader_name}_{file.mat_no}_{file.original_filename}"
+                file_absolute_path = Path(file_path)
+                filename = file_absolute_path.name
 
-                zipf.write(file_path, arcname=new_filename)
+                zipf.write(file_path, arcname=filename)
 
 
         memory_file.seek(0)
 
         flash("Downloading files", "success")
-        current_app.logger.info("Downloading files in progress")
+        current_app.logger.info(f"Downloading files in progress made by {current_user.username}")
         return send_file(
             memory_file,
             mimetype="application/zip",
@@ -290,12 +299,12 @@ def download_files(section_id: str, section_name: str):
     
     except FileNotFoundError:
         flash("Coulnd't find some files", "error")
-        current_app.logger.warning("A file couldn't download due to it missing", exc_info=True)
+        current_app.logger.warning(f"{current_user.username}::A file couldn't download due to it missing", exc_info=True)
         return redirect(url_for("main_bp.home"))
     
     except Exception as e:
         flash("Internal Service issue", "error")
-        current_app.logger.exception(f"An unexpected error occured due to {str(e)}", exc_info=True)
+        current_app.logger.error(f"{current_user.username}::An unexpected error occured due to {str(e)}", exc_info=True)
         return redirect(url_for("main_bp.home"))
 
 
@@ -305,8 +314,8 @@ def download_files(section_id: str, section_name: str):
 @login_required
 def delete_file(file_id: int):
     try:
+        current_app.logger.info(f"{current_user.username} is trying to delete a file with ID-{file_id}")
         file = db.session.scalar(sql.select(Submissions).join(Submissions.section).where(Submissions.id == file_id))
-
 
         if file:
             if file.section.user_id != current_user.id:
@@ -319,25 +328,25 @@ def delete_file(file_id: int):
                 db.session.commit()
 
                 flash("File deleted successfully", "success")
-                current_app.logger.info(f"{current_user.username} successfully deleted a file")
+                current_app.logger.info(f"{current_user.username} successfully deleted a file with ID {file_id}")
                 return redirect(url_for("main_bp.view_files", section_id=file.section_id))
         
         flash("File not found", "warning")
-        current_app.logger.warning("File not found in an attempt to delete it.")
+        current_app.logger.warning(f"File not found in an attempt to delete it made by {current_user.username}.")
         return redirect(url_for("main_bp.view_files", section_id=file.section_id))
 
     except PermissionError:
         flash("Permission Denied", "error")
-        current_app.logger.warning(f"{current_user.username} was denied permission while trying to delete a file", exc_info=True)
+        current_app.logger.warning(f"{current_user.username} was denied permission while trying to delete a file with ID-{file_id}", exc_info=True)
         return redirect(url_for("main_bp.view_files", section_id=file.section_id))
     except OSError:
         flash("Having probelm deleting file", "error")
-        current_app.logger.warning(f"OSError encountered while trying to delete a file", exc_info=True)
+        current_app.logger.warning(f"{current_user.username}::OSError encountered while trying to delete a file with ID-{file_id}", exc_info=True)
         return redirect(url_for("main_bp.view_files", section_id=file.section_id))
     except Exception as e:
         db.session.rollback()
         flash("Internal server error", "error")
-        current_app.logger.exception(f"An error occured due to {str(e)}", exc_info=True)
+        current_app.logger.error(f"{current_user.username}::An error occured while trying to delete a file with ID-{file_id} due to {str(e)}", exc_info=True)
         return redirect(url_for("main_bp.view_files", section_id=file.section_id))
     
 
@@ -347,22 +356,24 @@ def delete_file(file_id: int):
 @login_required
 def delete_files(section_id: int):
     try:
+        current_app.logger.info(f"{current_user.username} is attempting to delete some files in section id {section_id}")
         section = db.session.scalar(sql.select(Section).where(Section.id == section_id))
         
         if not section:
-            flash("invalid attempt. Doesn't exist", "error")
+            flash("Section doesn't exist", "error")
+            current_app.logger.warning(f"{current_user.username} tried to delete a file in section that doesn't exist with ID {section_id}")
             return redirect(url_for("main_bp.home"))
         
         if section.user_id != current_user.id:
             flash("Unathorized attempt", "warning")
-            current_app.logger.warning(f"Unathorized delete attempt by {current_user.username} on a file tied to section {section_id}")
+            current_app.logger.warning(f"Unathorized delete attempt by {current_user.username} on a file tried to section {section_id}")
             abort(403)
             
         files = db.session.scalars(sql.select(Submissions).where(Submissions.section_id == section_id)).all()
 
         if not files:
             flash("No files to delete", "warning")
-            current_app.logger.warning("File not found in an attempt to delete it.")
+            current_app.logger.warning(f"{current_user.username}::File on section with ID-{section_id} not found in an attempt to delete it.")
             return redirect(url_for("main_bp.home"))
         
         deleted_file_path = [] # Keeps track of files_paths that couldn't be deleted
@@ -372,8 +383,10 @@ def delete_files(section_id: int):
                 deleted_file_path.append(file.file_path)
                 db.session.delete(file)
             else:
+                current_app.logger.error(f"{current_user.username}::File-{file} couldn't be deleted")
                 for path in deleted_file_path:
                     restore_path(path)
+                    current_app.logger.info(f"{current_user.username}::Restoring file with {path} that could't be deleted.")
                     raise OSError
 
         db.session.commit()
@@ -392,11 +405,11 @@ def delete_files(section_id: int):
     except OSError:
         db.session.rollback()
         flash("Having probelm deleting file", "error")
-        current_app.logger.warning(f"OSError encountered while trying to delete a file", exc_info=True)
+        current_app.logger.warning(f"{current_user.username}::OSError encountered while trying to delete or restore file path on a file", exc_info=True)
         return redirect(url_for("main_bp.home"))
     except Exception as e:
         db.session.rollback()
         flash("Internal server error", "error")
-        current_app.logger.exception(f"An error occured due to {str(e)}", exc_info=True)
+        current_app.logger.error(f"{current_user.username}::An error occured on delete-files route due to {str(e)}", exc_info=True)
         return redirect(url_for("main_bp.home"))
 

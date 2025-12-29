@@ -3,10 +3,11 @@ from flask_login import login_user, current_user, logout_user, login_required
 
 from main_app.models import User
 from main_app.extensions import db, login_manager, limiter
+import sqlalchemy as sql
 
 from . import auth_bp
 
-from .forms import RegisterForm, LoginForm
+from .forms import RegisterForm, LoginForm, ChangePasswordForm
 
 login_manager.login_view = "auth_bp.sign_in"
 
@@ -27,7 +28,7 @@ def sign_up():
                 db.session.commit()
 
                 flash("Registration Successful.", "success")
-                current_app.logger.info("A successful sign-up was made")
+                current_app.logger.info(f"A successful sign-up was made by {form.username.data}")
                 return redirect(url_for("auth_bp.sign_in"))
             
 
@@ -38,7 +39,7 @@ def sign_up():
         except Exception as e:
             flash("Something wrong occured.", "error")
             db.session.rollback()
-            current_app.logger.exception(f"Unexpected error occured in the sign-up route", exc_info=True)
+            current_app.logger.error(f"Unexpected error occured in the sign-up route", exc_info=True)
             return render_template("auth/register.html", form=form)
     
     current_app.logger.info("Sign-up route accessed")
@@ -61,16 +62,16 @@ def sign_in():
 
                 flash("Login Sucessful", "success")
                 login_user(user)
-                current_app.logger.info("A successful sign-in was made")
+                current_app.logger.info(f"A successful sign-in was made by {user.username}")
                 return redirect(url_for("main_bp.home"))
 
             flash("Invalid username or password", "error")
-            current_app.logger.warning("User made an invalid input while signing-in")
+            current_app.logger.warning(f"An invalid input made while trying to sign-in in the sign-up page")
             return render_template("auth/login.html", form=form)
         
         except Exception as e:
             flash("An error occured! Try again later", "error")
-            current_app.logger.exception(f"Unexpected error occured in the sign-in route due to {str(e)}", exc_info=True)
+            current_app.logger.error(f"{user.username} got an unexpected error that occured in the sign-in route due to {str(e)}", exc_info=True)
             return render_template("auth/login.html", form=form)
 
     current_app.logger.info("Sign-in route accessed")
@@ -84,10 +85,50 @@ def logout():
     try:
         logout_user()
         flash("Logged out successfully.","success")
-        current_app.logger.info("Successful logging out")
+        current_app.logger.info(f"Successful logging out by {current_user.username}")
         return redirect(url_for("auth_bp.sign_in"))
     
     except Exception as e:
         flash("An error occured while trying to log you out", "warning")
-        current_app.logger.exception(f"An unexpected error occured while trying to log out a user due to {str(e)}", exc_info=True)
-        return redirect(url_for("auth_bp.sign-in"))
+        current_app.logger.error(f"An unexpected error occured while trying to log out {current_user.username} due to {str(e)}", exc_info=True)
+        return redirect(url_for("auth_bp.sign_in"))
+
+
+@auth_bp.route("/change-password", methods=["GET", "POST"])
+@login_required
+def change_password():
+    form = ChangePasswordForm()
+    if request.method == 'POST':
+        current_app.logger.info(f"{current_user.username} made a post request on the change password route")
+        try:
+            if form.validate_on_submit():
+                user = db.session.scalar(sql.select(User).where(User.username == current_user.username))
+
+                if user:
+                    if not user.check_password(form.old_password.data):
+                        flash("Old password is incorrect.", "warning")
+                        current_app.logger.info(f"{current_user.username} provided an incorrect password on the change password route")
+                        return render_template("auth/changepassword.html", form=form)
+                    
+                    user.hash_password(form.new_password.data)
+                    db.session.commit()
+
+                    flash("Password changed successfully.", "success")
+                    current_app.logger.info(f"{current_user.username} successfully changed their password")
+                    return redirect(url_for("main_bp.home"))
+                
+                flash("Please Login again.", "error")
+                current_app.logger.warning(f"{current_user.username} seems to not be a user. Being redirected to the sign-up page")
+                return redirect(url_for("auth_bp.sign-in"))
+            
+            flash("An error occured with the data you provided.", "warning")
+            current_app.logger.warning(f"{current_user.username} provided wrong information on the change password route")
+            return redirect(url_for("main_bp.home"))
+        
+        except Exception as e:
+            current_app.logger.error(f"{current_user.username} encountered an error on the change password route due to {str(e)}", exc_info=True)
+            flash("An error occured! Please try again after sometime.", "warning")
+            return redirect(url_for("main_bp.home"))
+            
+    current_app.logger.info(f"{current_user.username} accessed the change password page")
+    return render_template("auth/changepassword.html", form=form)
