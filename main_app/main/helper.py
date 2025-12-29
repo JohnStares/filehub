@@ -17,24 +17,6 @@ def allowed_extension(filename: str) -> bool:
     return "." in filename and filename.rsplit(".", 1)[1].lower() in current_app.config["UPLOAD_EXTENSIONS"]
 
 
-def reach_file_size(file):
-    print("Got here")
-    
-    max_size = get_file_size(current_app.config["MAX_CONTENT_LENGTH"])
-    min_size = get_file_size(current_app.config["MIN_CONTENT_LENGTH"])
-
-    file_size_in_bytes = len(file.read())
-
-    file_size = get_file_size(file_size_in_bytes)
-
-    if file_size > max_size:
-        return False
-    elif file_size < min_size:
-        return False
-    else:
-        return True
-
-
 def save_uploaded_file(file, filename: str, section: str) -> Path:
     """
     This function is responsible for saving files to their respective directory
@@ -205,12 +187,3 @@ def restore_path(file_path: str) -> None:
 
     except Exception:
         raise Exception
-
-    
-def get_file_size(bytes: int):
-    if bytes < 1024:
-        return bytes
-    elif bytes < 1048576:
-        return bytes / 1024
-    else:
-        return bytes / 1048576
