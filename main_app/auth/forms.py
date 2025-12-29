@@ -47,3 +47,10 @@ class LoginForm(FlaskForm):
 
     submit = SubmitField("Login")
 
+
+class ChangePasswordForm(FlaskForm):
+    old_password = PasswordField("Old_Password", validators=[DataRequired()])
+    new_password = PasswordField("new_password", validators=[DataRequired()])
+
+    submit = SubmitField("Submit")
+
