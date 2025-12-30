@@ -1,5 +1,5 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, PasswordField, SubmitField
+from wtforms import StringField, PasswordField, SubmitField, EmailField, HiddenField
 from wtforms.validators import DataRequired, Email, EqualTo
 from wtforms.validators import ValidationError
 import sqlalchemy as sql
@@ -54,3 +54,25 @@ class ChangePasswordForm(FlaskForm):
 
     submit = SubmitField("Submit")
 
+
+class ForgetPassword(FlaskForm):
+    username = StringField("Username", validators=[DataRequired()], render_kw={"placeholder": "Enter your username"})
+    email = EmailField(
+        "Email",
+        validators=[
+            DataRequired(),
+            Email(
+                "Invalid email."\
+                "Please provide a valid email address.",
+                False, True, True, True
+            )
+        ]
+    )
+    submit = SubmitField("Send Reset Code")
+
+class PasswordReset(FlaskForm):
+    token = HiddenField()
+    new_password = PasswordField("New Password", validators=[DataRequired(message="Password is required")])
+    confirm_password = PasswordField("Confirm Password", validators=[DataRequired(message="Please type same password as the above"), EqualTo("new_password", message="Password does not match")])
+
+    submit = SubmitField()
