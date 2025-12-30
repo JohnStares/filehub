@@ -7,7 +7,8 @@ import sqlalchemy as sql
 
 from . import auth_bp
 
-from .forms import RegisterForm, LoginForm, ChangePasswordForm
+from .forms import RegisterForm, LoginForm, ChangePasswordForm, ForgetPassword, PasswordReset
+from .helper import send_email, validate_token
 
 login_manager.login_view = "auth_bp.sign_in"
 
@@ -83,9 +84,10 @@ def sign_in():
 @login_required
 def logout():
     try:
+        user = current_user.username
         logout_user()
         flash("Logged out successfully.","success")
-        current_app.logger.info(f"Successful logging out by {current_user.username}")
+        current_app.logger.info(f"Successful logging out by {user}")
         return redirect(url_for("auth_bp.sign_in"))
     
     except Exception as e:
@@ -132,3 +134,99 @@ def change_password():
             
     current_app.logger.info(f"{current_user.username} accessed the change password page")
     return render_template("auth/changepassword.html", form=form)
+
+
+@auth_bp.route("/forgot-password", methods=["GET", "POST"])
+def forgot_password():
+    form = ForgetPassword()
+    if request.method == "POST":
+        current_app.logger.info("A post request was made to the forgot-password route")
+        if form.validate_on_submit():
+            try:
+                user = db.session.scalar(sql.select(User).where(User.username == form.username.data))
+
+                if not user:
+                    current_app.logger.warning("User provided a wrong username in the forgot-password route")
+                    flash("Invalid username", "warning")
+                    return redirect(url_for("auth_bp.forgot_password"))
+                
+                send_email(user.id, form.email.data)
+                flash("Email Sent", "success")
+                current_app.logger.info(f"Email has being sent to {form.email.data} that belongs to {user.username}")
+                return redirect(url_for("auth_bp.token_validate"))
+            
+            except Exception as e:
+                flash("An error occured", "error")
+                current_app.logger.error(f"An error occured on forget-password route due to {str(e)}", exc_info=True)
+                return redirect(url_for("auth_bp.forgot_password"))
+
+    current_app.logger.info("The forget password route is being accessed")
+    return render_template("auth/forget-password.html", form=form)
+
+
+@auth_bp.route("/token-validate", methods=["GET", "POST"])
+def token_validate():
+    if request.method == "POST":
+        current_app.logger.info("A post request is being made to the token-validate route")
+        token = request.form.get("token")
+
+        try:
+            if not token:
+                flash("Token cant be empty", "warning")
+                current_app.logger.warning("An empty token was provided in the token-validate route")
+                return redirect(url_for("auth_bp.token_validate"))
+
+            if not validate_token(token):
+                flash("Invalid Token", "error")
+                current_app.logger.warning(f"An invalid token was provided in the token-validate route. Token - {token}")
+                return redirect(url_for("auth_bp.token_validate"))
+            
+            current_app.logger.info(f"Token passed validation. Token - {token}")
+            return redirect(url_for(f"auth_bp.reset_password", token=token))
+        
+        except Exception as e:
+            flash("An error occured", "error")
+            current_app.logger.error(f"An unexpected error occured due to {str(e)}")
+            return redirect(url_for("auth_bp.sign_in"))
+    
+    current_app.logger.info("token-validate route is being accessed")
+    return render_template("auth/token.html")
+
+
+
+@auth_bp.route("/reset-password/<string:token>", methods=["GET", "POST"])
+def reset_password(token: str):
+    form = PasswordReset()
+    form.token.data = token
+
+    if request.method == "POST":
+        try:
+            current_app.logger.info("A post request is made on reset-password route")
+            if form.validate_on_submit():
+                token_parts = token.split("_")
+                user_id = token_parts[0]
+
+                user = db.session.scalar(sql.select(User).where(User.id == int(user_id)))
+
+                if not user:
+                    flash("You are not who you say you are", "error")
+                    current_app.logger.warning(f"User couldn't be found on the token provided. The ID is {user_id}")
+                    return redirect(url_for("auth_bp.sign_in"))
+                
+                user.hash_password(form.new_password.data)
+                db.session.commit()
+                flash("Password reset successfully", "success")
+                current_app.logger.info(f"Successfully changed user with {user_id} password")
+                # Dont' foret to remove the token from the TOKEN
+                return redirect(url_for("auth_bp.sign_in"))
+            
+            flash("Invalid input", "warning")
+            current_app.logger.info(f"Incorrect input on reset-password route. Error - {form.errors}")
+            return redirect(url_for("auth_bp.reset-password"))
+        
+        except Exception as e:
+            flash("An error occured", "error")
+            current_app.logger.error(f"An unexpected error occured due to {str(e)}", exc_info=True)
+            return redirect(url_for("auth_bp.sign_in"))
+
+    return render_template("auth/password-reset.html", form=form)
