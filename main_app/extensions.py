@@ -4,6 +4,7 @@ from flask_login import LoginManager
 from flask_limiter import Limiter
 from flask_wtf import CSRFProtect
 from flask_limiter.util import get_remote_address
+from flask_mail import Mail
 
 import os
 
@@ -11,6 +12,7 @@ db = SQLAlchemy()
 migrate = Migrate()
 login_manager = LoginManager()
 csrf = CSRFProtect()
+mail = Mail()
 
 def get_redis_url() -> str:
     redis_host = os.environ.get("REDIS_HOST")
