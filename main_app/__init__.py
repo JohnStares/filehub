@@ -18,7 +18,7 @@ def create_app(config_name: Optional[str] = None):
         app.config.from_object(config_obj)
    
    # Initialize extensions
-    from .extensions import (db, migrate, login_manager, limiter, csrf)
+    from .extensions import (db, migrate, login_manager, limiter, csrf, mail)
 
     db.init_app(app)
     migrate.init_app(app, db)
@@ -27,6 +27,7 @@ def create_app(config_name: Optional[str] = None):
     limiter.init_app(app)
 
     csrf.init_app(app)
+    mail.init_app(app)
 
     # set up logging functionality
     set_logger(app=app, basedir=app.config["BASEDIR"])
