@@ -21,6 +21,11 @@ class DevelopmentConfig(BaseConfig):
     # Security
     SESSION_COOKIE_SECURE = False
 
+    # Mail Setup
+    MAIL_USERNAME: str | None = "wisdom8achor24@gmail.com"
+    MAIL_PASSWORD: str | None = os.environ.get("GOOGLE_APP_PASSWORD")
+    MAIL_DEFAULT_SENDER: str | None = "wisdom8achor24@gmail.com"
+
     # Debug Toolbar
     DEBUG_TB_ENABLED = True
     DEBUG_TB_INTERCEPT_REDIRECTS = False

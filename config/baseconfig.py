@@ -31,6 +31,18 @@ class BaseConfig(object):
     REMEMBER_COOKIE_HTTPONLY = True
     SESSION_COOKIE_SAMESITE = "Lax"
 
+    # Mail SetUp
+    MAIL_SERVER: str = "smtp.gmail.com"
+    MAIL_PORT: int = 465
+    MAIL_USE_TLS: bool = False
+    MAIL_USE_SSL: bool = True
+    MAIL_USERNAME: str | None = "wisdom8achor24@gmail.com"
+    MAIL_PASSWORD: str | None = os.environ.get("GOOGLE_APP_PASSWORD")
+    MAIL_DEFAULT_SENDER: str | None = None
+    MAIL_SUPPRESS_SEND: bool = False
+    MAIL_ASCII_ATTACHMENTS: bool = False
+
+
 
     def init_app(self, app: Flask):
         # Create Base Directory
@@ -41,4 +53,7 @@ class BaseConfig(object):
         dir_path = Path("/var/www/uploaded_files")
         upload_dir = app.config["BASEDIR"] / dir_path
         app.config["UPLOAD_PATH"] = upload_dir
+
+        # Additional Mail Setup
+        app.config["MAIL_DEBUG"] = app.debug
         
