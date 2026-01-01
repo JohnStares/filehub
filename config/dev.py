@@ -4,6 +4,7 @@ from flask import Flask
 from pathlib import Path
 
 from .baseconfig import BaseConfig
+from typing import Union, Tuple, Optional
 
 class DevelopmentConfig(BaseConfig):
     """
@@ -24,7 +25,8 @@ class DevelopmentConfig(BaseConfig):
     # Mail Setup
     MAIL_USERNAME: str | None = "wisdom8achor24@gmail.com"
     MAIL_PASSWORD: str | None = os.environ.get("GOOGLE_APP_PASSWORD")
-    MAIL_DEFAULT_SENDER: str | None = "wisdom8achor24@gmail.com"
+    MAIL_DEFAULT_SENDER: Union[Tuple[str, str], None] = ("FileHub", "wisdom8achor24@gmail.com")
+    MAIL_TIMEOUT: Optional[int] = 10
 
     # Debug Toolbar
     DEBUG_TB_ENABLED = True
