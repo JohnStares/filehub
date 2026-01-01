@@ -12,7 +12,7 @@ from main_app.models import Section, Submissions, User
 from .helper import (
     allowed_extension, save_uploaded_file, bytes_converter, delete_multiple_files, 
     delete_section_directory_and_its_files, number_of_submissions, delete_file_from_directory,
-    get_percentage, restore_path
+    get_percentage, restore_path, duplicate_submission
 )
 
 from main_app.extensions import db, limiter
@@ -99,11 +99,23 @@ def upload_file(username, section_name):
                 f"A Post request is being made on the upload route."
             )
             if form.validate_on_submit():
+                
+                # Prevents duplicate file upload either by name or mat_no
+                if not form.mat_no.data or not form.mat_no.data.strip():
+                    if duplicate_submission(name=form.full_name.data, section_obj=section):
+                        flash("Already uploaded file on this section", "warning")
+                        current_app.logger.info(f"{form.full_name.data} tried uploading twice to this route")
+                        return render_template("main/upload.html", form=form)
+
+                if duplicate_submission(mat_no=form.mat_no.data, section_obj=section):
+                    flash("Already uploaded file on this section", "warning")
+                    current_app.logger.info(f"{form.full_name.data} tried uploading twice to this route")
+                    return render_template("main/upload.html", form=form)
 
                 file = form.file.data
 
-                if file.filename == "":
-                    flash("Invalid file content", "error")
+                if file.filename == "" or (isinstance(file.filename, str) and not file.filename.strip("")):
+                    flash("Empty filename", "error")
                     current_app.logger.warning(f"An empty filename was submitted")
                     return render_template("main/upload.html", form=form)
 
