@@ -2,6 +2,7 @@ import os
 from dotenv import load_dotenv
 from pathlib import Path
 import redis
+from typing import Union, Tuple, Optional
 
 from flask import Flask
 
@@ -38,7 +39,8 @@ class BaseConfig(object):
     MAIL_USE_SSL: bool = True
     MAIL_USERNAME: str | None = "wisdom8achor24@gmail.com"
     MAIL_PASSWORD: str | None = os.environ.get("GOOGLE_APP_PASSWORD")
-    MAIL_DEFAULT_SENDER: str | None = None
+    MAIL_DEFAULT_SENDER: Union[Tuple[str, str], None] = None
+    MAIL_TIMEOUT: Optional[int] = 30
     MAIL_SUPPRESS_SEND: bool = False
     MAIL_ASCII_ATTACHMENTS: bool = False
 
