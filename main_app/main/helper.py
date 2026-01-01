@@ -1,7 +1,7 @@
 from flask import current_app
 from pathlib import Path
 from main_app.extensions import db
-from main_app.models import Submissions
+from main_app.models import Submissions, Section
 import sqlalchemy as sql
 import shutil
 from typing import Sequence, Callable
@@ -193,3 +193,44 @@ def restore_path(file_path: str) -> None:
 
     except Exception:
         raise Exception
+
+
+def duplicate_submission(*, name: str | None = None, mat_no: str | None = None, section_obj: Section) -> bool:
+    """
+    Prevent duplicate upload of files by same on a section either by name or mat_no. Keyword argument is required on your choice.
+    
+    :param name: Uploader's name
+    :type name: str | None
+    :param mat_no: Uploader's mat-no
+    :type mat_no: str | None
+    :param section_obj: Database objection of where the uploads are made
+    :type section_obj: Section
+    :return: True if duplicate otherwise false
+    :rtype: bool
+    """
+    uploader_details = section_obj.submissions
+
+    if name:
+        if not isinstance(name, str):
+            try:
+                name = str(name)
+            except ValueError:
+                raise
+
+        for uploader_name in uploader_details:
+            if uploader_name.uploader_name == name:
+                return True
+        
+        return False
+    
+    if not isinstance(mat_no, str):
+        try:
+            mat_no = str(mat_no)
+        except ValueError:
+            raise
+
+    for uploader_mat_no in uploader_details:
+        if uploader_mat_no.mat_no == mat_no:
+            return True
+        
+    return False
