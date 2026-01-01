@@ -56,7 +56,6 @@ class ChangePasswordForm(FlaskForm):
 
 
 class ForgetPassword(FlaskForm):
-    username = StringField("Username", validators=[DataRequired()], render_kw={"placeholder": "Enter your username"})
     email = EmailField(
         "Email",
         validators=[
@@ -71,7 +70,6 @@ class ForgetPassword(FlaskForm):
     submit = SubmitField("Send Reset Code")
 
 class PasswordReset(FlaskForm):
-    token = HiddenField()
     new_password = PasswordField("New Password", validators=[DataRequired(message="Password is required")])
     confirm_password = PasswordField("Confirm Password", validators=[DataRequired(message="Please type same password as the above"), EqualTo("new_password", message="Password does not match")])
 
