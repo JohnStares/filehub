@@ -388,7 +388,7 @@ def delete_files(section_id: int):
             current_app.logger.warning(f"{current_user.username}::File on section with ID-{section_id} not found in an attempt to delete it.")
             return redirect(url_for("main_bp.home"))
         
-        deleted_file_path = [] # Keeps track of files_paths that couldn't be deleted
+        deleted_file_path = [] # Keeps track of files_paths that was deleted
 
         for file in files:
             if delete_file_from_directory(file.file_path):
@@ -398,7 +398,7 @@ def delete_files(section_id: int):
                 current_app.logger.error(f"{current_user.username}::File-{file} couldn't be deleted")
                 for path in deleted_file_path:
                     restore_path(path)
-                    current_app.logger.info(f"{current_user.username}::Restoring file with {path} that could't be deleted.")
+                    current_app.logger.info(f"{current_user.username}::Restoring file with {path} that was deleted.")
                     raise OSError
 
         db.session.commit()
