@@ -1,14 +1,15 @@
 from flask import request, render_template, url_for, redirect, flash, current_app
 from flask_login import login_user, current_user, logout_user, login_required
 
-from main_app.models import User
+from main_app.models import User, ResetToken
 from main_app.extensions import db, login_manager, limiter
 import sqlalchemy as sql
+from secrets import token_hex
 
 from . import auth_bp
 
 from .forms import RegisterForm, LoginForm, ChangePasswordForm, ForgetPassword, PasswordReset
-from .helper import send_email, validate_token
+from .helper import send_email, validate_token, save_token
 
 login_manager.login_view = "auth_bp.sign_in"
 
@@ -92,12 +93,13 @@ def logout():
     
     except Exception as e:
         flash("An error occured while trying to log you out", "warning")
-        current_app.logger.error(f"An unexpected error occured while trying to log out {current_user.username} due to {str(e)}", exc_info=True)
+        current_app.logger.error(f"An unexpected error occured while trying to log out {user} due to {str(e)}", exc_info=True)
         return redirect(url_for("auth_bp.sign_in"))
 
 
 @auth_bp.route("/change-password", methods=["GET", "POST"])
 @login_required
+@limiter.limit("5 per hour")
 def change_password():
     form = ChangePasswordForm()
     if request.method == 'POST':
