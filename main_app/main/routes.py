@@ -425,3 +425,34 @@ def delete_files(section_id: int):
         current_app.logger.error(f"{current_user.username}::An error occured on delete-files route due to {str(e)}", exc_info=True)
         return redirect(url_for("main_bp.home"))
 
+
+
+@main_bp.route("/download-file/<int:file_id>", methods=["GET"])
+@login_required
+def download_file(file_id):
+    try:
+        current_app.logger.info(f"{current_user.username} is downloading a single file with file id {file_id}")
+        file = db.session.scalar(sql.select(Submissions).where(Submissions.id == file_id))
+
+        if not file:
+            raise FileNotFoundError
+
+        ext = get_file_extension(file.file_path)
+
+        current_app.logger.info(f"Downloading file with id {file_id} by {current_user.username} in progress")
+        return send_file(
+            file.file_path,
+            mimetype=f"application/{ext}",
+            as_attachment=True,
+            download_name=f"{file.original_filename}"
+        )
+
+    except FileNotFoundError:
+        flash("Coulnd't find file", "error")
+        current_app.logger.warning(f"{current_user.username}::A file couldn't download due to it missing", exc_info=True)
+        return redirect(url_for("main_bp.view_file", section_id=file.section_id))
+    
+    except Exception as e:
+        flash("Internal Service issue", "error")
+        current_app.logger.error(f"{current_user.username}::An unexpected error occured due to {str(e)}", exc_info=True)
+        return redirect(url_for("main_bp.view_file", section_id=file.section_id))
