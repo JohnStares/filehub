@@ -1,46 +1,137 @@
 {% extends "base.html" %}
 
-{% block title %}
-    Sign In
-{% endblock %}
-
-{% block link %}
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/signin.css') }}">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-{% endblock %}
+{% block title %}Sign In - FileHub{% endblock %}
 
 {% block content %}
-    <div class="auth-containers">
-
-        <div class="form-group">
-            <h1>Sign In</h1>
-            <form action="#" method="post">
-                {{ form.hidden_tag() }}
-
-                <p class="username-tag">
-                    {{ form.username.label }} <br>
-                    {{ form.username }} <br>
-                    
-                    {% for error in form.username.errors %}
-                        <span style="color: red;">{{ error }}</span>
-                    {% endfor %}
-                </p>
-
-                <p class="pass-tag">
-                    {{ form.password.label }} <br>
-                    {{ form.password }} <br>
-                    
-                    {% for error in form.password.errors %}
-                        <span style="color: red;">{{ error }}</span>
-                    {% endfor %}
-                </p>
-
-                <p class="submit-tag">{{ form.submit() }}</p>
-            </form>
-
-            <div class="hero">
-                <p class="dont-an-account">Don't have an account? <span class="signup"><a href="{{ url_for('auth_bp.sign_up') }}">Sign Up</a></span></p>
+<div class="signin-container">
+    <div class="signin-left">
+        <div class="signin-branding">
+            <a href="/" class="signin-logo">
+                <svg class="signin-logo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path>
+                    <polyline points="13 2 13 9 20 9"></polyline>
+                </svg>
+                <span>FileHub</span>
+            </a>
+            <h1 class="signin-welcome">Welcome Back!</h1>
+            <p class="signin-tagline">Sign in to access your dashboard and manage your file submissions effortlessly.</p>
+            
+            <div class="signin-features">
+                <div class="signin-feature-item">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="20 6 9 17 4 12"></polyline>
+                    </svg>
+                    <span>Access all your submission sections</span>
+                </div>
+                <div class="signin-feature-item">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="20 6 9 17 4 12"></polyline>
+                    </svg>
+                    <span>View real-time submission analytics</span>
+                </div>
+                <div class="signin-feature-item">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="20 6 9 17 4 12"></polyline>
+                    </svg>
+                    <span>Manage and download files instantly</span>
+                </div>
+                <div class="signin-feature-item">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="20 6 9 17 4 12"></polyline>
+                    </svg>
+                    <span>Secure access to your account</span>
+                </div>
             </div>
         </div>
     </div>
+
+    <div class="signin-right">
+        <div class="signin-form-container">
+            <div class="signin-form-header">
+                <h2 class="signin-form-title">Sign In</h2>
+                <p class="signin-form-subtitle">Enter your credentials to continue</p>
+            </div>
+
+            {% if error %}
+            <div class="signin-alert signin-alert-error">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <line x1="12" y1="8" x2="12" y2="12"></line>
+                    <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                </svg>
+                <span>{{ error }}</span>
+            </div>
+            {% endif %}
+
+            {% if success %}
+            <div class="signin-alert signin-alert-success">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                </svg>
+                <span>{{ success }}</span>
+            </div>
+            {% endif %}
+
+            <form method="POST" action="{{ url_for('auth_bp.sign_in') }}" class="signin-form">
+                {{ form.csrf_token() }}
+
+                <div class="signin-form-group">
+                    {{ form.username.label(class="signin-form-label") }}
+                    {{ form.username(class="signin-form-input", placeholder="Enter your username", autocomplete="username") }}
+                    {% if form.username.errors %}
+                        <div class="signin-form-error">
+                            {% for error in form.username.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <div class="signin-form-group">
+                    {{ form.password.label(class="signin-form-label") }}
+                    <div class="signin-password-wrapper">
+                        {{ form.password(class="signin-form-input", placeholder="Enter your password", autocomplete="current-password") }}
+                        <button type="button" class="signin-password-toggle" onclick="togglePassword('password')">
+                            <svg class="signin-eye-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                <circle cx="12" cy="12" r="3"></circle>
+                            </svg>
+                        </button>
+                    </div>
+                    {% if form.password.errors %}
+                        <div class="signin-form-error">
+                            {% for error in form.password.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <div class="signin-forgot-password">
+                    <a href="{{ url_for('auth_bp.forgot_password') }}" class="signin-forgot-link">Forgot Password?</a>
+                </div>
+
+                <button type="submit" class="signin-submit-btn">
+                    <span>Sign In</span>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="5" y1="12" x2="19" y2="12"></line>
+                        <polyline points="12 5 19 12 12 19"></polyline>
+                    </svg>
+                </button>
+            </form>
+
+            <div class="signin-divider">
+                <span>Don't have an account?</span>
+            </div>
+
+            <a href="{{ url_for('auth_bp.sign_up') }}" class="signin-signup-link">
+                Create Account
+            </a>
+
+            <p class="signin-terms">
+                Protected by reCAPTCHA and subject to the FileHub <a href="/privacy">Privacy Policy</a> and <a href="/terms">Terms of Service</a>
+            </p>
+        </div>
+    </div>
+</div>
 {% endblock %}
