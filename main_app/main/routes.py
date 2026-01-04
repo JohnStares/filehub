@@ -151,17 +151,17 @@ def upload_file(username, section_name):
             
             flash("Invalid data input", "error")
             current_app.logger.warning(f"An invalid input was made on this route. {form.errors}", exc_info=True)
-            return render_template("main/upload.html", form=form)
+            return render_template("main/upload.html", form=form, username=username, section_name=section_name)
         
         except FileExistsError:
             flash("The file exist, seems you have already uploaded the file", "error")
             current_app.logger.warning(f"A file with same details was being sent again by {form.full_name.data}", exc_info=True)
-            return render_template("main/upload.html", form=form)
+            return render_template("main/upload.html", form=form, username=username, section_name=section_name)
         
         except FileNotFoundError:
             flash("An error occured from us. Please try again", "warning")
             current_app.logger.error(f"Trying to save a file that doesn't exist. This needs a look", exc_info=True)
-            return render_template("main/upload.html", form=form)
+            return render_template("main/upload.html", form=form, username=username, section_name=section_name)
         
         except Exception as e:
             db.session.rollback()
@@ -172,11 +172,11 @@ def upload_file(username, section_name):
 
             flash("Internal server down", "warning")
             current_app.logger.error(f"An error occured due to {str(e)}", exc_info=True)
-            return render_template("main/upload.html", form=form)
+            return render_template("main/upload.html", form=form, username=username, section_name=section_name)
 
     if user and section:
         current_app.logger.info("Upload file route is being accessed")
-        return render_template("main/upload.html", form=form)
+        return render_template("main/upload.html", form=form, username=username, section_name=section_name)
     
     current_app.logger.warning("A wrong url was tried on this route")
     abort(404)
