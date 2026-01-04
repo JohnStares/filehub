@@ -234,3 +234,23 @@ def duplicate_submission(*, name: str | None = None, mat_no: str | None = None, 
             return True
         
     return False
+
+
+def get_file_extension(file_path: str) -> str:
+    """
+    Returns the extension of a file
+    
+    :param file_path: File path leading to the file
+    :type file_path: str
+    :return: Description
+    :rtype: str
+    """
+    if not isinstance(file_path, str):
+        try:
+            file_path = str(file_path)
+        except ValueError:
+            raise
+
+    extension = file_path.split(".")
+    
+    return extension[1]
