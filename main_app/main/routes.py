@@ -416,7 +416,7 @@ def delete_files(section_id: int):
         return redirect(url_for("main_bp.home"))
     except OSError:
         db.session.rollback()
-        flash("Having probelm deleting file", "error")
+        flash("Having problem deleting files", "error")
         current_app.logger.warning(f"{current_user.username}::OSError encountered while trying to delete or restore file path on a file", exc_info=True)
         return redirect(url_for("main_bp.home"))
     except Exception as e:
