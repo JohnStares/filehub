@@ -1,59 +1,240 @@
-{% extends 'base.html' %}
+{% extends "base.html" %}
 
-{% block title %}Upload File{% endblock %}
-{% block link %}<link rel="stylesheet" href="{{ url_for('static', filename='css/upload.css') }}"> {% endblock %}
+{% block title %}Submit Assignment - FileHub{% endblock %}
 
 {% block content %}
-    <div class="containter">
-        
-        <div class="form-group">
-            <h1>Upload File</h1>
-            <form class="form-group" method="post" enctype="multipart/form-data">
-                {{ form.hidden_tag() }}
+<div class="upload-container">
+    <div class="upload-left">
+        <div class="upload-branding">
+            <a href="/" class="upload-logo">
+                <svg class="upload-logo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path>
+                    <polyline points="13 2 13 9 20 9"></polyline>
+                </svg>
+                <span>FileHub</span>
+            </a>
+            <h1 class="upload-welcome">Submit Your Assignment</h1>
+            <p class="upload-tagline">You're submitting to <strong class="upload-section-name">{{ section_name }}</strong>. Fill in your details and upload your file to complete your submission.</p>
+            
+            <div class="upload-info-box">
+                <div class="upload-info-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <line x1="12" y1="16" x2="12" y2="12"></line>
+                        <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                    </svg>
+                </div>
+                <div class="upload-info-content">
+                    <h3>Before You Submit</h3>
+                    <ul>
+                        <li>Ensure your file is properly named</li>
+                        <li>Check that you're uploading the correct file</li>
+                        <li>Supported formats: PDF, DOCX, PPTX, ZIP, etc.</li>
+                        <li>Maximum file size: 25MB</li>
+                    </ul>
+                </div>
+            </div>
 
-                <p class="full_name">
-                    {{ form.full_name.label }} <br>
-                    {{ form.full_name }} <br>
-                    {% for error in form.full_name.errors %}
-                        <span style="color: red;">{{ error }}</span>
-                    {% endfor %}
-                </p>
-
-                <p class="mat_no">
-                    {{ form.mat_no.label }} <br>
-                    {{ form.mat_no }} <br>
-                    {% for error in form.mat_no.errors %}
-                        <span style="color: red;">{{ error }}</span>
-                    {% endfor %}
-                </p>
-
-                <p class="level">
-                    {{ form.level.label }} <br>
-                    {{ form.level }} <br>
-                    {% for error in form.level.errors %}
-                        <span style="color: red;">{{ error }}</span>
-                    {% endfor %}
-                </p>
-
-                <p class="group">
-                    {{ form.group.label }} <br>
-                    {{ form.group }} <br>
-                    {% for error in form.group.errors %}
-                        <span style="color: red;">{{ error }}</span>
-                    {% endfor %}
-                </p>
-
-
-                <p class="file">
-                    {{ form.file.label }} <br>
-                    {{ form.file }} <br>
-                    {% for error in form.file.errors %}
-                        <span style="color: red;">{{ error }}</span>
-                    {% endfor %}
-                </p>
-
-                <p class="submit">{{ form.submit() }}</p>
-            </form>
+            <div class="upload-features">
+                <div class="upload-feature-item">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="20 6 9 17 4 12"></polyline>
+                    </svg>
+                    <span>Instant submission confirmation</span>
+                </div>
+                <div class="upload-feature-item">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="20 6 9 17 4 12"></polyline>
+                    </svg>
+                    <span>Secure file upload</span>
+                </div>
+                <div class="upload-feature-item">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="20 6 9 17 4 12"></polyline>
+                    </svg>
+                    <span>No registration required</span>
+                </div>
+                <div class="upload-feature-item">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="20 6 9 17 4 12"></polyline>
+                    </svg>
+                    <span>Fast and easy process</span>
+                </div>
+            </div>
         </div>
     </div>
+
+    <div class="upload-right">
+        <div class="upload-form-container">
+            <div class="upload-form-header">
+                <div class="upload-cloud-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                        <polyline points="17 8 12 3 7 8"></polyline>
+                        <line x1="12" y1="3" x2="12" y2="15"></line>
+                    </svg>
+                </div>
+                <h2 class="upload-form-title">Upload Assignment</h2>
+                <p class="upload-form-subtitle">Fill in your information and upload your file</p>
+            </div>
+
+            {% if error %}
+            <div class="upload-alert upload-alert-error">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <line x1="12" y1="8" x2="12" y2="12"></line>
+                    <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                </svg>
+                <span>{{ error }}</span>
+            </div>
+            {% endif %}
+
+            {% if success %}
+            <div class="upload-alert upload-alert-success">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                </svg>
+                <span>{{ success }}</span>
+            </div>
+            {% endif %}
+
+            <form method="POST" action="{{ url_for('main_bp.upload_file', username=username, section_name=section_name) }}" enctype="multipart/form-data" class="upload-form">
+                {{ form.csrf_token() }}
+
+                <div class="upload-form-group">
+                    {{ form.full_name.label(class="upload-form-label") }}
+                    <span class="upload-required">*</span>
+                    <div class="upload-input-wrapper">
+                        <svg class="upload-input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="12" cy="7" r="4"></circle>
+                        </svg>
+                        {{ form.full_name(class="upload-form-input", placeholder="e.g., John Stares") }}
+                    </div>
+                    {% if form.full_name.errors %}
+                        <div class="upload-form-error">
+                            {% for error in form.full_name.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <div class="upload-form-group">
+                    {{ form.mat_no.label(class="upload-form-label") }}
+                    <span class="upload-optional">Optional</span>
+                    <div class="upload-input-wrapper">
+                        <svg class="upload-input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect>
+                            <line x1="1" y1="10" x2="23" y2="10"></line>
+                        </svg>
+                        {{ form.mat_no(class="upload-form-input", placeholder="e.g., CSC/2020/001 or 202001234") }}
+                    </div>
+                    <span class="upload-field-hint">Your matriculation number or student ID or unique ID</span>
+                    {% if form.mat_no.errors %}
+                        <div class="upload-form-error">
+                            {% for error in form.mat_no.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <div class="upload-form-row">
+                    <div class="upload-form-group upload-half">
+                        {{ form.level.label(class="upload-form-label") }}
+                        <span class="upload-optional">Optional</span>
+                        <div class="upload-input-wrapper">
+                            <svg class="upload-input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
+                                <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
+                            </svg>
+                            {{ form.level(class="upload-form-input", placeholder="e.g., 200") }}
+                        </div>
+                        {% if form.level.errors %}
+                            <div class="upload-form-error">
+                                {% for error in form.level.errors %}
+                                    <span>{{ error }}</span>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="upload-form-group upload-half">
+                        {{ form.group.label(class="upload-form-label") }}
+                        <span class="upload-optional">Optional</span>
+                        <div class="upload-input-wrapper">
+                            <svg class="upload-input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                                <circle cx="9" cy="7" r="4"></circle>
+                                <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                                <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                            </svg>
+                            {{ form.group(class="upload-form-input", placeholder="e.g., Group A") }}
+                        </div>
+                        {% if form.group.errors %}
+                            <div class="upload-form-error">
+                                {% for error in form.group.errors %}
+                                    <span>{{ error }}</span>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="upload-form-group">
+                    {{ form.file.label(class="upload-form-label") }}
+                    <span class="upload-required">*</span>
+                    <div class="upload-file-wrapper">
+                        {{ form.file(class="upload-file-input", id="fileInput", accept=".pdf,.doc,.docx,.ppt,.pptx,.zip,.rar,.txt,.xlsx,.xls") }}
+                        <label for="fileInput" class="upload-file-label">
+                            <svg class="upload-file-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                <polyline points="17 8 12 3 7 8"></polyline>
+                                <line x1="12" y1="3" x2="12" y2="15"></line>
+                            </svg>
+                            <span class="upload-file-text">Choose File or Drag & Drop</span>
+                            <span class="upload-file-subtext">PDF, DOCX, PPTX, ZIP (Max 25MB)</span>
+                        </label>
+                        <div class="upload-file-selected" id="fileSelected" style="display: none;">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path>
+                                <polyline points="13 2 13 9 20 9"></polyline>
+                            </svg>
+                            <div class="upload-file-info">
+                                <span class="upload-file-name" id="fileName"></span>
+                                <span class="upload-file-size" id="fileSize"></span>
+                            </div>
+                            <button type="button" class="upload-file-remove" onclick="removeFile()">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+                    {% if form.file.errors %}
+                        <div class="upload-form-error">
+                            {% for error in form.file.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <button type="submit" class="upload-submit-btn">
+                    <span>Submit Assignment</span>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="22" y1="2" x2="11" y2="13"></line>
+                        <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                    </svg>
+                </button>
+            </form>
+
+            <p class="upload-help">
+                Having trouble? <a href="mailto:support@filehub.com">Contact Support</a>
+            </p>
+        </div>
+    </div>
+</div>
 {% endblock %}

@@ -1,45 +1,227 @@
-{% extends 'base.html' %}
+{% extends "base.html" %}
 
-{% block title %}View Files{% endblock %}
-{% block link %}<link rel="stylesheet" href="{{ url_for('static', filename='css/view.css') }}"> {% endblock %}
+{% block title %}View Submissions - FileHub{% endblock %}
 
 {% block content %}
-    <div class="container">
-        <div class="header">
-            <h1>View All Files</h1>
-        </div>
-
-        <div class="containter-view">
-            {% if files %}
-            <span class="tfiles"><p>Total files: {{ files.total }}</p></span> <br>
-                {% for file in files %}
-                    <div class="file-view">
-                        <p>Submitter: {{ file.uploader_name }}</p>
-                        <p>Mat_No: {{ file.mat_no }}</p>
-                        <p>Level: {{ file.level }}</p>
-                        <p>Group: {{ file.group }}</p>
-                        <p>Uploaded: {{ file.uploaded_at }}</p>
-                        <p>File: {{ file.original_filename }} {{ bytes_converter(file.file_size) }} </p>
-                        <form action="{{ url_for('main_bp.delete_file', file_id=file.id) }}" method="post">
-                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-
-                            <button class="delete-file" type="submit">Delete File</button>
-                        </form>
-                    </div>
-                {% endfor %}
-                
-                <div class="next-prev">
-                    {% if next %}
-                        <span class="next"><a href="{{ next }}">Next Files</a></span>
-                    {% endif %}
-    
-                    {% if prev %}
-                        <span class="prev"><a href="{{ prev }}">Prev Files</a></span>
-                    {% endif %}
+<div class="view-page">
+    <!-- Header Section -->
+    <div class="view-header">
+        <div class="view-header-content">
+            <div class="view-header-left">
+                <a href="{{ url_for('main_bp.home') }}" class="view-back-btn">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="19" y1="12" x2="5" y2="12"></line>
+                        <polyline points="12 19 5 12 12 5"></polyline>
+                    </svg>
+                    <span>Back to Dashboard</span>
+                </a>
+                <div class="view-title-section">
+                    <h1 class="view-page-title">{{ section_name }}</h1>
+                    <p class="view-page-subtitle">View and manage all submissions</p>
                 </div>
-            {% else %}
-                <p class="no-upload">No uploaded files yet</p>
-            {% endif %}
+            </div>
+            <div class="view-header-right">
+                <div class="view-stats-card">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path>
+                        <polyline points="13 2 13 9 20 9"></polyline>
+                    </svg>
+                    <div>
+                        <div class="view-stats-number">{{ files.total }}</div>
+                        <div class="view-stats-label">Total Submissions</div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
+
+    <!-- Main Content -->
+    <div class="view-container">
+        {% if error %}
+        <div class="view-alert view-alert-error">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="12" y1="8" x2="12" y2="12"></line>
+                <line x1="12" y1="16" x2="12.01" y2="16"></line>
+            </svg>
+            <span>{{ error }}</span>
+        </div>
+        {% endif %}
+
+        {% if success %}
+        <div class="view-alert view-alert-success">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="20 6 9 17 4 12"></polyline>
+            </svg>
+            <span>{{ success }}</span>
+        </div>
+        {% endif %}
+
+        {% if files.items %}
+        <!-- Files Grid -->
+        <div class="view-files-grid">
+            {% for file in files.items %}
+            <div class="view-file-card">
+                <div class="view-file-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path>
+                        <polyline points="13 2 13 9 20 9"></polyline>
+                    </svg>
+                </div>
+                
+                <div class="view-file-info">
+                    <h3 class="view-file-name" title="{{ file.original_filename }}">{{ file.original_filename }}</h3>
+                    <p class="view-file-size" data-size="{{ file.file_size }}">Loading...</p>
+                </div>
+
+                <div class="view-file-details">
+                    <div class="view-detail-item">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="12" cy="7" r="4"></circle>
+                        </svg>
+                        <span>{{ file.uploader_name }}</span>
+                    </div>
+
+                    {% if file.mat_no %}
+                    <div class="view-detail-item">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect>
+                            <line x1="1" y1="10" x2="23" y2="10"></line>
+                        </svg>
+                        <span>{{ file.mat_no }}</span>
+                    </div>
+                    {% endif %}
+
+                    {% if file.level %}
+                    <div class="view-detail-item">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
+                            <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
+                        </svg>
+                        <span>{{ file.level }}</span>
+                    </div>
+                    {% endif %}
+
+                    {% if file.group %}
+                    <div class="view-detail-item">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="9" cy="7" r="4"></circle>
+                            <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                            <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                        </svg>
+                        <span>{{ file.group }}</span>
+                    </div>
+                    {% endif %}
+                </div>
+
+                <div class="view-file-actions">
+                    <a href="{{ url_for('main_bp.download_file', file_id=file.id) }}" class="view-action-btn view-download-btn" title="Download">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                            <polyline points="7 10 12 15 17 10"></polyline>
+                            <line x1="12" y1="15" x2="12" y2="3"></line>
+                        </svg>
+                    </a>
+                    <button type="button" class="view-action-btn view-delete-btn" onclick="confirmDelete('{{ file.id }}', '{{ file.original_filename }}')" title="Delete">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="3 6 5 6 21 6"></polyline>
+                            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                            <line x1="10" y1="11" x2="10" y2="17"></line>
+                            <line x1="14" y1="11" x2="14" y2="17"></line>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- Pagination -->
+        <div class="view-pagination">
+            {% if prev %}
+            <a href="{{ prev }}" class="view-pagination-btn view-prev-btn">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="15 18 9 12 15 6"></polyline>
+                </svg>
+                <span>Previous</span>
+            </a>
+            {% else %}
+            <span class="view-pagination-btn view-pagination-disabled">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="15 18 9 12 15 6"></polyline>
+                </svg>
+                <span>Previous</span>
+            </span>
+            {% endif %}
+
+            <div class="view-pagination-info">
+                <span>Page {{ files.page }} of {{ files.pages }}</span>
+            </div>
+
+            {% if next %}
+            <a href="{{ next }}" class="view-pagination-btn view-next-btn">
+                <span>Next</span>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="9 18 15 12 9 6"></polyline>
+                </svg>
+            </a>
+            {% else %}
+            <span class="view-pagination-btn view-pagination-disabled">
+                <span>Next</span>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="9 18 15 12 9 6"></polyline>
+                </svg>
+            </span>
+            {% endif %}
+        </div>
+
+        {% else %}
+        <!-- Empty State -->
+        <div class="view-empty-state">
+            <div class="view-empty-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
+                </svg>
+            </div>
+            <h2 class="view-empty-title">No Uploads Yet</h2>
+            <p class="view-empty-text">Students haven't submitted any files yet. Share your submission link to start collecting assignments.</p>
+            <a href="{{ url_for('main_bp.home') }}" class="view-empty-btn">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="3" y="3" width="7" height="7"></rect>
+                    <rect x="14" y="3" width="7" height="7"></rect>
+                    <rect x="14" y="14" width="7" height="7"></rect>
+                    <rect x="3" y="14" width="7" height="7"></rect>
+                </svg>
+                <span>Go to Dashboard</span>
+            </a>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div class="view-modal" id="deleteModal">
+    <div class="view-modal-overlay" onclick="closeDeleteModal()"></div>
+    <div class="view-modal-content">
+        <div class="view-modal-header">
+            <div class="view-modal-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <line x1="12" y1="8" x2="12" y2="12"></line>
+                    <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                </svg>
+            </div>
+            <h3 class="view-modal-title">Delete File?</h3>
+            <p class="view-modal-text">Are you sure you want to delete <strong id="deleteFileName"></strong>? This action cannot be undone.</p>
+        </div>
+        <div class="view-modal-actions">
+            <button type="button" class="view-modal-btn view-cancel-btn" onclick="closeDeleteModal()">Cancel</button>
+            <form method="POST" action="" id="deleteForm" style="display: inline;">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <button type="submit" class="view-modal-btn view-confirm-btn">Delete File</button>
+            </form>
+        </div>
+    </div>
+</div>
 {% endblock %}
