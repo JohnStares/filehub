@@ -1,6 +1,5 @@
 from flask_mail import Message
 from main_app.extensions import mail, db
-from secrets import token_hex
 from main_app.models import ResetToken
 import sqlalchemy as sql
 from datetime import datetime, timezone, timedelta
@@ -42,7 +41,7 @@ def save_token(user_id: int, token: str, current_app: Flask) -> None:
         current_app.logger.info(f"New token saved to {user_id} with a token {token}")
 
     except Exception as e:
-        current_app.logger.error(f"AN error occured while saving token {token} to user {user_id} due to {str(e)}", exc_info=True)
+        current_app.logger.error(f"An error occured while saving token {token} to user {user_id} due to {str(e)}", exc_info=True)
         raise
 
 
