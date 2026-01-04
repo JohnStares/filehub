@@ -12,7 +12,7 @@ from main_app.models import Section, Submissions, User
 from .helper import (
     allowed_extension, save_uploaded_file, bytes_converter, delete_multiple_files, 
     delete_section_directory_and_its_files, number_of_submissions, delete_file_from_directory,
-    get_percentage, restore_path, duplicate_submission
+    restore_path, duplicate_submission, get_file_extension
 )
 
 from main_app.extensions import db, limiter
@@ -38,7 +38,7 @@ def home():
     try:
         current_app.logger.info(f"The home route is being accessed by {current_user.username}.")
         existing_sections = db.session.scalars(sql.select(Section).where(Section.user_id == current_user.id)).all()
-        return render_template("main/home.html", sections=existing_sections, url_base=request.host_url.rstrip("/"), number_of_submissions=number_of_submissions, percentage=get_percentage)
+        return render_template("main/home.html", sections=existing_sections, url_base=request.host_url.rstrip("/"), number_of_submissions=number_of_submissions)
     except Exception as e:
         flash("An unexpected error occured, we are handling it.")
         current_app.logger.error(f"{current_user.username} got an unexpected error due to {str(e)}", exc_info=True)
