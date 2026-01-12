@@ -1,6 +1,6 @@
 import logging
 from logging.handlers import RotatingFileHandler
-from flask import request, render_template
+from flask import request, render_template, redirect, url_for
 from flask_limiter.errors import RateLimitExceeded
 
 def set_logger(app, basedir):
@@ -102,6 +102,13 @@ def register_handlers(app):
         )
 
         return response
+    
+    @app.errorhandler(403)
+    def forbidden(error):
+        """This logs and handle all forbidden request"""
+        app.logger.info(f"403 error: {request.path} from {request.remote_addr}")
+
+        return redirect(url_for("auth_bp.admin_sign_in"))
 
 
     @app.errorhandler(404)
