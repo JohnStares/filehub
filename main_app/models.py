@@ -14,6 +14,8 @@ class User(UserMixin, db.Model):
     id: orm.Mapped[int] = orm.mapped_column(primary_key=True)
     username: orm.Mapped[str] = orm.mapped_column(sql.String(20), unique=True, index=True, nullable=False)
     email: orm.Mapped[str] = orm.mapped_column(sql.String(30), unique=True, index=True, nullable=False)
+    role: orm.Mapped[str] = orm.mapped_column(sql.String(5), nullable=True, default="user")
+    is_admin: orm.Mapped[bool] = orm.mapped_column(sql.Boolean, nullable=True, default=False, index=True)
     password_hash: orm.Mapped[Optional[str]] = orm.mapped_column(sql.String(300))
 
     # Ensures when a user is deleted, all of itself is removed from the database that referenced it
