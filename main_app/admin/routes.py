@@ -23,33 +23,43 @@ from main_app.admin.exception import CannotDeleteAdmin, UserAlreadyExist, EmailA
 @login_required
 @admin_required
 def dashboard():
-    search = request.args.get("search")
-    filter = request.args.get("filter")
+    try:
+        search = request.args.get("search")
+        filter = request.args.get("filter")
 
-    page = request.args.get("page", 1, type=int)
+        page = request.args.get("page", 1, type=int)
 
-    users = paginate_users(page)
+        users = paginate_users(page)
 
-    next_url = url_for("admin_bp.dashboard", page=users.next_num) \
-        if users.has_next else None
+        next_url = url_for("admin_bp.dashboard", page=users.next_num) \
+            if users.has_next else None
+        
+        prev_url = url_for("admin_bp.dashboard", page=users.prev_num) \
+            if users.has_prev else None
+
+        if search and filter:
+            current_app.logger.info(f"{current_user.username}:: Searched for {search} in {filter}")
+
+        data = {
+            "users": get_total_users(),
+            "non_admin": get_non_admin_count(),
+            "admin": get_admin_count(),
+            "all_users": users,
+            "user_by_name": get_user_by_name(search.strip()) if search and filter == "name" is not None else None,
+            "user_by_email": get_user_by_email(search.strip()) if search and filter == "email" is not None else None,
+            "unread_mails": 4,
+            "unread_notifications": 4,
+            "user_by_role": filter_user_by_role(search.strip()) if search is not None and filter == "role" else None,
+            "next": next_url,
+            "prev": prev_url
+        }
+
+        current_app.logger.info(f"{current_user.username}:: Accessed the dashboard page")
+        return render_template("admin/dashboard.html", data=data)
     
-    prev_url = url_for("admin_bp.dashboard", page=users.prev_num) \
-        if users.has_prev else None
-
-    data = {
-        "users": get_total_users(),
-        "non_admin": get_non_admin_count(),
-        "admin": get_admin_count(),
-        "all_users": users,
-        "user_by_name": get_user_by_name(search.strip()) if search and filter == "name" is not None else None,
-        "user_by_email": get_user_by_email(search.strip()) if search and filter == "email" is not None else None,
-        "unread_mails": 4,
-        "unread_notifications": 4,
-        "user_by_role": filter_user_by_role(search.strip()) if search is not None and filter == "role" else None,
-        "next": next_url,
-        "prev": prev_url
-    }
-    return render_template("admin/dashboard.html", data=data)
+    except Exception as e:
+        flash("An error occured. Please try again later!", "error")
+        return redirect(url_for("main_bp.welcome"))
 
 
 
@@ -79,41 +89,49 @@ def create_user():
 
 @admin_bp.route("/edit-user/<int:user_id>", methods=["GET","POST"])
 def edit_user(user_id):
-    search = request.args.get("search")
-    if search:
-        user = get_user_by_username_or_email(search.strip())
-    else:
-        user = get_user_by_id(user_id)
+    try:
+        search = request.args.get("search")
+        if search:
+            user = get_user_by_username_or_email(search.strip())
+        else:
+            user = get_user_by_id(user_id)
 
-    if not user:
-        flash("No user found")
-        return redirect(url_for("admin_bp.dashboard"))
+        if not user:
+            flash("No user found")
+            current_app.logger.info(f"{current_user.username} got a user not found on the search paramater {search}")
+            return redirect(url_for("admin_bp.dashboard"))
 
-    form = EditUser(obj=user)
+        form = EditUser(obj=user)
 
-    if request.method == "POST":
-        try:
-            if not is_user_edited(form, user):
-                flash("Invalid input", "warning")
+        if request.method == "POST":
+            try:
+                if not is_user_edited(form, user):
+                    flash("Invalid input", "warning")
+                    current_app.logger.info(f"{current_user.username}:: Got a form error while editing {user.username} details due to {form.errors}")
+                    return render_template("admin/edit-user.html", form=form, user=user)
+                
+                flash("User edited successfully", "success")
+                current_app.logger.info(f"{current_user.username}:: Successfully eidted {user.username} details")
+                return redirect(url_for("admin_bp.user_details", user_id=user.id))
+            
+            except UserAlreadyExist:
+                flash("Username already exist", "warning")
+                current_app.logger.info(f"{current_user.username} got a User already exit error while trying to edit {user.username} details")
                 return render_template("admin/edit-user.html", form=form, user=user)
             
-            flash("User edited successfully", "success")
-            return redirect(url_for("admin_bp.user_details", user_id=user.id))
-        
-        except UserAlreadyExist:
-            flash("Username already exist", "warning")
-            return render_template("admin/edit-user.html", form=form, user=user)
-        
-        except EmailAlreadyExist:
-            flash("Email already exist", "warning")
-            return render_template("admin/edit-user.html", form=form, user=user)
-        
-        except Exception as e:
-            flash("An error occured. Please try again!", "error")
-            current_app.logger.error(f"{current_user.username} got an error while trying to update user with ID {user_id} details", exc_info=True)
-            return render_template("admin/edit-user.html", form=form, user=user)
+            except EmailAlreadyExist:
+                flash("Email already exist", "warning")
+                current_app.logger.info(f"{current_user.username} got a Email already exit error while trying to edit {user.username} details")
+                return render_template("admin/edit-user.html", form=form, user=user)
+            
+        current_app.logger.info(f"{current_user.username} Accessed the edit-user route to edit {user.username} details")
+        return render_template("admin/edit-user.html", form=form, user=user)
+    
+    except Exception as e:
+        flash("An error occured. Please try again!", "error")
+        current_app.logger.error(f"{current_user.username} got an error while trying to update user with ID {user_id} details", exc_info=True)
+        return render_template("admin/edit-user.html", form=form, user=user)
 
-    return render_template("admin/edit-user.html", form=form, user=user)
 
 
 @admin_bp.route("/delete-user/<int:user_id>", methods=["POST"])
@@ -152,6 +170,7 @@ def profile(user_id):
     data = {
         "admin": get_user_by_id(user_id)
     }
+    current_app.logger.info(f"{current_user.username} accessed the profile route.")
     return render_template("/admin/admin-profile.html", data=data)
 
 
@@ -164,11 +183,17 @@ def user_details(user_id):
         "user": user
     }
 
+    if not user:
+        flash("No user found", "warning")
+        current_app.logger.warning(f"{current_user.username} tried searching for a user that doesn't exit with the ID {user_id}")
+        return redirect(url_for("admin_bp.dashboard"))
+
     if user and current_user.id == user.id:
         return render_template("admin/user-detail.html", data=data)
         
     if user and current_user.role == "admin" and user.role in ["admin", "super_admin"]:
         flash("You can't view the content of other admins", "warning")
+        current_app.logger.info(f"{current_user.username}:: Tried accessing an {user.role} page")
         return redirect(url_for("admin_bp.dashboard"))
 
 
@@ -178,27 +203,35 @@ def user_details(user_id):
 @admin_bp.route("/user-section/<int:section_id>", methods=["GET", "POST"])
 @admin_required
 def user_section(section_id: str):
-    page = request.args.get("page", 1, type=int)
+    try:
+        page = request.args.get("page", 1, type=int)
 
-    section = get_user_section(int(section_id))
+        section = get_user_section(int(section_id))
 
-    # Don't forget to paginate this properly 
+        # Don't forget to paginate this properly 
 
-    paginated_files = get_user_submissions(section.id, page)
+        paginated_files = get_user_submissions(section.id, page)
 
-    next_url = url_for("admin_bp.user_section", section_id=section_id, page=paginated_files.next_num) \
-        if paginated_files.has_next else None
+        next_url = url_for("admin_bp.user_section", section_id=section_id, page=paginated_files.next_num) \
+            if paginated_files.has_next else None
+        
+        prev_url = url_for("admin_bp.user_section", section_id=section_id, page=paginated_files.prev_num) \
+            if paginated_files.has_prev else None
+
+        data = {
+            "section": section,
+            "files": paginated_files,
+            "next": next_url,
+            "prev": prev_url
+        }
+
+        current_app.logger.info(f"{current_user.username} accessed section page eitj ID {section.id}")
+        return render_template("admin/user-section.html", data=data)
     
-    prev_url = url_for("admin_bp.user_section", section_id=section_id, page=paginated_files.prev_num) \
-        if paginated_files.has_prev else None
-
-    data = {
-        "section": section,
-        "files": paginated_files,
-        "next": next_url,
-        "prev": prev_url
-    }
-    return render_template("admin/user-section.html", data=data)
+    except Exception as e:
+        flash("An error occured. Please try again later", "error")
+        current_app.logger.error(f"{current_user.username}::An unexpected error occured due to {str(e)}")
+        return render_template("admin/user-section.html", data=data)
 
 
 
@@ -258,6 +291,7 @@ def manage_admins():
     data = {
         "admins": get_all_admins()
     }
+    current_app.logger.info(f"{current_user.username}:: accessed the manage admin routes")
     return render_template("admin/modify-admin.html", data=data)
 
 
@@ -268,13 +302,16 @@ def approve_admin(admin_id):
     try:
         if not is_admin_approved(admin_id):
             flash("Couldn't approve admin", "warning")
+            current_app.logger.info(f"{current_user.username}:: couldn't approve admin with the ID {admin_id} to have admin priviliges")
             return redirect(url_for("admin_bp.manage_admins"))
         
         flash("Approved admin", "success")
+        current_app.logger.info(f"{current_user.username}:: approved admin with the ID {admin_id} to have admin priviliges")
         return redirect(url_for("admin_bp.manage_admins"))
     
     except Exception as e:
         flash("An error occured, Please Try again!", "error")
+        current_app.logger.info(f"{current_user.username}:: got an error while trying to approve admin with the ID {admin_id} to have admin priviliges", exc_info=True)
         return redirect(url_for("admin_bp.manage_admins"))
 
 
@@ -284,11 +321,15 @@ def revoke_admin(admin_id):
     try:
         if not is_admin_revoked(admin_id):
             flash("Couldn't revoke admin", "warning")
+            current_app.logger.info(f"{current_user.username}::  couldn't revoked admin with the ID {admin_id} admin priviliges")
             return redirect(url_for("admin_bp.manage_admins"))
         
         flash("Revoked admin", "success")
+        current_app.logger.info(f"{current_user.username}:: revoked admin with the ID {admin_id} admin priviliges")
         return redirect(url_for("admin_bp.manage_admins"))
     
     except Exception as e:
         flash("An error occured, Please Try again!", "error")
+        current_app.logger.error(f"{current_user.username}:: got an error while trying to revoke admin with  ID {admin_id} privileges", exc_info=True)
+
         return redirect(url_for("admin_bp.manage_admins"))
