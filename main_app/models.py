@@ -32,6 +32,28 @@ class User(UserMixin, db.Model):
         """Checks if the provided password matches that already stored. Returns False if it doesn't match"""
         if self.password_hash is not None:
             return check_password_hash(self.password_hash, password)
+        
+
+    @classmethod
+    def create_user(cls, username: str, email: str, password: str, **kwargs) -> None:
+        """
+        This function provides another way to create a user
+        
+        :param username: A unique name that serves as a username for the user
+        :type username: str
+        :param email: A unique and valid email
+        :type email: str
+        :param password: A very strong password
+        :type password: str
+        :param **kwargs: Other keyword arguments
+        :type **kwargs: dict
+        """
+        user = cls(username=username, email=email)
+        user.hash_password(password)
+
+        db.session.add(user)
+        db.session.commit()
+
 
     def __str__(self):
         return f"Username: {self.username} | Email: {self.email}"
