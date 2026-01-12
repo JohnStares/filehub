@@ -79,3 +79,47 @@ class PasswordReset(FlaskForm):
     confirm_password = PasswordField("Confirm Password", validators=[DataRequired(message="Please type same password as the above"), EqualTo("new_password", message="Password does not match")])
 
     submit = SubmitField()
+
+
+class AdminRegisterForm(FlaskForm):
+    username = StringField("username", validators=[DataRequired()])
+    email = EmailField("Email", validators=[DataRequired(), Email("Invalid email")])
+    password1 = PasswordField("Password", validators=[DataRequired()])
+    password2 = PasswordField("Confirm Password", validators=[DataRequired(), EqualTo("password1", "Password does not match")])
+
+    submit = SubmitField("Sign Up")
+
+    def validate_username(self, username):
+        if not is_username_validated(username.data):
+            raise ValidationError("Please provide a valid username")
+        
+        user = db.session.scalar(sql.select(User).where(User.username == username.data))
+
+        if user:
+            raise ValidationError("Please choose another name")
+        
+    def validate_email(self, email):
+        user = db.session.scalar(sql.select(User).where(User.email == email.data))
+
+        if user:
+            raise ValidationError("Please provide another email")
+        
+
+
+class AdminLoginForm(FlaskForm):
+    username = StringField("Username", validators=[DataRequired()])
+    password = PasswordField("Password", validators=[DataRequired()])
+
+    submit = SubmitField("Sign In")
+
+    def validate_password(self, password):
+        if self.username.data and self.password.data:
+            user = db.session.scalar(sql.select(User).where(User.username == self.username.data))
+
+            if not user or user is None:
+                raise ValidationError("Username or password is incorrect")
+            
+            if not User.check_password(user, password.data):
+                raise ValidationError("Username or password is incorrect.")
+
+            self.user = user
