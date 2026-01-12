@@ -133,12 +133,12 @@ def register_handlers(app):
         """This handles all unhandles exceptions"""
         app.logger.exception(f"Unexpected error: {error} from {request.path}", exc_info=True)
 
-        return "An error occured", 500
+        return render_template("errors/500.html")
     
     
     @app.errorhandler(RateLimitExceeded)
     def too_many_request(error):
         """This handles 429 status_code"""
-        app.logger.error(f"Too many request: {error} from {request.path}", exc_info=True)
+        app.logger.warning(f"Too many request: {error} from {request.path}", exc_info=True)
 
         return render_template("errors/429.html", error=error)
