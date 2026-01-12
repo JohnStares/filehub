@@ -58,3 +58,9 @@ def validate_token(token: str) -> (tuple[Literal[True], int] | tuple[Literal[Fal
         return (True, token_obj.user_id)
     
     return (False, None)
+
+
+
+class AdminNotApproved(Exception):
+    def __init__(self, message: str) -> None:
+        super().__init__(message)
