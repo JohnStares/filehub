@@ -60,7 +60,11 @@
 
             <!-- Action Buttons -->
             <div class="error-actions">
-                <a href="{{ url_for('main_bp.home') }}" class="error-btn error-btn-primary">
+                {% if current_user.role == 'admin' or current_user.role == 'super_admin' %}
+                <a href="{{ url_for('admin_bp.dashboard') }}" class="error-btn error-btn-primary">
+                {% else %}
+                 <a href="{{ url_for('main_bp.home') }}" class="error-btn error-btn-primary"></a>
+                {% endif %}
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <rect x="3" y="3" width="7" height="7"></rect>
                         <rect x="14" y="3" width="7" height="7"></rect>
