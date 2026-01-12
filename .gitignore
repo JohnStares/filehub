@@ -11,3 +11,4 @@ main_app/__pycache__
 tests/__pycache__
 main_app/main/__pycache__
 main_app/auth/__pycache__
+main_app/admin/__pycache__
