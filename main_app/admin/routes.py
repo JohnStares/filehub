@@ -170,6 +170,7 @@ def profile(user_id):
     data = {
         "admin": get_user_by_id(user_id)
     }
+    current_app.logger.info(f"{current_user.username} accessed the profile route.")
     return render_template("/admin/admin-profile.html", data=data)
 
 
@@ -284,6 +285,7 @@ def manage_admins():
     data = {
         "admins": get_all_admins()
     }
+    current_app.logger.info(f"{current_user.username}:: accessed the manage admin routes")
     return render_template("admin/modify-admin.html", data=data)
 
 
@@ -294,13 +296,16 @@ def approve_admin(admin_id):
     try:
         if not is_admin_approved(admin_id):
             flash("Couldn't approve admin", "warning")
+            current_app.logger.info(f"{current_user.username}:: couldn't approve admin with the ID {admin_id} to have admin priviliges")
             return redirect(url_for("admin_bp.manage_admins"))
         
         flash("Approved admin", "success")
+        current_app.logger.info(f"{current_user.username}:: approved admin with the ID {admin_id} to have admin priviliges")
         return redirect(url_for("admin_bp.manage_admins"))
     
     except Exception as e:
         flash("An error occured, Please Try again!", "error")
+        current_app.logger.info(f"{current_user.username}:: got an error while trying to approve admin with the ID {admin_id} to have admin priviliges", exc_info=True)
         return redirect(url_for("admin_bp.manage_admins"))
 
 
@@ -310,11 +315,15 @@ def revoke_admin(admin_id):
     try:
         if not is_admin_revoked(admin_id):
             flash("Couldn't revoke admin", "warning")
+            current_app.logger.info(f"{current_user.username}::  couldn't revoked admin with the ID {admin_id} admin priviliges")
             return redirect(url_for("admin_bp.manage_admins"))
         
         flash("Revoked admin", "success")
+        current_app.logger.info(f"{current_user.username}:: revoked admin with the ID {admin_id} admin priviliges")
         return redirect(url_for("admin_bp.manage_admins"))
     
     except Exception as e:
         flash("An error occured, Please Try again!", "error")
+        current_app.logger.error(f"{current_user.username}:: got an error while trying to revoke admin with  ID {admin_id} privileges", exc_info=True)
+
         return redirect(url_for("admin_bp.manage_admins"))
