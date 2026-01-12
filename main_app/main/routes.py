@@ -28,7 +28,7 @@ def welcome():
         return render_template("main/welcome.html")
     except Exception as e:
         current_app.logger.error(f"An error occured on the welcome page. {str(e)}", exc_info=True)
-        return jsonify({"error": "Internal Issue. Please try again later"})
+        return render_template("main/welcome.html")
 
 
 @main_bp.route("/home", methods=["GET"])
@@ -300,7 +300,6 @@ def download_files(section_id: str, section_name: str):
 
         memory_file.seek(0)
 
-        flash("Downloading files", "success")
         current_app.logger.info(f"Downloading files in progress made by {current_user.username}")
         return send_file(
             memory_file,
@@ -456,3 +455,9 @@ def download_file(file_id):
         flash("Internal Service issue", "error")
         current_app.logger.error(f"{current_user.username}::An unexpected error occured due to {str(e)}", exc_info=True)
         return redirect(url_for("main_bp.view_file", section_id=file.section_id))
+    
+
+
+@main_bp.get("/privacy-policy")
+def privacy_policy():
+    return render_template("main/privacy.html")
