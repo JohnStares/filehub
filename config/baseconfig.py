@@ -25,6 +25,8 @@ class BaseConfig(object):
     MIN_CONTENT_LENGTH=10 * 1024
     FILES_PER_PAGE=15
 
+    USERS_PER_PAGE=30
+
     # Security
     SESSION_COOKIE_SECURE = True
     SESSION_COOKIE_HTTPONLY = True
