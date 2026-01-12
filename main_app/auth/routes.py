@@ -8,8 +8,9 @@ from secrets import token_hex
 
 from . import auth_bp
 
-from .forms import RegisterForm, LoginForm, ChangePasswordForm, ForgetPassword, PasswordReset
-from .helper import send_email, validate_token, save_token
+from .forms import RegisterForm, LoginForm, ChangePasswordForm, ForgetPassword, PasswordReset, AdminLoginForm, AdminRegisterForm
+from .helper import send_email, validate_token, save_token, AdminNotApproved
+from .logic import process_admin_login, process_admin_registration
 
 login_manager.login_view = "auth_bp.sign_in"
 
@@ -127,12 +128,12 @@ def change_password():
             
             flash("An error occured with the data you provided.", "warning")
             current_app.logger.warning(f"{current_user.username} provided wrong information on the change password route")
-            return redirect(url_for("main_bp.home"))
+            return render_template("auth/changepassword.html", form=form)
         
         except Exception as e:
             current_app.logger.error(f"{current_user.username} encountered an error on the change password route due to {str(e)}", exc_info=True)
             flash("An error occured! Please try again after sometime.", "warning")
-            return redirect(url_for("main_bp.home"))
+            return render_template("auth/changepassword.html", form=form)
             
     current_app.logger.info(f"{current_user.username} accessed the change password page")
     return render_template("auth/changepassword.html", form=form)
@@ -166,13 +167,13 @@ def forgot_password():
             current_app.logger.info(
                 f"Invalid input on the forgot-password route. input-{form.errors}"
             )
-            return redirect(url_for("auth_bp.forgot_password"))
+            return render_template("auth/forget-password.html", form=form)
             
         except Exception as e:
             flash("An error occured", "error")
             db.session.rollback()
             current_app.logger.error(f"An error occured on forget-password route due to {str(e)}", exc_info=True)
-            return redirect(url_for("auth_bp.forgot_password"))
+            return render_template("auth/forget-password.html", form=form)
 
     current_app.logger.info("The forget password route is being accessed")
     return render_template("auth/forget-password.html", form=form)
@@ -210,11 +211,68 @@ def reset_password(token: str):
             
             flash("Invalid input", "warning")
             current_app.logger.info(f"Incorrect input on reset-password route. Error - {form.errors}")
-            return redirect(url_for("auth_bp.reset-password"))
+            return render_template("auth/password-reset.html", form=form)
         
         except Exception as e:
             flash("An error occured", "error")
             current_app.logger.error(f"An unexpected error occured due to {str(e)}", exc_info=True)
-            return redirect(url_for("auth_bp.sign_in"))
+            return render_template("auth/password-reset.html", form=form)
 
     return render_template("auth/password-reset.html", form=form)
+
+
+@auth_bp.route("/admin/sign-up", methods=["GET", "POST"])
+@limiter.limit("5 per minute")
+def admin_sign_up():
+    form = AdminRegisterForm()
+    if request.method == "POST":
+        current_app.logger.info("A post request is being made to the admin sign-up route")
+        try:
+            if not process_admin_registration(form):
+                flash("Invalid input", "warning")
+                current_app.logger.info(f"Invalid input was provided in the admin sign-up route. error: {form.errors}")
+                return render_template("auth/admin-sign-up.html", form=form)
+            
+            flash("Registration Successful", "success")
+            current_app.logger.warning(f"Successfully {form.username.data} as an admin")
+            return redirect(url_for("auth_bp.admin_sign_in")) 
+        
+        except Exception as e:
+            flash("An error occur. Try again!", "error")
+            print("This caused the error", str(e))
+            current_app.logger.error(f"An unexpected error occured in the admin sign-up due to {str(e)}", exc_info=True)
+            return render_template("auth/admin-sign-up.html", form=form)
+    
+    current_app.logger.info("The admin sign-up route is being accessed")
+    return render_template("auth/admin-sign-up.html", form=form)
+
+
+@auth_bp.route("/admin/sign-in", methods=["GET", "POST"])
+@limiter.limit("5 per minute")
+def admin_sign_in():
+    form = AdminLoginForm()
+    if request.method == "POST":
+        current_app.logger.info("A post request is being made to the admin sign-in route")
+        try:
+            if not process_admin_login(form):
+                flash("Invalid input", "warning")
+                current_app.logger.info(f"Invalid input was provided in the admin sign-in route. error: {form.errors}")
+                return render_template("auth/admin-sign-in.html", form=form)
+            
+            flash("Sign in Successful", "success")
+            current_app.logger.warning(f"Successfully {form.username.data} as an admin")
+            return redirect(url_for("admin_bp.dashboard"))
+        
+        except AdminNotApproved:
+            flash("You are not approved to be an Admin", "error")
+            current_app.logger.info(f"{form.username.data} tried to login as a non approved admin")
+            return render_template("auth/admin-sign-in.html", form=form)
+        
+        except Exception as e:
+            flash("An error occur. Try again!", "error")
+            current_app.logger.error(f"An unexpected error occured in the admin sign-in due to {str(e)}", exc_info=True)
+            return render_template("auth/admin-sign-in.html", form=form)
+
+    current_app.logger.info(f"The admin sign-in route is being accessed")  
+    return render_template("auth/admin-sign-in.html", form=form)
+
