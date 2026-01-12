@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Sign Up - FileHub</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
+    <script defer type="text/javascript" src="{{ url_for('static', filename='js_scripts/funs.js') }}"></script>
+</head>
+<body>
+    <div class="flash">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <ul>
+                    {% for category, message in messages %}
+                        <div class="flash-{{ category }}">
+                            <li>{{ message }}</li>
+                        </div>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        {% endwith %}
+    </div>
+    <div class="admin-container">
+        <div class="admin-left">
+            <div class="admin-branding">
+                <a href="/" class="admin-logo">
+                    <svg class="admin-logo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path>
+                        <polyline points="13 2 13 9 20 9"></polyline>
+                    </svg>
+                    <span>FileHub</span>
+                </a>
+                <div class="admin-badge">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                        <path d="M9 12l2 2 4-4"></path>
+                    </svg>
+                    <span>Admin Access</span>
+                </div>
+                <h1 class="admin-welcome">Admin Registration</h1>
+                <p class="admin-tagline">Create an administrator account with elevated privileges to manage the FileHub platform and oversee all sections.</p>
+                
+                <div class="admin-info-box">
+                    <div class="admin-info-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                        </svg>
+                    </div>
+                    <div class="admin-info-content">
+                        <h3>Admin Privileges</h3>
+                        <ul>
+                            <li>Full access to all sections and files</li>
+                            <li>Monitor all user activities and submissions</li>
+                            <li>Manage system settings and configurations</li>
+                            <li>Generate reports and analytics</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="admin-features">
+                    <div class="admin-feature-item">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="20 6 9 17 4 12"></polyline>
+                        </svg>
+                        <span>Secure admin authentication</span>
+                    </div>
+                    <div class="admin-feature-item">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="20 6 9 17 4 12"></polyline>
+                        </svg>
+                        <span>Advanced permission controls</span>
+                    </div>
+                    <div class="admin-feature-item">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="20 6 9 17 4 12"></polyline>
+                        </svg>
+                        <span>System-wide oversight</span>
+                    </div>
+                    <div class="admin-feature-item">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="20 6 9 17 4 12"></polyline>
+                        </svg>
+                        <span>Audit trail and logging</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="admin-right">
+            <div class="admin-form-container">
+                <div class="admin-form-header">
+                    <div class="admin-shield-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                            <path d="M9 12l2 2 4-4"></path>
+                        </svg>
+                    </div>
+                    <h2 class="admin-form-title">Create Admin Account</h2>
+                    <p class="admin-form-subtitle">Enter your details to register as an administrator</p>
+                </div>
+
+                {% if error %}
+                <div class="admin-alert admin-alert-error">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <line x1="12" y1="8" x2="12" y2="12"></line>
+                        <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                    </svg>
+                    <span>{{ error }}</span>
+                </div>
+                {% endif %}
+
+                {% if success %}
+                <div class="admin-alert admin-alert-success">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="20 6 9 17 4 12"></polyline>
+                    </svg>
+                    <span>{{ success }}</span>
+                </div>
+                {% endif %}
+
+                <form method="POST" action="{{ url_for('auth_bp.admin_sign_up') }}" class="admin-form">
+                    {{ form.csrf_token() }}
+
+                    <div class="admin-form-group">
+                        {{ form.username.label(class="admin-form-label") }}
+                        <span class="admin-required">*</span>
+                        <div class="admin-input-wrapper">
+                            <svg class="admin-input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                                <circle cx="12" cy="7" r="4"></circle>
+                            </svg>
+                            {{ form.username(class="admin-form-input", placeholder="Enter admin username") }}
+                        </div>
+                        {% if form.username.errors %}
+                            <div class="admin-form-error">
+                                {% for error in form.username.errors %}
+                                    <span>{{ error }}</span>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="admin-form-group">
+                        {{ form.email.label(class="admin-form-label") }}
+                        <span class="admin-required">*</span>
+                        <div class="admin-input-wrapper">
+                            <svg class="admin-input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                                <polyline points="22,6 12,13 2,6"></polyline>
+                            </svg>
+                            {{ form.email(class="admin-form-input", placeholder="Enter admin email address") }}
+                        </div>
+                        {% if form.email.errors %}
+                            <div class="admin-form-error">
+                                {% for error in form.email.errors %}
+                                    <span>{{ error }}</span>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="admin-form-group">
+                        {{ form.password1.label(class="admin-form-label") }}
+                        <span class="admin-required">*</span>
+                        <div class="admin-password-wrapper">
+                            {{ form.password1(class="admin-form-input", placeholder="Create a strong password") }}
+                            <button type="button" class="admin-password-toggle" onclick="togglePassword('password1')">
+                                <svg class="admin-eye-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                    <circle cx="12" cy="12" r="3"></circle>
+                                </svg>
+                            </button>
+                        </div>
+                        {% if form.password1.errors %}
+                            <div class="admin-form-error">
+                                {% for error in form.password1.errors %}
+                                    <span>{{ error }}</span>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="admin-form-group">
+                        {{ form.password2.label(class="admin-form-label") }}
+                        <span class="admin-required">*</span>
+                        <div class="admin-password-wrapper">
+                            {{ form.password2(class="admin-form-input", placeholder="Confirm your password") }}
+                            <button type="button" class="admin-password-toggle" onclick="togglePassword('password2')">
+                                <svg class="admin-eye-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                    <circle cx="12" cy="12" r="3"></circle>
+                                </svg>
+                            </button>
+                        </div>
+                        {% if form.password2.errors %}
+                            <div class="admin-form-error">
+                                {% for error in form.password2.errors %}
+                                    <span>{{ error }}</span>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="admin-security-notice">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <line x1="12" y1="16" x2="12" y2="12"></line>
+                            <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                        </svg>
+                        <span>Admin accounts have elevated privileges. Ensure your credentials are secure and not shared.</span>
+                    </div>
+
+                    <button type="submit" class="admin-submit-btn">
+                        <span>Create Admin Account</span>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                            <path d="M9 12l2 2 4-4"></path>
+                        </svg>
+                    </button>
+                </form>
+
+                <div class="admin-divider">
+                    <span>Already have an admin account?</span>
+                </div>
+
+                <a href="{{ url_for('auth_bp.admin_sign_in') }}" class="admin-signin-link">
+                    Sign In as Admin
+                </a>
+
+                <p class="admin-terms">
+                    By creating an admin account, you agree to uphold platform <a href="/terms">Terms of Service</a> and maintain security standards.
+                </p>
+            </div>
+        </div>
+    </div>
+    
+</body>
+</html>

@@ -1,0 +1,261 @@
+{% extends "admin-base.html" %}
+
+{% block title %}Create User - FileHub{% endblock %}
+
+
+{% block content %}
+<!-- Top Navigation Bar -->
+<nav class="createuser-topnav">
+    <div class="createuser-topnav-left">
+        <button class="createuser-menu-toggle" onclick="toggleSidebar()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="3" y1="12" x2="21" y2="12"></line>
+                <line x1="3" y1="6" x2="21" y2="6"></line>
+                <line x1="3" y1="18" x2="21" y2="18"></line>
+            </svg>
+        </button>
+        <div class="createuser-breadcrumb">
+            <a href="{{ url_for('admin_bp.dashboard') }}">Dashboard</a>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+            <span>Create User</span>
+        </div>
+    </div>
+
+    <div class="createuser-topnav-right">
+        <a href="{{ url_for('admin_bp.dashboard') }}" class="createuser-back-btn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="19" y1="12" x2="5" y2="12"></line>
+                <polyline points="12 19 5 12 12 5"></polyline>
+            </svg>
+            <span>Back to Dashboard</span>
+        </a>
+    </div>
+</nav>
+
+<!-- Create User Content -->
+<div class="createuser-content">
+    <div class="createuser-container">
+        <!-- Header Section -->
+        <div class="createuser-header">
+            <div class="createuser-header-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="8.5" cy="7" r="4"></circle>
+                    <line x1="20" y1="8" x2="20" y2="14"></line>
+                    <line x1="23" y1="11" x2="17" y2="11"></line>
+                </svg>
+            </div>
+            <div class="createuser-header-content">
+                <h1 class="createuser-title">Create New User</h1>
+                <p class="createuser-subtitle">Add a new user to the system with their credentials</p>
+            </div>
+        </div>
+
+        <!-- Alert Messages -->
+        {% if form.errors %}
+        <div class="createuser-alert createuser-alert-error">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="12" y1="8" x2="12" y2="12"></line>
+                <line x1="12" y1="16" x2="12.01" y2="16"></line>
+            </svg>
+            <div>
+                <strong>Please correct the following errors:</strong>
+                <ul>
+                    {% for field, errors in form.errors.items() %}
+                        {% for error in errors %}
+                            <li>{{ error }}</li>
+                        {% endfor %}
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Form Card -->
+        <div class="createuser-card">
+            <form method="POST" action="{{ url_for('admin_bp.create_user') }}" class="createuser-form" id="createUserForm">
+                {{ form.hidden_tag() }}
+                
+                <!-- User Information Section -->
+                <div class="createuser-section">
+                    <div class="createuser-section-header">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="12" cy="7" r="4"></circle>
+                        </svg>
+                        <h2>User Information</h2>
+                    </div>
+
+                    <div class="createuser-form-row">
+                        <!-- Username Field -->
+                        <div class="createuser-form-group">
+                            <label for="username" class="createuser-label">
+                                Username <span class="createuser-required">*</span>
+                            </label>
+                            <div class="createuser-input-wrapper">
+                                <svg class="createuser-input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                                    <circle cx="12" cy="7" r="4"></circle>
+                                </svg>
+                                {{ form.username(class="createuser-input", placeholder="Enter username", id="username") }}
+                            </div>
+                            {% if form.username.errors %}
+                            <div class="createuser-error">
+                                {% for error in form.username.errors %}
+                                    <span>{{ error }}</span>
+                                {% endfor %}
+                            </div>
+                            {% endif %}
+                            <div class="createuser-hint">Username must be unique and contain only letters, numbers, spaces and underscores</div>
+                        </div>
+
+                        <!-- Email Field -->
+                        <div class="createuser-form-group">
+                            <label for="email" class="createuser-label">
+                                Email Address <span class="createuser-required">*</span>
+                            </label>
+                            <div class="createuser-input-wrapper">
+                                <svg class="createuser-input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                                    <polyline points="22,6 12,13 2,6"></polyline>
+                                </svg>
+                                {{ form.email(class="createuser-input", placeholder="user@example.com", type="email", id="email") }}
+                            </div>
+                            {% if form.email.errors %}
+                            <div class="createuser-error">
+                                {% for error in form.email.errors %}
+                                    <span>{{ error }}</span>
+                                {% endfor %}
+                            </div>
+                            {% endif %}
+                            <div class="createuser-hint">A valid email address for account notifications</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Security Section -->
+                <div class="createuser-section">
+                    <div class="createuser-section-header">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                        </svg>
+                        <h2>Security Credentials</h2>
+                    </div>
+
+                    <div class="createuser-form-row">
+                        <!-- Password Field -->
+                        <div class="createuser-form-group">
+                            <label for="password1" class="createuser-label">
+                                Password <span class="createuser-required">*</span>
+                            </label>
+                            <div class="createuser-input-wrapper">
+                                <svg class="createuser-input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                                    <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                                </svg>
+                                <div class="createuser-password-wrapper">
+                                    {{ form.password1(class="createuser-input", placeholder="Enter password", type="password", id="password1") }}
+                                    <button type="button" class="createuser-password-toggle" onclick="togglePassword('password1')">
+                                        <svg class="createuser-eye-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                            <circle cx="12" cy="12" r="3"></circle>
+                                        </svg>
+                                    </button>
+                                </div>
+                            </div>
+                            {% if form.password1.errors %}
+                            <div class="createuser-error">
+                                {% for error in form.password1.errors %}
+                                    <span>{{ error }}</span>
+                                {% endfor %}
+                            </div>
+                            {% endif %}
+                            <!-- Password Strength Indicator -->
+                            <div class="createuser-strength-container">
+                                <div class="createuser-strength-bar">
+                                    <div class="createuser-strength-fill" id="passwordStrength"></div>
+                                </div>
+                                <div class="createuser-strength-text" id="strengthText">Password strength</div>
+                            </div>
+                            <div class="createuser-hint">Minimum 8 characters with letters, numbers, and special characters</div>
+                        </div>
+
+                        <!-- Confirm Password Field -->
+                        <div class="createuser-form-group">
+                            <label for="password2" class="createuser-label">
+                                Confirm Password <span class="createuser-required">*</span>
+                            </label>
+                            <div class="createuser-input-wrapper">
+                                <svg class="createuser-input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                                    <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                                </svg>
+                                <div class="createuser-password-wrapper">
+                                    {{ form.password2(class="createuser-input", placeholder="Confirm password", type="password", id="password2") }}
+                                    <button type="button" class="createuser-password-toggle" onclick="togglePassword('password2')">
+                                        <svg class="createuser-eye-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                            <circle cx="12" cy="12" r="3"></circle>
+                                        </svg>
+                                    </button>
+                                </div>
+                            </div>
+                            {% if form.password2.errors %}
+                            <div class="createuser-error">
+                                {% for error in form.password2.errors %}
+                                    <span>{{ error }}</span>
+                                {% endfor %}
+                            </div>
+                            {% endif %}
+                            <!-- Password Match Indicator -->
+                            <div class="createuser-match-indicator" id="passwordMatch" style="display: none;">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <polyline points="20 6 9 17 4 12"></polyline>
+                                </svg>
+                                <span>Passwords match</span>
+                            </div>
+                            <div class="createuser-hint">Re-enter the password to confirm</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Info Box -->
+                <div class="createuser-info-box">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <line x1="12" y1="16" x2="12" y2="12"></line>
+                        <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                    </svg>
+                    <div>
+                        <strong>Important:</strong> Please notify the user that they should change their password immediately upon login.
+                    </div>
+                </div>
+
+                <!-- Form Actions -->
+                <div class="createuser-actions">
+                    <a href="{{ url_for('admin_bp.dashboard') }}" class="createuser-btn-cancel">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                        </svg>
+                        <span>Cancel</span>
+                    </a>
+                    <button type="submit" class="createuser-btn-submit">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="8.5" cy="7" r="4"></circle>
+                            <line x1="20" y1="8" x2="20" y2="14"></line>
+                            <line x1="23" y1="11" x2="17" y2="11"></line>
+                        </svg>
+                        <span>Create User</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -12,7 +12,7 @@ from main_app.models import Section, Submissions, User
 from .helper import (
     allowed_extension, save_uploaded_file, bytes_converter, delete_multiple_files, 
     delete_section_directory_and_its_files, number_of_submissions, delete_file_from_directory,
-    get_percentage, restore_path
+    restore_path, duplicate_submission, get_file_extension
 )
 
 from main_app.extensions import db, limiter
@@ -28,7 +28,7 @@ def welcome():
         return render_template("main/welcome.html")
     except Exception as e:
         current_app.logger.error(f"An error occured on the welcome page. {str(e)}", exc_info=True)
-        return jsonify({"error": "Internal Issue. Please try again later"})
+        return render_template("main/welcome.html")
 
 
 @main_bp.route("/home", methods=["GET"])
@@ -38,7 +38,7 @@ def home():
     try:
         current_app.logger.info(f"The home route is being accessed by {current_user.username}.")
         existing_sections = db.session.scalars(sql.select(Section).where(Section.user_id == current_user.id)).all()
-        return render_template("main/home.html", sections=existing_sections, url_base=request.host_url.rstrip("/"), number_of_submissions=number_of_submissions, percentage=get_percentage)
+        return render_template("main/home.html", sections=existing_sections, url_base=request.host_url.rstrip("/"), number_of_submissions=number_of_submissions)
     except Exception as e:
         flash("An unexpected error occured, we are handling it.")
         current_app.logger.error(f"{current_user.username} got an unexpected error due to {str(e)}", exc_info=True)
@@ -99,11 +99,23 @@ def upload_file(username, section_name):
                 f"A Post request is being made on the upload route."
             )
             if form.validate_on_submit():
+                
+                # Prevents duplicate file upload either by name or mat_no
+                if not form.mat_no.data or not form.mat_no.data.strip():
+                    if duplicate_submission(name=form.full_name.data, section_obj=section):
+                        flash("Already uploaded file on this section", "warning")
+                        current_app.logger.info(f"{form.full_name.data} tried uploading twice to this route")
+                        return render_template("main/upload.html", form=form)
+
+                if duplicate_submission(mat_no=form.mat_no.data, section_obj=section):
+                    flash("Already uploaded file on this section", "warning")
+                    current_app.logger.info(f"{form.full_name.data} tried uploading twice to this route")
+                    return render_template("main/upload.html", form=form)
 
                 file = form.file.data
 
-                if file.filename == "":
-                    flash("Invalid file content", "error")
+                if file.filename == "" or (isinstance(file.filename, str) and not file.filename.strip("")):
+                    flash("Empty filename", "error")
                     current_app.logger.warning(f"An empty filename was submitted")
                     return render_template("main/upload.html", form=form)
 
@@ -139,17 +151,17 @@ def upload_file(username, section_name):
             
             flash("Invalid data input", "error")
             current_app.logger.warning(f"An invalid input was made on this route. {form.errors}", exc_info=True)
-            return render_template("main/upload.html", form=form)
+            return render_template("main/upload.html", form=form, username=username, section_name=section_name)
         
         except FileExistsError:
             flash("The file exist, seems you have already uploaded the file", "error")
             current_app.logger.warning(f"A file with same details was being sent again by {form.full_name.data}", exc_info=True)
-            return render_template("main/upload.html", form=form)
+            return render_template("main/upload.html", form=form, username=username, section_name=section_name)
         
         except FileNotFoundError:
             flash("An error occured from us. Please try again", "warning")
             current_app.logger.error(f"Trying to save a file that doesn't exist. This needs a look", exc_info=True)
-            return render_template("main/upload.html", form=form)
+            return render_template("main/upload.html", form=form, username=username, section_name=section_name)
         
         except Exception as e:
             db.session.rollback()
@@ -160,11 +172,11 @@ def upload_file(username, section_name):
 
             flash("Internal server down", "warning")
             current_app.logger.error(f"An error occured due to {str(e)}", exc_info=True)
-            return render_template("main/upload.html", form=form)
+            return render_template("main/upload.html", form=form, username=username, section_name=section_name)
 
     if user and section:
         current_app.logger.info("Upload file route is being accessed")
-        return render_template("main/upload.html", form=form)
+        return render_template("main/upload.html", form=form, username=username, section_name=section_name)
     
     current_app.logger.warning("A wrong url was tried on this route")
     abort(404)
@@ -288,7 +300,6 @@ def download_files(section_id: str, section_name: str):
 
         memory_file.seek(0)
 
-        flash("Downloading files", "success")
         current_app.logger.info(f"Downloading files in progress made by {current_user.username}")
         return send_file(
             memory_file,
@@ -376,7 +387,7 @@ def delete_files(section_id: int):
             current_app.logger.warning(f"{current_user.username}::File on section with ID-{section_id} not found in an attempt to delete it.")
             return redirect(url_for("main_bp.home"))
         
-        deleted_file_path = [] # Keeps track of files_paths that couldn't be deleted
+        deleted_file_path = [] # Keeps track of files_paths that was deleted
 
         for file in files:
             if delete_file_from_directory(file.file_path):
@@ -386,7 +397,7 @@ def delete_files(section_id: int):
                 current_app.logger.error(f"{current_user.username}::File-{file} couldn't be deleted")
                 for path in deleted_file_path:
                     restore_path(path)
-                    current_app.logger.info(f"{current_user.username}::Restoring file with {path} that could't be deleted.")
+                    current_app.logger.info(f"{current_user.username}::Restoring file with {path} that was deleted.")
                     raise OSError
 
         db.session.commit()
@@ -404,7 +415,7 @@ def delete_files(section_id: int):
         return redirect(url_for("main_bp.home"))
     except OSError:
         db.session.rollback()
-        flash("Having probelm deleting file", "error")
+        flash("Having problem deleting files", "error")
         current_app.logger.warning(f"{current_user.username}::OSError encountered while trying to delete or restore file path on a file", exc_info=True)
         return redirect(url_for("main_bp.home"))
     except Exception as e:
@@ -413,3 +424,40 @@ def delete_files(section_id: int):
         current_app.logger.error(f"{current_user.username}::An error occured on delete-files route due to {str(e)}", exc_info=True)
         return redirect(url_for("main_bp.home"))
 
+
+
+@main_bp.route("/download-file/<int:file_id>", methods=["GET"])
+@login_required
+def download_file(file_id):
+    try:
+        current_app.logger.info(f"{current_user.username} is downloading a single file with file id {file_id}")
+        file = db.session.scalar(sql.select(Submissions).where(Submissions.id == file_id))
+
+        if not file:
+            raise FileNotFoundError
+
+        ext = get_file_extension(file.file_path)
+
+        current_app.logger.info(f"Downloading file with id {file_id} by {current_user.username} in progress")
+        return send_file(
+            file.file_path,
+            mimetype=f"application/{ext}",
+            as_attachment=True,
+            download_name=f"{file.original_filename}"
+        )
+
+    except FileNotFoundError:
+        flash("Coulnd't find file", "error")
+        current_app.logger.warning(f"{current_user.username}::A file couldn't download due to it missing", exc_info=True)
+        return redirect(url_for("main_bp.view_file", section_id=file.section_id))
+    
+    except Exception as e:
+        flash("Internal Service issue", "error")
+        current_app.logger.error(f"{current_user.username}::An unexpected error occured due to {str(e)}", exc_info=True)
+        return redirect(url_for("main_bp.view_file", section_id=file.section_id))
+    
+
+
+@main_bp.get("/privacy-policy")
+def privacy_policy():
+    return render_template("main/privacy.html")

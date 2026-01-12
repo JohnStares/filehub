@@ -1,106 +1,257 @@
-{% extends 'base.html' %}
+{% extends "base.html" %}
 
-{% block title %}Home{% endblock %}
-{% block link %}<link rel="stylesheet" href="{{ url_for('static', filename='css/home.css') }}"> {% endblock %}
+{% block title %}Dashboard - FileHub{% endblock %}
 
 {% block content %}
-    <div class="navbar">
-        <h1>📚 FileHub</h1>
-        <div class="navbar-right">
-            <span>{{ current_user.username }}</span>
-            <form action="{{ url_for('auth_bp.logout')}}" method="post">
+<div class="dashboard-page">
+    <!-- Navigation Bar -->
+    <nav class="dashboard-nav">
+        <div class="dashboard-nav-container">
+            <div class="dashboard-nav-left">
+                <a href="/" class="dashboard-logo">
+                    <svg class="dashboard-logo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path>
+                        <polyline points="13 2 13 9 20 9"></polyline>
+                    </svg>
+                    <span>FileHub</span>
+                </a>
+            </div>
+            <div class="dashboard-nav-right">
+                <a href="{{ url_for('main_bp.create_section') }}" class="dashboard-nav-link">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="12" y1="5" x2="12" y2="19"></line>
+                        <line x1="5" y1="12" x2="19" y2="12"></line>
+                    </svg>
+                    <span>New Section</span>
+                </a>
+                <a href="{{ url_for('auth_bp.change_password') }}" class="dashboard-nav-link">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                    </svg>
+                    <span>Change Password</span>
+                </a>
+                <form method="POST" action="{{ url_for('auth_bp.logout') }}" style="display: inline;">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    <button type="submit" class="dashboard-nav-link dashboard-logout-btn">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                            <polyline points="16 17 21 12 16 7"></polyline>
+                            <line x1="21" y1="12" x2="9" y2="12"></line>
+                        </svg>
+                        <span>Logout</span>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Header Section -->
+    <div class="dashboard-header">
+        <div class="dashboard-header-container">
+            <div class="dashboard-welcome">
+                <h1 class="dashboard-welcome-title">Welcome back, <span class="dashboard-username">{{ current_user.username }}</span>! 👋</h1>
+                <p class="dashboard-welcome-text">Manage your submission sections and track student uploads</p>
+            </div>
+            <div class="dashboard-stats">
+                <div class="dashboard-stat-card">
+                    <div class="dashboard-stat-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
+                        </svg>
+                    </div>
+                    <div class="dashboard-stat-info">
+                        <div class="dashboard-stat-number">{{ sections|length }}</div>
+                        <div class="dashboard-stat-label">Active Sections</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="dashboard-container">
+        {% if error %}
+        <div class="dashboard-alert dashboard-alert-error">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="12" y1="8" x2="12" y2="12"></line>
+                <line x1="12" y1="16" x2="12.01" y2="16"></line>
+            </svg>
+            <span>{{ error }}</span>
+        </div>
+        {% endif %}
+
+        {% if success %}
+        <div class="dashboard-alert dashboard-alert-success">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="20 6 9 17 4 12"></polyline>
+            </svg>
+            <span>{{ success }}</span>
+        </div>
+        {% endif %}
+
+        {% if sections|length > 0 %}
+        <!-- Sections Grid -->
+        <div class="dashboard-sections-grid">
+            {% for section in sections %}
+            <div class="dashboard-section-card">
+                <!-- Section Header -->
+                <div class="dashboard-section-header">
+                    <div class="dashboard-section-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
+                        </svg>
+                    </div>
+                    <div class="dashboard-section-info">
+                        <h3 class="dashboard-section-name">{{ section.section_name }}</h3>
+                        {% if section.section_code %}
+                        <p class="dashboard-section-code">Code: {{ section.section_code }}</p>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Submission Progress -->
+                <div class="dashboard-progress-section">
+                    {% if section.expected_submission %}
+                    <div class="dashboard-progress-bar">
+                        <div class="dashboard-progress-fill" style="width: {{ (number_of_submissions(section.id) | length / section.expected_submission * 100)|round }}%"></div>
+                    </div>
+                    <p class="dashboard-progress-text">
+                        <strong>{{ number_of_submissions(section.id) | length }}/{{ section.expected_submission }}</strong> students submitted
+                    </p>
+                    {% else %}
+                    <p class="dashboard-progress-text">
+                        <strong>{{ number_of_submissions(section.id) | length }}</strong> submission(s) received
+                    </p>
+                    {% endif %}
+                </div>
+
+                <!-- Section Actions -->
+                <div class="dashboard-section-actions">
+                    <a href="{{ url_for('main_bp.view_files', section_id=section.id) }}" class="dashboard-action-btn dashboard-view-btn">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                            <circle cx="12" cy="12" r="3"></circle>
+                        </svg>
+                        <span>View</span>
+                    </a>
+                    <a href="{{ url_for('main_bp.download_files', section_id=section.id, section_name=section.section_name) }}" class="dashboard-action-btn dashboard-download-btn">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                            <polyline points="7 10 12 15 17 10"></polyline>
+                            <line x1="12" y1="15" x2="12" y2="3"></line>
+                        </svg>
+                        <span>Download All</span>
+                    </a>
+                    <button type="button" class="dashboard-action-btn dashboard-delete-all-btn" onclick="confirmDeleteAll('{{ section.id }}', '{{ section.section_name }}')">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="3 6 5 6 21 6"></polyline>
+                            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                        </svg>
+                        <span>Delete All</span>
+                    </button>
+                </div>
+
+                <!-- Submission Link -->
+                <div class="dashboard-link-section">
+                    <label class="dashboard-link-label">Submission Link:</label>
+                    <div class="dashboard-link-box">
+                        <input type="text" class="dashboard-link-input" value="{{ url_base }}/upload-file/{{ current_user.username }}/{{ section.section_name }}" readonly id="link-{{ section.id }}">
+                        <button type="button" class="dashboard-link-copy" onclick="copyLink('{{ section.id }}')">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                            </svg>
+                        </button>
+                        <button type="button" class="dashboard-link-delete" onclick="confirmDeleteLink('{{ section.id }}', '{{ section.section_name }}')">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="3 6 5 6 21 6"></polyline>
+                                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                            </svg>
+                        </button>
+                    </div>
+                    <p class="dashboard-link-hint">Share this link with students to collect their submissions</p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <!-- Empty State -->
+        <div class="dashboard-empty-state">
+            <div class="dashboard-empty-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
+                </svg>
+            </div>
+            <h2 class="dashboard-empty-title">No Sections Yet</h2>
+            <p class="dashboard-empty-text">Create your first submission section to start collecting assignments from students.</p>
+            <a href="{{ url_for('main_bp.create_section') }}" class="dashboard-empty-btn">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="12" y1="5" x2="12" y2="19"></line>
+                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                </svg>
+                <span>Create New Section</span>
+            </a>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Delete All Files Modal -->
+<div class="dashboard-modal" id="deleteAllModal">
+    <div class="dashboard-modal-overlay" onclick="closeDeleteAllModal()"></div>
+    <div class="dashboard-modal-content">
+        <div class="dashboard-modal-header">
+            <div class="dashboard-modal-icon dashboard-modal-icon-warning">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <line x1="12" y1="8" x2="12" y2="12"></line>
+                    <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                </svg>
+            </div>
+            <h3 class="dashboard-modal-title">Delete All Files?</h3>
+            <p class="dashboard-modal-text">Are you sure you want to delete all files from <strong id="deleteAllSectionName"></strong>? This action cannot be undone.</p>
+        </div>
+        <div class="dashboard-modal-actions">
+            <button type="button" class="dashboard-modal-btn dashboard-cancel-btn" onclick="closeDeleteAllModal()">Cancel</button>
+            <form method="POST" action="" id="deleteAllForm" style="display: inline;">
                 <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-                <button>Logout</button>
+                <button type="submit" class="dashboard-modal-btn dashboard-confirm-btn">Delete All Files</button>
             </form>
         </div>
     </div>
+</div>
 
-
-    <div class="container">
-
-        <div class="header">
-            <h2>Welcome back! 👋</h2>
-            <a href="{{ url_for('main_bp.create_section') }}"><button class="create-btn">+ Create New Section</button></a>
-        </div>
-
-        <div class="stats">
-            <div class="stat-card">
-                <h3>Active Sections</h3>
-                <div class="number">{{ sections|length }}</div>
+<!-- Delete Section Link Modal -->
+<div class="dashboard-modal" id="deleteLinkModal">
+    <div class="dashboard-modal-overlay" onclick="closeDeleteLinkModal()"></div>
+    <div class="dashboard-modal-content">
+        <div class="dashboard-modal-header">
+            <div class="dashboard-modal-icon dashboard-modal-icon-danger">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <line x1="15" y1="9" x2="9" y2="15"></line>
+                    <line x1="9" y1="9" x2="15" y2="15"></line>
+                </svg>
             </div>
-            <div class="stat-card">
-                <h3>Total Submissions</h3>
-                <div class="number">187</div>
-            </div>
+            <h3 class="dashboard-modal-title">Delete Section?</h3>
+            <p class="dashboard-modal-text">Are you sure you want to delete <strong id="deleteLinkSectionName"></strong> and all its files? This will permanently remove the section and cannot be undone.</p>
         </div>
-        
-        <!-- Main Content -->
-        <div class="main-content">
-            <!-- Sections List -->
-            <div class="section-list">
-                <h3>📋 Active Sections</h3>
-                
-                <!-- Section 1 -->
-                 {% if sections %}
-                    {% for section in sections %}
-                        <div class="section-card">
-                            <div class="section-header">
-                                <div class="section-info">
-                                    <h4>{{ section.section_name }}</h4>
-                                    {% if section.section_code %}
-                                        <span class="section-code">{{ section.section_code }}</span>
-                                    {% endif %}
-                                </div>
-                            </div>
-                            <div class="deadline">⏱️ Closes in 6 hours</div>
-                            {% if section.expected_submission %}
-                                {% set dynamic_width = percentage(section.expected_submission, section.id) %}
-                                <div class="submission-progress">
-                                    <div class="progress-bar">
-                                        <div class="progress-fill" style="width: {{ dynamic_width }}%;"></div>
-                                    </div>
-                                        <div class="progress-text">{{ number_of_submissions(section.id) | length }} / {{ section.expected_submission }} students submitted</div>
-                                </div>
-                            {% endif %}
-                            <div class="section-actions">
-                                <a href="{{ url_for('main_bp.download_files', section_id=section.id, section_name=section.section_name) }}"><button class="btn-small btn-download">⬇️ Download All</button></a>
-                                <a href="{{ url_for('main_bp.view_files', section_id=section.id) }}"><button class="btn-small btn-view">👁️ View</button></a>
-                                <form action="{{ url_for('main_bp.delete_files', section_id=section.id) }}" method="post">
-                                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-
-                                    <button class="btn-small btn-delete" type="submit">❌ Delete All Files</button>
-                                </form>
-                            </div>
-                        </div>
-                    {% endfor %}
-                 {% endif %}
-
-            
-        <div class="activity-panel">
-            {% if sections %}
-                <h3>Section Links</h3>
-                <h4>Copy the exact link you need and send it to whoever you need file transfered</h4>
-                {% for section in sections %}
-                    <div class="activity-item">
-                        <div class="activity-item-header">
-                            <span class="activity-name">Link</span>
-                            <form action="{{ url_for('main_bp.delete_section', section_id=section.id)}}" method="post">
-                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
-
-                                <button class="activity-delete" type="submit">delete</button>
-                            </form>
-                        </div>
-    
-                        <div class="activity-detail">
-                            <a href="{{ url_base }}{{ url_for('main_bp.upload_file', username=current_user.username, section_name=section.section_name) }}">{{ url_base }}{{ url_for("main_bp.upload_file", username=current_user.username, section_name=section.section_name) }}</a></li>
-                        </div>
-                    </div>
-                {% endfor %}
-            {% else %}
-                <p class="no-display">No section to display</p>
-            {% endif %}
+        <div class="dashboard-modal-actions">
+            <button type="button" class="dashboard-modal-btn dashboard-cancel-btn" onclick="closeDeleteLinkModal()">Cancel</button>
+            <form method="POST" action="" id="deleteLinkForm" style="display: inline;">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <button type="submit" class="dashboard-modal-btn dashboard-confirm-btn">Delete Section</button>
+            </form>
         </div>
     </div>
+</div>
 
-
+<!-- Copy Success Toast -->
+<div class="dashboard-toast" id="copyToast">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <polyline points="20 6 9 17 4 12"></polyline>
+    </svg>
+    <span>Link copied to clipboard!</span>
+</div>
 {% endblock %}

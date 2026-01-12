@@ -1,45 +1,209 @@
-{% extends 'base.html' %}
+{% extends "base.html" %}
 
-{% block title %}Section{% endblock %}
-
-{% block link %}<link rel="stylesheet" href="{{ url_for('static', filename='css/section.css') }}"> {% endblock %}
-
+{% block title %}Create Section - FileHub{% endblock %}
 
 {% block content %}
-    <div class="container">
+<div class="create-container">
+    <div class="create-left">
+        <div class="create-branding">
+            <a href="/" class="create-logo">
+                <svg class="create-logo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path>
+                    <polyline points="13 2 13 9 20 9"></polyline>
+                </svg>
+                <span>FileHub</span>
+            </a>
+            <h1 class="create-welcome">Create New Section</h1>
+            <p class="create-tagline">Set up a submission section for your students. Generate a unique link and start collecting assignments in seconds!</p>
+            
+            <div class="create-info-box">
+                <div class="create-info-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <line x1="12" y1="16" x2="12" y2="12"></line>
+                        <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                    </svg>
+                </div>
+                <div class="create-info-content">
+                    <h3>How It Works</h3>
+                    <ul>
+                        <li>Give your section a name (e.g., "CSC 201 Assignment 1")</li>
+                        <li>Add a custom code for easy identification (optional)</li>
+                        <li>Set expected number of submissions (optional)</li>
+                        <li>Get your unique shareable link instantly</li>
+                    </ul>
+                </div>
+            </div>
 
-        <div class="form-group">
-            <h1>Create Section</h1>
-            <form action="#" class="form-group" method="post">
-                {{ form.hidden_tag() }}
-
-                <p class="section">
-                    {{ form.section.label }} <br>
-                    {{ form.section }} <br>
-                    {% for error in form.section.errors %}
-                        <span style="color: red;">{{ error }}</span>
-                    {% endfor %}
-                </p>
-
-                <p class="sec-code">
-                    {{ form.section_code.label }} <br>
-                    {{ form.section_code }} <br>
-
-                    {% for error in form.section_code.errors %}
-                        <span style="color: red;">{{ error }}</span>
-                    {% endfor %}
-                </p>
-
-                <p class="exp-sub">
-                    {{ form.expected_submission.label }} <br>
-                    {{ form.expected_submission }} <br>
-                    {% for error in form.expected_submission.errors %}
-                        <span style="color: red;">{{ error }}</span>
-                    {% endfor %}
-                </p>
-
-                <p class="submit">{{ form.submit() }}</p>
-            </form>
+            <div class="create-features">
+                <div class="create-feature-item">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="20 6 9 17 4 12"></polyline>
+                    </svg>
+                    <span>Instant section creation</span>
+                </div>
+                <div class="create-feature-item">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="20 6 9 17 4 12"></polyline>
+                    </svg>
+                    <span>Get shareable link immediately</span>
+                </div>
+                <div class="create-feature-item">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="20 6 9 17 4 12"></polyline>
+                    </svg>
+                    <span>Track submissions in real-time</span>
+                </div>
+                <div class="create-feature-item">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="20 6 9 17 4 12"></polyline>
+                    </svg>
+                    <span>Manage all files from dashboard</span>
+                </div>
+            </div>
         </div>
     </div>
+
+    <div class="create-right">
+        <div class="create-form-container">
+            <div class="create-form-header">
+                <div class="create-folder-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
+                        <line x1="12" y1="11" x2="12" y2="17"></line>
+                        <line x1="9" y1="14" x2="15" y2="14"></line>
+                    </svg>
+                </div>
+                <h2 class="create-form-title">New Submission Section</h2>
+                <p class="create-form-subtitle">Fill in the details to create your section</p>
+            </div>
+
+            {% if error %}
+            <div class="create-alert create-alert-error">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <line x1="12" y1="8" x2="12" y2="12"></line>
+                    <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                </svg>
+                <span>{{ error }}</span>
+            </div>
+            {% endif %}
+
+            {% if success %}
+            <div class="create-alert create-alert-success">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                </svg>
+                <span>{{ success }}</span>
+            </div>
+            {% endif %}
+
+            <form method="POST" action="{{ url_for('main_bp.create_section') }}" class="create-form">
+                {{ form.csrf_token() }}
+
+                <div class="create-form-group">
+                    {{ form.section.label(class="create-form-label") }}
+                    <span class="create-required">*</span>
+                    <div class="create-input-wrapper">
+                        <svg class="create-input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
+                        </svg>
+                        {{ form.section(class="create-form-input", placeholder="e.g., CSC 201 Assignment 1") }}
+                    </div>
+                    <span class="create-field-hint">This will be displayed to students when they submit</span>
+                    {% if form.section.errors %}
+                        <div class="create-form-error">
+                            {% for error in form.section.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <div class="create-form-group">
+                    {{ form.section_code.label(class="create-form-label") }}
+                    <span class="create-optional">Optional</span>
+                    <div class="create-input-wrapper">
+                        <svg class="create-input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="8.5" cy="7" r="4"></circle>
+                            <polyline points="17 11 19 13 23 9"></polyline>
+                        </svg>
+                        {{ form.section_code(class="create-form-input", placeholder="e.g., CSC201-A1 or CLASS-2024") }}
+                    </div>
+                    <span class="create-field-hint">A custom code for easy identification and organization</span>
+                    {% if form.section_code.errors %}
+                        <div class="create-form-error">
+                            {% for error in form.section_code.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <div class="create-form-group">
+                    {{ form.expected_submission.label(class="create-form-label") }}
+                    <span class="create-optional">Optional</span>
+                    <div class="create-input-wrapper">
+                        <svg class="create-input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="9" cy="7" r="4"></circle>
+                            <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                            <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                        </svg>
+                        {{ form.expected_submission(class="create-form-input", placeholder="e.g., 50", type="number", min="1") }}
+                    </div>
+                    <span class="create-field-hint">Number of students expected to submit (helps with tracking)</span>
+                    {% if form.expected_submission.errors %}
+                        <div class="create-form-error">
+                            {% for error in form.expected_submission.errors %}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <div class="create-preview-box">
+                    <div class="create-preview-header">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                            <circle cx="12" cy="12" r="3"></circle>
+                        </svg>
+                        <span>Preview</span>
+                    </div>
+                    <div class="create-preview-content">
+                        <p class="create-preview-text">Students will submit to: <strong id="previewSection">Your Section Name</strong></p>
+                        <p class="create-preview-code" id="previewCodeSection" style="display: none;">Code: <strong id="previewCode"></strong></p>
+                    </div>
+                </div>
+
+                <button type="submit" class="create-submit-btn">
+                    <span>Create Section</span>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="12" y1="5" x2="12" y2="19"></line>
+                        <line x1="5" y1="12" x2="19" y2="12"></line>
+                    </svg>
+                </button>
+            </form>
+
+            <div class="create-divider">
+                <span>Need to go back?</span>
+            </div>
+
+            <a href="{{ url_for('main_bp.home') }}" class="create-dashboard-link">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="3" y="3" width="7" height="7"></rect>
+                    <rect x="14" y="3" width="7" height="7"></rect>
+                    <rect x="14" y="14" width="7" height="7"></rect>
+                    <rect x="3" y="14" width="7" height="7"></rect>
+                </svg>
+                <span>Back to Dashboard</span>
+            </a>
+
+            <p class="create-help">
+                Need help? <a href="mailto:support@filehub.com">Contact Support</a>
+            </p>
+        </div>
+    </div>
+</div>
 {% endblock %}

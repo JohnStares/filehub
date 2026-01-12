@@ -1,7 +1,9 @@
 from flask_wtf import FlaskForm
 from wtforms import StringField, IntegerField, SubmitField, DateTimeField
-from wtforms.validators import DataRequired, Optional
+from wtforms.validators import DataRequired, Optional, ValidationError
 from flask_wtf.file import FileField, FileRequired, FileSize
+
+from main_app.validation import is_username_validated
 
 
 class SectionForm(FlaskForm):
@@ -21,5 +23,9 @@ class FileUpload(FlaskForm):
     file = FileField("File", validators=[FileRequired(), FileSize(max_size=25*1024*1024, min_size=10 * 1024, message="File must be between 10K and 25MB")])
 
     submit = SubmitField("Upload")
+
+    def validate_full_name(self, full_name):
+        if not is_username_validated(full_name.data):
+            raise ValidationError("Please provide a valid name.")
 
 

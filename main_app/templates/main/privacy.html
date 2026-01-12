@@ -1,0 +1,502 @@
+{% extends "base.html" %}
+
+{% block title %}Privacy Policy - FileHub{% endblock %}
+
+{% block content %}
+<!-- Privacy Policy Page -->
+<div class="privacy-page">
+    <!-- Header Section -->
+    <section class="privacy-header">
+        <div class="privacy-header-container">
+            <div class="privacy-header-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                    <path d="M9 12l2 2 4-4"></path>
+                </svg>
+            </div>
+            <h1 class="privacy-header-title">Privacy Policy</h1>
+            <p class="privacy-header-subtitle">Your privacy matters to us. Learn how FileHub handles your information.</p>
+            <div class="privacy-header-meta">
+                <span class="privacy-meta-item">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <polyline points="12 6 12 12 16 14"></polyline>
+                    </svg>
+                    Last Updated: January 2026
+                </span>
+                <span class="privacy-meta-item">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                        <polyline points="14 2 14 8 20 8"></polyline>
+                    </svg>
+                    Effective Date: January 2026
+                </span>
+            </div>
+        </div>
+    </section>
+
+    <!-- Quick Summary -->
+    <section class="privacy-summary">
+        <div class="privacy-container">
+            <div class="privacy-summary-card">
+                <h2 class="privacy-summary-title">Privacy at a Glance</h2>
+                <p class="privacy-summary-intro">Here's what you need to know about how FileHub handles your information:</p>
+                
+                <div class="privacy-summary-grid">
+                    <div class="privacy-summary-item">
+                        <div class="privacy-summary-icon privacy-icon-green">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg>
+                        </div>
+                        <div class="privacy-summary-content">
+                            <h3>No Data Selling</h3>
+                            <p>We never sell, rent, or trade your personal information to third parties.</p>
+                        </div>
+                    </div>
+
+                    <div class="privacy-summary-item">
+                        <div class="privacy-summary-icon privacy-icon-green">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg>
+                        </div>
+                        <div class="privacy-summary-content">
+                            <h3>No Tracking</h3>
+                            <p>We don't use cookies or tracking technologies to monitor your behavior.</p>
+                        </div>
+                    </div>
+
+                    <div class="privacy-summary-item">
+                        <div class="privacy-summary-icon privacy-icon-blue">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <line x1="12" y1="8" x2="12" y2="12"></line>
+                                <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                            </svg>
+                        </div>
+                        <div class="privacy-summary-content">
+                            <h3>Minimal Data Collection</h3>
+                            <p>We only collect what's essential to provide our service: account info and files you upload.</p>
+                        </div>
+                    </div>
+
+                    <div class="privacy-summary-item">
+                        <div class="privacy-summary-icon privacy-icon-blue">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                                <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                            </svg>
+                        </div>
+                        <div class="privacy-summary-content">
+                            <h3>IP-Based Rate Limiting</h3>
+                            <p>We use your IP address solely for security and preventing abuse—not for tracking.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Content -->
+    <section class="privacy-content">
+        <div class="privacy-container">
+            <div class="privacy-content-grid">
+                <!-- Table of Contents -->
+                <aside class="privacy-toc">
+                    <div class="privacy-toc-sticky">
+                        <h3 class="privacy-toc-title">Table of Contents</h3>
+                        <nav class="privacy-toc-nav">
+                            <a href="#introduction" class="privacy-toc-link">1. Introduction</a>
+                            <a href="#information-we-collect" class="privacy-toc-link">2. Information We Collect</a>
+                            <a href="#how-we-use" class="privacy-toc-link">3. How We Use Your Information</a>
+                            <a href="#data-storage" class="privacy-toc-link">4. Data Storage & Security</a>
+                            <a href="#data-sharing" class="privacy-toc-link">5. Data Sharing</a>
+                            <a href="#your-rights" class="privacy-toc-link">6. Your Rights</a>
+                            <a href="#data-retention" class="privacy-toc-link">7. Data Retention</a>
+                            <a href="#children-privacy" class="privacy-toc-link">8. Children's Privacy</a>
+                            <a href="#changes" class="privacy-toc-link">9. Changes to Policy</a>
+                            <a href="#contact" class="privacy-toc-link">10. Contact Us</a>
+                        </nav>
+                    </div>
+                </aside>
+
+                <!-- Main Content -->
+                <div class="privacy-main">
+                    <!-- Section 1: Introduction -->
+                    <div class="privacy-section" id="introduction">
+                        <h2 class="privacy-section-title">1. Introduction</h2>
+                        <div class="privacy-section-content">
+                            <p>Welcome to FileHub. We respect your privacy and are committed to protecting your personal data. This privacy policy explains how we handle your information when you use our file sharing service.</p>
+                            <p>FileHub is designed with privacy in mind. Unlike many online services, we do not collect unnecessary data, use tracking technologies, or monetize your information. We believe in providing a straightforward, privacy-respecting service.</p>
+                        </div>
+                    </div>
+
+                    <!-- Section 2: Information We Collect -->
+                    <div class="privacy-section" id="information-we-collect">
+                        <h2 class="privacy-section-title">2. Information We Collect</h2>
+                        <div class="privacy-section-content">
+                            <p>We believe in minimal data collection. Here's exactly what information we collect and why:</p>
+                            
+                            <div class="privacy-info-box privacy-info-primary">
+                                <div class="privacy-info-header">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                                        <circle cx="12" cy="7" r="4"></circle>
+                                    </svg>
+                                    <h3>Account Information</h3>
+                                </div>
+                                <ul>
+                                    <li><strong>Username:</strong> To identify your account and personalize your experience</li>
+                                    <li><strong>Email address:</strong> For account verification, password resets, and essential service communications</li>
+                                    <li><strong>Password:</strong> Stored securely using industry-standard hashing (we never store plain-text passwords)</li>
+                                </ul>
+                            </div>
+
+                            <div class="privacy-info-box privacy-info-primary">
+                                <div class="privacy-info-header">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path>
+                                        <polyline points="13 2 13 9 20 9"></polyline>
+                                    </svg>
+                                    <h3>Files and Content</h3>
+                                </div>
+                                <ul>
+                                    <li><strong>Uploaded files:</strong> The files you choose to upload to our service</li>
+                                    <li><strong>File metadata:</strong> File names, sizes, upload dates, and descriptions you provide</li>
+                                    <li><strong>Section information:</strong> Names and codes for the sections you create to organize your files</li>
+                                </ul>
+                            </div>
+
+                            <div class="privacy-info-box privacy-info-warning">
+                                <div class="privacy-info-header">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <circle cx="12" cy="12" r="10"></circle>
+                                        <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+                                    </svg>
+                                    <h3>IP Address (Rate Limiting Only)</h3>
+                                </div>
+                                <p>We temporarily collect your IP address <strong>exclusively for rate limiting purposes</strong> to prevent abuse and ensure fair usage of our service. This is the only technical data we collect about your connection.</p>
+                                <p><strong>Important:</strong> We do NOT use your IP address for tracking, analytics, or any other purpose beyond security and rate limiting.</p>
+                            </div>
+
+                            <div class="privacy-highlight">
+                                <h4>What We DON'T Collect</h4>
+                                <ul class="privacy-dont-list">
+                                    <li>Browsing history or behavior</li>
+                                    <li>Location data beyond general IP-based region</li>
+                                    <li>Device information or browser fingerprints</li>
+                                    <li>Cookies for tracking purposes</li>
+                                    <li>Analytics or usage patterns</li>
+                                    <li>Social media information</li>
+                                    <li>Third-party data from data brokers</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Section 3: How We Use Your Information -->
+                    <div class="privacy-section" id="how-we-use">
+                        <h2 class="privacy-section-title">3. How We Use Your Information</h2>
+                        <div class="privacy-section-content">
+                            <p>We use the information we collect solely to provide and improve our service:</p>
+                            
+                            <div class="privacy-use-grid">
+                                <div class="privacy-use-item">
+                                    <div class="privacy-use-icon">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <circle cx="12" cy="12" r="10"></circle>
+                                            <polyline points="12 6 12 12 16 14"></polyline>
+                                        </svg>
+                                    </div>
+                                    <h4>Service Provision</h4>
+                                    <p>To create and manage your account, store your files, and enable file sharing functionality</p>
+                                </div>
+
+                                <div class="privacy-use-item">
+                                    <div class="privacy-use-icon">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                                        </svg>
+                                    </div>
+                                    <h4>Security & Abuse Prevention</h4>
+                                    <p>To protect our service from unauthorized access, spam, and malicious activities using rate limiting</p>
+                                </div>
+
+                                <div class="privacy-use-item">
+                                    <div class="privacy-use-icon">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                                            <polyline points="22,6 12,13 2,6"></polyline>
+                                        </svg>
+                                    </div>
+                                    <h4>Essential Communications</h4>
+                                    <p>To send account-related emails like password resets and important service updates (no marketing)</p>
+                                </div>
+
+                                <div class="privacy-use-item">
+                                    <div class="privacy-use-icon">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path>
+                                        </svg>
+                                    </div>
+                                    <h4>Service Maintenance</h4>
+                                    <p>To maintain and improve the reliability and performance of FileHub</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Section 4: Data Storage & Security -->
+                    <div class="privacy-section" id="data-storage">
+                        <h2 class="privacy-section-title">4. Data Storage & Security</h2>
+                        <div class="privacy-section-content">
+                            <p>We take the security of your data seriously and implement industry-standard practices:</p>
+                            
+                            <div class="privacy-security-grid">
+                                <div class="privacy-security-item">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                                        <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                                    </svg>
+                                    <h4>Encrypted Storage</h4>
+                                    <p>All passwords are hashed using bcrypt before storage. Files are stored securely on our servers.</p>
+                                </div>
+
+                                <div class="privacy-security-item">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                                    </svg>
+                                    <h4>Access Controls</h4>
+                                    <p>Strict access controls ensure only authorized personnel can access server infrastructure.</p>
+                                </div>
+
+                                <div class="privacy-security-item">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <circle cx="12" cy="12" r="10"></circle>
+                                        <line x1="2" y1="12" x2="22" y2="12"></line>
+                                        <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+                                    </svg>
+                                    <h4>HTTPS/SSL</h4>
+                                    <p>All data transmission between your device and our servers is encrypted using SSL/TLS.</p>
+                                </div>
+
+                                <div class="privacy-security-item">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+                                    </svg>
+                                    <h4>Regular Monitoring</h4>
+                                    <p>We monitor our systems for security threats and unauthorized access attempts.</p>
+                                </div>
+                            </div>
+
+                            <div class="privacy-note">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <circle cx="12" cy="12" r="10"></circle>
+                                    <line x1="12" y1="16" x2="12" y2="12"></line>
+                                    <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                                </svg>
+                                <p><strong>Note:</strong> While we implement strong security measures, no method of transmission over the internet is 100% secure. We cannot guarantee absolute security but are committed to protecting your data using industry best practices.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Section 5: Data Sharing -->
+                    <div class="privacy-section" id="data-sharing">
+                        <h2 class="privacy-section-title">5. Data Sharing</h2>
+                        <div class="privacy-section-content">
+                            <div class="privacy-emphasis-box">
+                                <h3>We Do NOT Sell or Share Your Data</h3>
+                                <p>FileHub does not sell, rent, trade, or otherwise share your personal information with third parties for marketing purposes. Your data is yours.</p>
+                            </div>
+
+                            <p>The only circumstances under which we might share information are:</p>
+
+                            <div class="privacy-sharing-list">
+                                <div class="privacy-sharing-item">
+                                    <h4>Legal Requirements</h4>
+                                    <p>If required by law, court order, or government regulation, we may disclose information. We will notify you of such requests unless legally prohibited.</p>
+                                </div>
+
+                                <div class="privacy-sharing-item">
+                                    <h4>Service Providers</h4>
+                                    <p>We may use trusted third-party service providers (like hosting services) who need access to your data to operate our service. These providers are contractually obligated to protect your data and use it only for providing services to us.</p>
+                                </div>
+
+                                <div class="privacy-sharing-item">
+                                    <h4>With Your Consent</h4>
+                                    <p>We will share information with third parties only when you explicitly authorize us to do so.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Section 6: Your Rights -->
+                    <div class="privacy-section" id="your-rights">
+                        <h2 class="privacy-section-title">6. Your Rights</h2>
+                        <div class="privacy-section-content">
+                            <p>You have complete control over your data. Here are your rights:</p>
+                            
+                            <div class="privacy-rights-grid">
+                                <div class="privacy-right-card">
+                                    <div class="privacy-right-icon">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                            <circle cx="12" cy="12" r="3"></circle>
+                                        </svg>
+                                    </div>
+                                    <h4>Access</h4>
+                                    <p>View and download all your data at any time through your dashboard</p>
+                                </div>
+
+                                <div class="privacy-right-card">
+                                    <div class="privacy-right-icon">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                                            <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                                        </svg>
+                                    </div>
+                                    <h4>Update</h4>
+                                    <p>Modify your account information and settings whenever you want</p>
+                                </div>
+
+                                <div class="privacy-right-card">
+                                    <div class="privacy-right-icon">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <polyline points="3 6 5 6 21 6"></polyline>
+                                            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                                        </svg>
+                                    </div>
+                                    <h4>Delete</h4>
+                                    <p>Delete individual files, sections, or your entire account permanently</p>
+                                </div>
+
+                                <div class="privacy-right-card">
+                                    <div class="privacy-right-icon">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                            <polyline points="7 10 12 15 17 10"></polyline>
+                                            <line x1="12" y1="15" x2="12" y2="3"></line>
+                                        </svg>
+                                    </div>
+                                    <h4>Export</h4>
+                                    <p>Download all your files and data in a portable format</p>
+                                </div>
+                            </div>
+
+                            <div class="privacy-rights-contact">
+                                <p>To exercise any of these rights or if you have questions, please contact us at <strong>privacy@filehub.com</strong></p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Section 7: Data Retention -->
+                    <div class="privacy-section" id="data-retention">
+                        <h2 class="privacy-section-title">7. Data Retention</h2>
+                        <div class="privacy-section-content">
+                            <p>We retain your data only as long as necessary to provide our service:</p>
+                            
+                            <div class="privacy-retention-list">
+                                <div class="privacy-retention-item">
+                                    <strong>Active Accounts:</strong> We retain your account information and files as long as your account remains active.
+                                </div>
+                                <div class="privacy-retention-item">
+                                    <strong>Deleted Files:</strong> When you delete files, they are permanently removed from our servers within 30 days.
+                                </div>
+                                <div class="privacy-retention-item">
+                                    <strong>Closed Accounts:</strong> When you delete your account, all your data is permanently removed within 30 days, except where we're legally required to retain certain information.
+                                </div>
+                                <div class="privacy-retention-item">
+                                    <strong>IP Addresses:</strong> IP addresses used for rate limiting are retained temporarily and automatically purged after 24 hours.
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Section 8: Children's Privacy -->
+                    <div class="privacy-section" id="children-privacy">
+                        <h2 class="privacy-section-title">8. Children's Privacy</h2>
+                        <div class="privacy-section-content">
+                            <p>FileHub is not intended for use by children under the age of 13. We do not knowingly collect personal information from children under 13. If we learn that we have collected personal information from a child under 13, we will delete that information as quickly as possible.</p>
+                            <p>If you are a parent or guardian and believe your child has provided us with personal information, please contact us at <strong>privacy@filehub.com</strong>.</p>
+                        </div>
+                    </div>
+
+                    <!-- Section 9: Changes to Policy -->
+                    <div class="privacy-section" id="changes">
+                        <h2 class="privacy-section-title">9. Changes to This Privacy Policy</h2>
+                        <div class="privacy-section-content">
+                            <p>We may update this privacy policy from time to time to reflect changes in our practices or for legal reasons. When we make changes:</p>
+                            <ul>
+                                <li>We will update the "Last Updated" date at the top of this policy</li>
+                                <li>For significant changes, we will notify you via email or through a prominent notice on our website</li>
+                                <li>We encourage you to review this policy periodically</li>
+                            </ul>
+                            <p>Your continued use of FileHub after changes to this policy constitutes your acceptance of the updated terms.</p>
+                        </div>
+                    </div>
+
+                    <!-- Section 10: Contact -->
+                    <div class="privacy-section" id="contact">
+                        <h2 class="privacy-section-title">10. Contact Us</h2>
+                        <div class="privacy-section-content">
+                            <p>If you have questions, concerns, or requests regarding this privacy policy or how we handle your data, please contact us:</p>
+                            
+                            <div class="privacy-contact-box">
+                                <div class="privacy-contact-item">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                                        <polyline points="22,6 12,13 2,6"></polyline>
+                                    </svg>
+                                    <div>
+                                        <strong>Email:</strong>
+                                        <a href="mailto:privacy@filehub.com">privacy@filehub.com</a>
+                                    </div>
+                                </div>
+                                <div class="privacy-contact-item">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
+                                        <circle cx="12" cy="10" r="3"></circle>
+                                    </svg>
+                                    <div>
+                                        <strong>Response Time:</strong>
+                                        <span>We aim to respond within 48 hours</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer CTA -->
+    <section class="privacy-footer-cta">
+        <div class="privacy-container">
+            <div class="privacy-cta-content">
+                <h2>Ready to Experience Privacy-First File Sharing?</h2>
+                <p>Join FileHub today and enjoy secure, private file management without the tracking.</p>
+                <div class="privacy-cta-buttons">
+                    <a href="{{ url_for('auth_bp.sign_up') }}" class="privacy-cta-btn privacy-cta-primary">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="8.5" cy="7" r="4"></circle>
+                            <line x1="20" y1="8" x2="20" y2="14"></line>
+                            <line x1="23" y1="11" x2="17" y2="11"></line>
+                        </svg>
+                        Get Started Free
+                    </a>
+                    <a href="{{ url_for('main_bp.home') }}" class="privacy-cta-btn privacy-cta-secondary">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="19" y1="12" x2="5" y2="12"></line>
+                            <polyline points="12 19 5 12 12 5"></polyline>
+                        </svg>
+                        Back to Home
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+{% endblock %}

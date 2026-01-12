@@ -18,4 +18,9 @@ class ProductionConfig(BaseConfig):
     # Security
     SESSION_COOKIE_SAMESITE = "Strict"
 
+    # Mail Setup
+    MAIL_USERNAME: str | None = None
+    MAIL_PASSWORD: str | None = None
+    MAIL_DEFAULT_SENDER: str | None = None
+
     

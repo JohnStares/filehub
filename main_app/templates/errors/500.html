@@ -1,0 +1,107 @@
+{% extends "base.html" %}
+
+{% block title %}500 - Internal Server Error - FileHub{% endblock %}
+
+{% block content %}
+<div class="error-page">
+    <div class="error-container">
+        <!-- Animated Error Icon -->
+        <div class="error-icon-wrapper">
+            <div class="error-icon error-icon-500">
+                <svg class="error-svg" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                    <!-- Server Icon -->
+                    <rect x="40" y="50" width="120" height="30" rx="5" fill="#667eea" opacity="0.3">
+                        <animate attributeName="opacity" values="0.3;0.6;0.3" dur="2s" repeatCount="indefinite"/>
+                    </rect>
+                    <rect x="40" y="90" width="120" height="30" rx="5" fill="#764ba2" opacity="0.5">
+                        <animate attributeName="opacity" values="0.5;0.8;0.5" dur="2s" begin="0.3s" repeatCount="indefinite"/>
+                    </rect>
+                    <rect x="40" y="130" width="120" height="30" rx="5" fill="#667eea" opacity="0.3">
+                        <animate attributeName="opacity" values="0.3;0.6;0.3" dur="2s" begin="0.6s" repeatCount="indefinite"/>
+                    </rect>
+                    
+                    <!-- Alert Symbol -->
+                    <circle cx="100" cy="105" r="35" fill="#ff4444" opacity="0.9"/>
+                    <text x="100" y="120" font-size="40" font-weight="bold" fill="white" text-anchor="middle">!</text>
+                </svg>
+            </div>
+        </div>
+
+        <!-- Error Content -->
+        <div class="error-content">
+            <h1 class="error-code">500</h1>
+            <h2 class="error-title">Internal Server Error</h2>
+            <p class="error-message">Oops! Something went wrong on our end. We're working to fix the issue.</p>
+            
+            <div class="error-details">
+                <div class="error-detail-item">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <line x1="12" y1="16" x2="12" y2="12"></line>
+                        <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                    </svg>
+                    <span>The server encountered an unexpected condition</span>
+                </div>
+                <div class="error-detail-item">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                    </svg>
+                    <span>Your data is safe and secure</span>
+                </div>
+                <div class="error-detail-item">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="23 4 23 10 17 10"></polyline>
+                        <polyline points="1 20 1 14 7 14"></polyline>
+                        <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+                    </svg>
+                    <span>Our team has been notified and is investigating</span>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="error-actions">
+                {% if current_user.role == 'admin' or current_user.role == 'super_admin' %}
+                <a href="{{ url_for('admin_bp.dashboard') }}" class="error-btn error-btn-primary">
+                {% else %}
+                 <a href="{{ url_for('main_bp.home') }}" class="error-btn error-btn-primary"></a>
+                {% endif %}
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="3" y="3" width="7" height="7"></rect>
+                        <rect x="14" y="3" width="7" height="7"></rect>
+                        <rect x="14" y="14" width="7" height="7"></rect>
+                        <rect x="3" y="14" width="7" height="7"></rect>
+                    </svg>
+                    <span>Go to Dashboard</span>
+                </a>
+                <a href="/" class="error-btn error-btn-secondary">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                        <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                    </svg>
+                    <span>Go Home</span>
+                </a>
+                <button onclick="location.reload()" class="error-btn error-btn-outline">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="23 4 23 10 17 10"></polyline>
+                        <polyline points="1 20 1 14 7 14"></polyline>
+                        <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+                    </svg>
+                    <span>Try Again</span>
+                </button>
+            </div>
+
+            <!-- Help Section -->
+            <div class="error-help">
+                <p>Need immediate assistance?</p>
+                <a href="mailto:support@filehub.com" class="error-help-link">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                        <polyline points="22,6 12,13 2,6"></polyline>
+                    </svg>
+                    <span>Contact Support</span>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

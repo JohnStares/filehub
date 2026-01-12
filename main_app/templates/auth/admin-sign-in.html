@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Sign In - FileHub</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/admin.css') }}">
+    <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
+    <script defer type="text/javascript" src="{{ url_for('static', filename='js_scripts/funs.js') }}"></script>
+</head>
+<body>
+    <div class="flash">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                <ul>
+                    {% for category, message in messages %}
+                        <div class="flash-{{ category }}">
+                            <li>{{ message }}</li>
+                        </div>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        {% endwith %}
+    </div>
+    <div class="adminsign-container">
+        <div class="adminsign-left">
+            <div class="adminsign-branding">
+                <a href="/" class="adminsign-logo">
+                    <svg class="adminsign-logo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path>
+                        <polyline points="13 2 13 9 20 9"></polyline>
+                    </svg>
+                    <span>FileHub</span>
+                </a>
+                <div class="adminsign-badge">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                        <path d="M9 12l2 2 4-4"></path>
+                    </svg>
+                    <span>Admin Portal</span>
+                </div>
+                <h1 class="adminsign-welcome">Administrator Login</h1>
+                <p class="adminsign-tagline">Access the admin dashboard to manage all sections, monitor submissions, and oversee the entire FileHub platform.</p>
+                
+                <div class="adminsign-info-box">
+                    <div class="adminsign-info-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <line x1="12" y1="16" x2="12" y2="12"></line>
+                            <line x1="12" y1="8" x2="12.01" y2="8"></line>
+                        </svg>
+                    </div>
+                    <div class="adminsign-info-content">
+                        <h3>Admin Dashboard Access</h3>
+                        <ul>
+                            <li>Complete system overview and analytics</li>
+                            <li>Manage all users and sections</li>
+                            <li>View and audit all file submissions</li>
+                            <li>Configure platform settings</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="adminsign-features">
+                    <div class="adminsign-feature-item">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="20 6 9 17 4 12"></polyline>
+                        </svg>
+                        <span>Secure admin authentication</span>
+                    </div>
+                    <div class="adminsign-feature-item">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="20 6 9 17 4 12"></polyline>
+                        </svg>
+                        <span>Real-time system monitoring</span>
+                    </div>
+                    <div class="adminsign-feature-item">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="20 6 9 17 4 12"></polyline>
+                        </svg>
+                        <span>Comprehensive admin controls</span>
+                    </div>
+                    <div class="adminsign-feature-item">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="20 6 9 17 4 12"></polyline>
+                        </svg>
+                        <span>Activity logs and reporting</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="adminsign-right">
+            <div class="adminsign-form-container">
+                <div class="adminsign-form-header">
+                    <div class="adminsign-lock-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                            <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                        </svg>
+                        <div class="adminsign-lock-check">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg>
+                        </div>
+                    </div>
+                    <h2 class="adminsign-form-title">Admin Sign In</h2>
+                    <p class="adminsign-form-subtitle">Enter your admin credentials to continue</p>
+                </div>
+
+                {% if error %}
+                <div class="adminsign-alert adminsign-alert-error">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <line x1="12" y1="8" x2="12" y2="12"></line>
+                        <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                    </svg>
+                    <span>{{ error }}</span>
+                </div>
+                {% endif %}
+
+                {% if success %}
+                <div class="adminsign-alert adminsign-alert-success">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="20 6 9 17 4 12"></polyline>
+                    </svg>
+                    <span>{{ success }}</span>
+                </div>
+                {% endif %}
+
+                <form method="POST" action="{{ url_for('auth_bp.admin_sign_in') }}" class="adminsign-form">
+                    {{ form.csrf_token() }}
+
+                    <div class="adminsign-form-group">
+                        {{ form.username.label(class="adminsign-form-label") }}
+                        <div class="adminsign-input-wrapper">
+                            <svg class="adminsign-input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                                <circle cx="12" cy="7" r="4"></circle>
+                            </svg>
+                            {{ form.username(class="adminsign-form-input", placeholder="Enter admin username", autocomplete="username") }}
+                        </div>
+                        {% if form.username.errors %}
+                            <div class="adminsign-form-error">
+                                {% for error in form.username.errors %}
+                                    <span>{{ error }}</span>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="adminsign-form-group">
+                        {{ form.password.label(class="adminsign-form-label") }}
+                        <div class="adminsign-password-wrapper">
+                            {{ form.password(class="adminsign-form-input", placeholder="Enter admin password", autocomplete="current-password") }}
+                            <button type="button" class="adminsign-password-toggle" onclick="togglePassword('password')">
+                                <svg class="adminsign-eye-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                    <circle cx="12" cy="12" r="3"></circle>
+                                </svg>
+                            </button>
+                        </div>
+                        {% if form.password.errors %}
+                            <div class="adminsign-form-error">
+                                {% for error in form.password.errors %}
+                                    <span>{{ error }}</span>
+                                {% endfor %}
+                            </div>
+                        {% endif %}
+                    </div>
+
+                    <div class="adminsign-forgot-password">
+                        <a href="{{ url_for('auth_bp.forgot_password') }}" class="adminsign-forgot-link">Forgot admin password?</a>
+                    </div>
+
+                    <div class="adminsign-security-notice">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                        </svg>
+                        <span>Admin access is monitored and logged for security purposes</span>
+                    </div>
+
+                    <button type="submit" class="adminsign-submit-btn">
+                        <span>Sign In as Admin</span>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="5" y1="12" x2="19" y2="12"></line>
+                            <polyline points="12 5 19 12 12 19"></polyline>
+                        </svg>
+                    </button>
+                </form>
+
+                <div class="adminsign-divider">
+                    <span>Don't have admin access?</span>
+                </div>
+
+                <a href="{{ url_for('auth_bp.admin_sign_up') }}" class="adminsign-signup-link">
+                    Request Admin Account
+                </a>
+
+                <div class="adminsign-regular-access">
+                    <p>Looking for regular user access?</p>
+                    <a href="{{ url_for('auth_bp.sign_in') }}" class="adminsign-regular-link">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="12" cy="7" r="4"></circle>
+                        </svg>
+                        <span>Sign In as Regular User</span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+</body>
+</html>

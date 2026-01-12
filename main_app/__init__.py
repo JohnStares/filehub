@@ -18,7 +18,7 @@ def create_app(config_name: Optional[str] = None):
         app.config.from_object(config_obj)
    
    # Initialize extensions
-    from .extensions import (db, migrate, login_manager, limiter, csrf)
+    from .extensions import (db, migrate, login_manager, limiter, csrf, mail)
 
     db.init_app(app)
     migrate.init_app(app, db)
@@ -27,6 +27,7 @@ def create_app(config_name: Optional[str] = None):
     limiter.init_app(app)
 
     csrf.init_app(app)
+    mail.init_app(app)
 
     # set up logging functionality
     set_logger(app=app, basedir=app.config["BASEDIR"])
@@ -38,9 +39,11 @@ def create_app(config_name: Optional[str] = None):
     # Register blueprints
     from main_app.auth import auth_bp
     from main_app.main import main_bp
+    from main_app.admin import admin_bp
 
     app.register_blueprint(auth_bp, url_prefix="/auth")
     app.register_blueprint(main_bp)
+    app.register_blueprint(admin_bp, url_prefix="/admin")
 
     @app.cli.command("create-db")
     def create_db():

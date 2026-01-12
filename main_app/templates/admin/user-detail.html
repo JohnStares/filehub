@@ -1,0 +1,382 @@
+{% extends "admin-base.html" %}
+
+{% block title %}{{ data.user.username }} - User Details - FileHub{% endblock %}
+
+{% block content %}
+<!-- Top Navigation -->
+<nav class="user-detail-topnav">
+    <div class="user-detail-topnav-left">
+        <a href="{{ url_for('admin_bp.dashboard') }}" class="user-detail-back-btn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="19" y1="12" x2="5" y2="12"></line>
+                <polyline points="12 19 5 12 12 5"></polyline>
+            </svg>
+            <span>Back to Dashboard</span>
+        </a>
+        
+        <div class="user-detail-breadcrumb">
+            <a href="{{ url_for('admin_bp.dashboard') }}">Dashboard</a>
+            <svg class="user-detail-breadcrumb-separator" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+            <span>{{ data.user.username }}</span>
+        </div>
+    </div>
+    
+    <div class="user-detail-topnav-right">
+        <a href="{{ url_for('admin_bp.edit_user', user_id=data.user.id) }}" class="user-detail-action-btn user-detail-edit-btn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+            </svg>
+            Edit User
+        </a>
+        
+        <button onclick="confirmDeleteUser('{{ data.user.id }}', '{{ data.user.username }}')" class="user-detail-action-btn user-detail-delete-btn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="3 6 5 6 21 6"></polyline>
+                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+            </svg>
+            Delete User
+        </button>
+    </div>
+</nav>
+
+<!-- Main Content -->
+<div class="user-detail-content">
+    
+    <!-- User Info Section -->
+    <section class="user-detail-info-section">
+        <div class="user-detail-banner"></div>
+        
+        <div class="user-detail-profile">
+            <div class="user-detail-avatar-large">
+                <div class="user-detail-avatar-large-inner">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="12" cy="7" r="4"></circle>
+                    </svg>
+                </div>
+            </div>
+            
+            <h1 class="user-detail-name">{{ data.user.username }}</h1>
+            
+            <div class="user-detail-meta">
+                <div class="user-detail-meta-item">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                        <polyline points="22,6 12,13 2,6"></polyline>
+                    </svg>
+                    <span>{{ data.user.email }}</span>
+                </div>
+                
+                <div class="user-detail-role-badge {% if data.role == 'admin' %}user-detail-role-admin{% else %}user-detail-role-user{% endif %}">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        {% if data.user.role == 'admin' %}
+                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                        {% else %}
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="12" cy="7" r="4"></circle>
+                        {% endif %}
+                    </svg>
+                    {{ data.user.role|capitalize }}
+                </div>
+                
+                <div class="user-detail-meta-item">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
+                        <line x1="16" y1="2" x2="16" y2="6"></line>
+                        <line x1="8" y1="2" x2="8" y2="6"></line>
+                        <line x1="3" y1="10" x2="21" y2="10"></line>
+                    </svg>
+                    <span>Joined {{ data.user.created_at.strftime('%B %d, %Y') if data.user.created_at else 'N/A' }}</span>
+                </div>
+            </div>
+            
+            <div class="user-detail-info-grid">
+                <div class="user-detail-info-card">
+                    <div class="user-detail-info-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="8.5" cy="7" r="4"></circle>
+                            <polyline points="17 11 19 13 23 9"></polyline>
+                        </svg>
+                    </div>
+                    <div>
+                        <div class="user-detail-info-label">User ID</div>
+                        <div class="user-detail-info-value">{{ data.user.id }}</div>
+                    </div>
+                </div>
+                
+                <div class="user-detail-info-card">
+                    <div class="user-detail-info-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <polyline points="12 6 12 12 16 14"></polyline>
+                        </svg>
+                    </div>
+                    <div>
+                        <div class="user-detail-info-label">Last Active</div>
+                        <div class="user-detail-info-value" data-timestamp="{{ data.last_login if data.last_login else data.created_at }}">
+                            {{ data.user.last_login.strftime('%B %d, %Y') if data.user.last_login else 'Never' }}
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="user-detail-info-card">
+                    <div class="user-detail-info-icon">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <path d="M12 6v6l4 2"></path>
+                        </svg>
+                    </div>
+                    <div>
+                        <div class="user-detail-info-label">Account Status</div>
+                        <div class="user-detail-info-value">{{ 'Active' if data.user.is_active else 'Inactive' }}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Statistics Section -->
+    <section class="user-detail-stats-section">
+        <div class="user-detail-stat-card">
+            <div class="user-detail-stat-header">
+                <div class="user-detail-stat-label">Total Sections</div>
+                <div class="user-detail-stat-icon user-detail-stat-primary">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
+                    </svg>
+                </div>
+            </div>
+            <div class="user-detail-stat-value">{{ data.user.sections|length }}</div>
+        </div>
+        
+        <div class="user-detail-stat-card">
+            <div class="user-detail-stat-header">
+                <div class="user-detail-stat-label">Total Submissions</div>
+                <div class="user-detail-stat-icon user-detail-stat-success">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path>
+                        <polyline points="13 2 13 9 20 9"></polyline>
+                    </svg>
+                </div>
+            </div>
+            <div class="user-detail-stat-value">
+                {% set total_submissions = namespace(count=0) %}
+                {% for section in data.user.sections %}
+                    {% set total_submissions.count = total_submissions.count + (section.submissions|length if section.submissions else 0) %}
+                {% endfor %}
+                {{ total_submissions.count }}
+            </div>
+        </div>
+        
+        <div class="user-detail-stat-card">
+            <div class="user-detail-stat-header">
+                <div class="user-detail-stat-label">Expected Files</div>
+                <div class="user-detail-stat-icon user-detail-stat-warning">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                        <polyline points="14 2 14 8 20 8"></polyline>
+                        <line x1="16" y1="13" x2="8" y2="13"></line>
+                        <line x1="16" y1="17" x2="8" y2="17"></line>
+                        <polyline points="10 9 9 9 8 9"></polyline>
+                    </svg>
+                </div>
+            </div>
+            <div class="user-detail-stat-value">
+                {% set total_expected = namespace(count=0) %}
+                {% for section in data.user.sections %}
+                    {% set total_expected.count = total_expected.count + (section.expected_submission if section.expected_submission else 0) %}
+                {% endfor %}
+                {{ total_expected.count }}
+            </div>
+        </div>
+        
+        <div class="user-detail-stat-card">
+            <div class="user-detail-stat-header">
+                <div class="user-detail-stat-label">Storage Used</div>
+                <div class="user-detail-stat-icon user-detail-stat-info">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="2" y="3" width="20" height="14" rx="2" ry="2"></rect>
+                        <line x1="8" y1="21" x2="16" y2="21"></line>
+                        <line x1="12" y1="17" x2="12" y2="21"></line>
+                    </svg>
+                </div>
+            </div>
+            <div class="user-detail-stat-value">
+                {% set total_size = namespace(bytes=0) %}
+                {% for section in data.user.sections %}
+                    {% if section.submissions %}
+                        {% for file in section.submissions %}
+                            {% set total_size.bytes = total_size.bytes + (file.file_size if file.file_size else 0) %}
+                        {% endfor %}
+                    {% endif %}
+                {% endfor %}
+                <span class="view-file-size" data-size="{{ total_size.bytes }}">{{ total_size.bytes }}</span>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Sections Section -->
+    <section class="user-detail-sections-section">
+        <div class="user-detail-sections-header">
+            <h2 class="user-detail-sections-title">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
+                </svg>
+                User Sections
+            </h2>
+            <div class="user-detail-sections-count">{{ data.user.sections|length }}</div>
+        </div>
+        
+        <div class="user-detail-sections-body">
+            {% if data.user.sections %}
+            <div class="user-detail-sections-grid">
+                {% for section in data.user.sections %}
+                <a href="{{ url_for('admin_bp.user_section', section_id=section.id) }}" class="user-detail-section-card">
+                    <div class="user-detail-section-header">
+                        <div class="user-detail-section-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
+                            </svg>
+                        </div>
+                        <div class="user-detail-section-badge">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path>
+                                <polyline points="13 2 13 9 20 9"></polyline>
+                            </svg>
+                            {{ section.submissions|length if section.submissions else 0 }} files
+                        </div>
+                    </div>
+                    
+                    <h3 class="user-detail-section-name">{{ section.section_name }}</h3>
+                    
+                    {% if section.section_code %}
+                    <div class="user-detail-section-code" onclick="event.preventDefault(); event.stopPropagation();">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="16 18 22 12 16 6"></polyline>
+                            <polyline points="8 6 2 12 8 18"></polyline>
+                        </svg>
+                        {{ section.section_code }}
+                    </div>
+                    {% endif %}
+                    
+                    <div class="user-detail-section-meta">
+                        <div class="user-detail-section-meta-item">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                <polyline points="14 2 14 8 20 8"></polyline>
+                                <line x1="16" y1="13" x2="8" y2="13"></line>
+                                <line x1="16" y1="17" x2="8" y2="17"></line>
+                            </svg>
+                            Expected: {{ section.expected_submission if section.expected_submission else 0 }} submissions
+                        </div>
+                        
+                        <div class="user-detail-section-meta-item">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                <polyline points="7 10 12 15 17 10"></polyline>
+                                <line x1="12" y1="15" x2="12" y2="3"></line>
+                            </svg>
+                            Received: {{ section.submissions|length if section.submissions else 0 }} files
+                        </div>
+                    </div>
+                    
+                    <div class="user-detail-section-footer">
+                        <span class="user-detail-section-date" data-timestamp="{{ section.created_at }}">
+                            Created {{ section.created_at.strftime('%Y %m, %d %H:%M:%S') if section.created_at else 'N/A' }}
+                        </span>
+                        <svg class="user-detail-section-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="5" y1="12" x2="19" y2="12"></line>
+                            <polyline points="12 5 19 12 12 19"></polyline>
+                        </svg>
+                    </div>
+                </a>
+                {% endfor %}
+            </div>
+            {% else %}
+            <div class="user-detail-empty-state">
+                <div class="user-detail-empty-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
+                        <line x1="9" y1="9" x2="15" y2="15"></line>
+                        <line x1="15" y1="9" x2="9" y2="15"></line>
+                    </svg>
+                </div>
+                <h3 class="user-detail-empty-title">No Sections Yet</h3>
+                <p class="user-detail-empty-text">This user hasn't created any sections yet.</p>
+            </div>
+            {% endif %}
+        </div>
+    </section>
+    
+</div>
+
+<!-- Delete User Confirmation Modal -->
+<div id="deleteUserModal" class="user-detail-modal" style="display: none;">
+    <div class="user-detail-modal-overlay" onclick="closeDeleteUserModal()"></div>
+    <div class="user-detail-modal-content">
+        <div class="user-detail-modal-header">
+            <div class="user-detail-modal-icon user-detail-modal-icon-danger">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+                    <line x1="12" y1="9" x2="12" y2="13"></line>
+                    <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                </svg>
+            </div>
+            <h3 class="user-detail-modal-title">Delete User</h3>
+            <p class="user-detail-modal-text">
+                Are you sure you want to delete <strong id="deleteUserName"></strong>? 
+                This action cannot be undone and will permanently remove all user data, sections, and files.
+            </p>
+        </div>
+        
+        <form id="deleteUserForm" method="POST" class="user-detail-modal-form">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <div class="user-detail-modal-actions">
+                <button type="button" onclick="closeDeleteUserModal()" class="user-detail-modal-btn user-detail-modal-btn-cancel">
+                    Cancel
+                </button>
+                <button type="submit" class="user-detail-modal-btn user-detail-modal-btn-danger">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="3 6 5 6 21 6"></polyline>
+                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                    </svg>
+                    Delete User
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+// Delete user confirmation
+function confirmDeleteUser(userId, username) {
+    const modal = document.getElementById('deleteUserModal');
+    const form = document.getElementById('deleteUserForm');
+    const nameElement = document.getElementById('deleteUserName');
+    
+    nameElement.textContent = username;
+    form.action = `/admin/delete-user/${userId}`;
+    
+    modal.style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+}
+
+function closeDeleteUserModal() {
+    const modal = document.getElementById('deleteUserModal');
+    modal.style.display = 'none';
+    document.body.style.overflow = 'auto';
+}
+
+// Close modal on ESC key
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+        closeDeleteUserModal();
+    }
+});
+</script>
+{% endblock %}
+

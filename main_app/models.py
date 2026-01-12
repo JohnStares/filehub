@@ -14,6 +14,8 @@ class User(UserMixin, db.Model):
     id: orm.Mapped[int] = orm.mapped_column(primary_key=True)
     username: orm.Mapped[str] = orm.mapped_column(sql.String(20), unique=True, index=True, nullable=False)
     email: orm.Mapped[str] = orm.mapped_column(sql.String(30), unique=True, index=True, nullable=False)
+    role: orm.Mapped[str] = orm.mapped_column(sql.String(5), nullable=True, default="user")
+    is_admin: orm.Mapped[bool] = orm.mapped_column(sql.Boolean, nullable=True, default=False, index=True)
     password_hash: orm.Mapped[Optional[str]] = orm.mapped_column(sql.String(300))
 
     # Ensures when a user is deleted, all of itself is removed from the database that referenced it
@@ -32,6 +34,28 @@ class User(UserMixin, db.Model):
         """Checks if the provided password matches that already stored. Returns False if it doesn't match"""
         if self.password_hash is not None:
             return check_password_hash(self.password_hash, password)
+        
+
+    @classmethod
+    def create_user(cls, username: str, email: str, password: str, **kwargs) -> None:
+        """
+        This function provides another way to create a user
+        
+        :param username: A unique name that serves as a username for the user
+        :type username: str
+        :param email: A unique and valid email
+        :type email: str
+        :param password: A very strong password
+        :type password: str
+        :param **kwargs: Other keyword arguments
+        :type **kwargs: dict
+        """
+        user = cls(username=username, email=email)
+        user.hash_password(password)
+
+        db.session.add(user)
+        db.session.commit()
+
 
     def __str__(self):
         return f"Username: {self.username} | Email: {self.email}"
@@ -83,7 +107,71 @@ class Submissions(db.Model):
     def __str__(self) -> str:
         return f"Filename: {self.original_filename} by {self.uploader_name} at {self.uploaded_at}"
     
+
+
+class ResetToken(db.Model):
+    id: orm.Mapped[int] = orm.mapped_column(primary_key=True, index=True)
+    user_id: orm.Mapped[int] = orm.mapped_column(sql.Integer, index=True)
+    token: orm.Mapped[str] = orm.mapped_column(sql.String(70), unique=True, index=True)
+    expires_at: orm.Mapped[datetime] = orm.mapped_column(sql.DateTime(timezone=True), index=True)
+    used: orm.Mapped[bool] = orm.mapped_column(sql.Boolean, default=False)
+    time_created: orm.Mapped[datetime] = orm.mapped_column(sql.DateTime(timezone=True), default=lambda: datetime.now(timezone.utc))
+
+    def is_valid(self) -> bool:
+        """
+        Returns true if the time is still within time frame
+        """
+        if self.expires_at.tzinfo is None:
+            expires_at_aware = self.expires_at.replace(tzinfo=timezone.utc)
+        else:
+            expires_at_aware = self.expires_at
+
+        return datetime.now(timezone.utc) < expires_at_aware
     
+    @classmethod
+    def mark_expired_token_as_used(cls) -> None:
+        """
+        Marks unused and expired token as used
+        """
+
+        unused_token: list[ResetToken] = cls.query.filter(cls.used == False).all()
+
+        expired_unused_token = [
+            token for token in unused_token \
+            if datetime.now(timezone.utc) <= token.expires_at.replace(tzinfo=timezone.utc)
+        ]
+
+        for token in expired_unused_token:
+            token.used = True
+        db.session.commit()
+
+    @classmethod
+    def delete_successfully_used_token(cls, token: str) -> None:
+        """
+        Deletes tokens that are successfully used.
+        """
+        used_token = cls.query.filter(cls.token == token).first()
+
+        db.session.delete(used_token)
+        db.session.commit()
+
+
+    @classmethod
+    def delete_used_token(cls) -> None:
+        """
+        Deletes all used token.
+        """
+        used_token: list[ResetToken] = cls.query.filter(cls.used == True).all()
+
+        for token in used_token:
+            db.session.delete(token)
+        
+        db.session.commit()
+
+
+    def __str__(self) -> str:
+        return f"ResetToken: User_id-{self.user_id} || Token-{self.token} || Expires_at-{self.expires_at}"
+
 
 # flask-login uses this to know to load a user
 @login_manager.user_loader

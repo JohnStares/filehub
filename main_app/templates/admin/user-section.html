@@ -1,0 +1,403 @@
+{% extends "admin-base.html" %}
+
+{% block title %}Section Details - {{ data.section.section_name }} - FileHub{% endblock %}
+
+{% block content %}
+<!-- Top Navigation Bar -->
+<nav class="admindash-topnav">
+    <div class="admindash-topnav-left">
+        <button class="admindash-menu-toggle" onclick="toggleSidebar()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="3" y1="12" x2="21" y2="12"></line>
+                <line x1="3" y1="6" x2="21" y2="6"></line>
+                <line x1="3" y1="18" x2="21" y2="18"></line>
+            </svg>
+        </button>
+        <div class="admindash-logo">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path>
+                <polyline points="13 2 13 9 20 9"></polyline>
+            </svg>
+            <span>FileHub</span>
+        </div>
+    </div>
+
+    <div class="admindash-topnav-right">
+        <a href="" class="admindash-icon-btn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                <polyline points="22,6 12,13 2,6"></polyline>
+            </svg>
+        </a>
+
+        <a href="" class="admindash-icon-btn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+            </svg>
+        </a>
+
+        <div class="admindash-user-dropdown">
+            <button class="admindash-user-btn" onclick="toggleUserDropdown()">
+                <div class="admindash-user-avatar-small">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="12" cy="7" r="4"></circle>
+                    </svg>
+                </div>
+                <span>{{ current_user.username }}</span>
+                <svg class="admindash-dropdown-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="6 9 12 15 18 9"></polyline>
+                </svg>
+            </button>
+
+            <div class="admindash-dropdown-menu" id="userDropdown">
+                <a href="{{ url_for('admin_bp.profile', user_id=current_user.id) }}" class="admindash-dropdown-item">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="12" cy="7" r="4"></circle>
+                    </svg>
+                    <span>Profile</span>
+                </a>
+                <a href="{{ url_for('admin_bp.settings') }}" class="admindash-dropdown-item">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="3"></circle>
+                        <path d="M12 1v6m0 6v6"></path>
+                    </svg>
+                    <span>Settings</span>
+                </a>
+                <div class="admindash-dropdown-divider"></div>
+                <form method="POST" action="{{ url_for('auth_bp.logout') }}" style="margin: 0;">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    <button type="submit" class="admindash-dropdown-item admindash-logout">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                            <polyline points="16 17 21 12 16 7"></polyline>
+                            <line x1="21" y1="12" x2="9" y2="12"></line>
+                        </svg>
+                        <span>Logout</span>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<!-- Dashboard Content -->
+<div class="admindash-content">
+    <!-- Back Navigation -->
+    <div style="margin-bottom: 1.5rem;">
+        <a href="{{ url_for('admin_bp.user_details', user_id=data.section.user_id) }}" style="display: inline-flex; align-items: center; gap: 0.5rem; color: #667eea; font-weight: 600; transition: all 0.3s ease;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 20px; height: 20px;">
+                <line x1="19" y1="12" x2="5" y2="12"></line>
+                <polyline points="12 19 5 12 12 5"></polyline>
+            </svg>
+            <span>Back to User Details</span>
+        </a>
+    </div>
+
+    <div class="admindash-header">
+        <h1 class="admindash-title">{{ data.section.section_name }}</h1>
+        <p class="admindash-subtitle">View and manage all submissions for this section</p>
+    </div>
+
+    <!-- Section Info Cards -->
+    <div class="admindash-stats-grid" style="margin-bottom: 2rem;">
+        <div class="admindash-stat-card">
+            <div class="admindash-stat-icon admindash-stat-primary">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path>
+                </svg>
+            </div>
+            <div class="admindash-stat-info">
+                <div class="admindash-stat-label">Section Name</div>
+                <div class="admindash-stat-value" style="font-size: 1.5rem;">{{ data.section.section_name }}</div>
+            </div>
+        </div>
+
+        <div class="admindash-stat-card">
+            <div class="admindash-stat-icon admindash-stat-success">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
+                </svg>
+            </div>
+            <div class="admindash-stat-info">
+                <div class="admindash-stat-label">Section Code</div>
+                <div class="admindash-stat-value" style="font-size: 1.5rem;">{{ data.section.section_code or 'N/A' }}</div>
+            </div>
+        </div>
+
+        <div class="admindash-stat-card">
+            <div class="admindash-stat-icon admindash-stat-warning">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path>
+                    <polyline points="13 2 13 9 20 9"></polyline>
+                </svg>
+            </div>
+            <div class="admindash-stat-info">
+                <div class="admindash-stat-label">Expected Submissions</div>
+                <div class="admindash-stat-value">{{ data.section.expected_submission }}</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Section Details Card -->
+    <div class="admindash-search-section" style="margin-bottom: 2rem;">
+        <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+            <div>
+                <h3 style="font-size: 1.2rem; font-weight: 700; color: #333; margin-bottom: 0.5rem;">Section Information</h3>
+                <p style="color: #666; font-size: 0.95rem;">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 16px; height: 16px; display: inline; vertical-align: middle; margin-right: 0.5rem;">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <polyline points="12 6 12 12 16 14"></polyline>
+                    </svg>
+                    Created on {{ data.section.created_at.strftime('%B %d, %Y at %I:%M %p') if data.section.created_at else 'N/A' }}
+                </p>
+            </div>
+            <button onclick="confirmDeleteSection()" style="display: flex; align-items: center; gap: 0.5rem; padding: 0.75rem 1.5rem; background: linear-gradient(135deg, #ff4444 0%, #cc0000 100%); color: white; border: none; border-radius: 10px; font-weight: 600; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(255, 68, 68, 0.3);">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 18px; height: 18px;">
+                    <polyline points="3 6 5 6 21 6"></polyline>
+                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                    <line x1="10" y1="11" x2="10" y2="17"></line>
+                    <line x1="14" y1="11" x2="14" y2="17"></line>
+                </svg>
+                <span>Delete Section</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Files Table -->
+    <div class="admindash-table-container">
+        <table class="admindash-table">
+            <thead>
+                <tr>
+                    <th>S/N</th>
+                    <th>File Name</th>
+                    <th>File Size</th>
+                    <th>Uploaded At</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% if data.files.items %}
+                    {% for file in data.files.items %}
+                    <tr class="admindash-table-row">
+                        <td>{{ loop.index }}</td>
+                        <td>
+                            <div class="admindash-user-cell">
+                                <div class="admindash-user-icon" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path>
+                                        <polyline points="13 2 13 9 20 9"></polyline>
+                                    </svg>
+                                </div>
+                                <span class="admindash-username">{{ file.original_filename }}</span>
+                            </div>
+                        </td>
+                        <td>
+                            <span class="view-file-size" data-size="{{ file.file_size }}">{{ file.file_size }} bytes</span>
+                        </td>
+                        <td>{{ file.uploaded_at.strftime('%b %d, %Y %I:%M %p') if file.uploaded_at else 'N/A' }}</td>
+                        <td>
+                            <div style="display: flex; gap: 0.5rem;">
+                                <a href="{{ url_for('admin_bp.download_file', section_id=data.section.id, file_id=file.id) }}" class="admindash-action-btn" title="Download">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                        <polyline points="7 10 12 15 17 10"></polyline>
+                                        <line x1="12" y1="15" x2="12" y2="3"></line>
+                                    </svg>
+                                </a>
+                                <button onclick="confirmDeleteFile('{{ file.id }}', '{{ data.section.id }}', '{{ file.original_filename }}')" class="admindash-action-btn" style="border: none; cursor: pointer;" title="Delete">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <polyline points="3 6 5 6 21 6"></polyline>
+                                        <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                                    </svg>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                {% else %}
+                    <tr>
+                        <td colspan="5" class="admindash-empty-state">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path>
+                                <polyline points="13 2 13 9 20 9"></polyline>
+                            </svg>
+                            <p>No files found in this section</p>
+                        </td>
+                    </tr>
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Pagination -->
+    {% if data.files.items %}
+    <div style="display: flex; justify-content: center; gap: 1rem; margin-top: 2rem;">
+        {% if data.prev %}
+        <a href="{{ data.prev }}" style="display: flex; align-items: center; gap: 0.5rem; padding: 0.75rem 1.5rem; background: white; border: 2px solid #e0e0e0; border-radius: 10px; color: #333; font-weight: 600; transition: all 0.3s ease;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 18px; height: 18px;">
+                <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+            <span>Previous</span>
+        </a>
+        {% endif %}
+        
+        {% if data.next %}
+        <a href="{{ data.next }}" style="display: flex; align-items: center; gap: 0.5rem; padding: 0.75rem 1.5rem; background: linear-gradient(135deg, #4caf50 0%, #45a049 100%); color: white; border: none; border-radius: 10px; font-weight: 600; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);">
+            <span>Next</span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width: 18px; height: 18px;">
+                <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+        </a>
+        {% endif %}
+    </div>
+    {% endif %}
+</div>
+
+<!-- Delete File Modal -->
+<div id="deleteFileModal" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.5); z-index: 2000; align-items: center; justify-content: center;">
+    <div style="background: white; border-radius: 20px; padding: 2rem; max-width: 500px; width: 90%; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);">
+        <div style="text-align: center; margin-bottom: 1.5rem;">
+            <div style="width: 80px; height: 80px; background: linear-gradient(135deg, #ff4444 0%, #cc0000 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" style="width: 40px; height: 40px;">
+                    <polyline points="3 6 5 6 21 6"></polyline>
+                    <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                    <line x1="10" y1="11" x2="10" y2="17"></line>
+                    <line x1="14" y1="11" x2="14" y2="17"></line>
+                </svg>
+            </div>
+            <h2 style="font-size: 1.75rem; font-weight: 800; color: #333; margin-bottom: 0.5rem;">Delete File</h2>
+            <p style="color: #666; font-size: 1rem;">Are you sure you want to delete this file?</p>
+        </div>
+        
+        <div style="background: #fee; border: 1px solid #fcc; border-radius: 10px; padding: 1rem; margin-bottom: 1.5rem;">
+            <p style="color: #c33; font-weight: 600; margin: 0;">
+                <strong id="deleteFileFileName">File Name</strong>
+            </p>
+            <p style="color: #c33; font-size: 0.9rem; margin: 0.5rem 0 0 0;">This action cannot be undone.</p>
+        </div>
+
+        <form id="deleteFileForm" method="POST">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <div style="display: flex; gap: 1rem;">
+                <button type="button" onclick="closeDeleteFileModal()" style="flex: 1; padding: 0.9rem; background: white; border: 2px solid #e0e0e0; border-radius: 10px; font-weight: 600; cursor: pointer; transition: all 0.3s ease;">
+                    Cancel
+                </button>
+                <button type="submit" style="flex: 1; padding: 0.9rem; background: linear-gradient(135deg, #ff4444 0%, #cc0000 100%); color: white; border: none; border-radius: 10px; font-weight: 600; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(255, 68, 68, 0.3);">
+                    Delete File
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Delete Section Modal -->
+<div id="deleteSectionModal" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0, 0, 0, 0.5); z-index: 2000; align-items: center; justify-content: center;">
+    <div style="background: white; border-radius: 20px; padding: 2rem; max-width: 500px; width: 90%; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);">
+        <div style="text-align: center; margin-bottom: 1.5rem;">
+            <div style="width: 80px; height: 80px; background: linear-gradient(135deg, #ff4444 0%, #cc0000 100%); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" style="width: 40px; height: 40px;">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <line x1="15" y1="9" x2="9" y2="15"></line>
+                    <line x1="9" y1="9" x2="15" y2="15"></line>
+                </svg>
+            </div>
+            <h2 style="font-size: 1.75rem; font-weight: 800; color: #333; margin-bottom: 0.5rem;">Delete Section</h2>
+            <p style="color: #666; font-size: 1rem;">Are you sure you want to delete this entire section?</p>
+        </div>
+        
+        <div style="background: #fee; border: 1px solid #fcc; border-radius: 10px; padding: 1rem; margin-bottom: 1.5rem;">
+            <p style="color: #c33; font-weight: 600; margin: 0;">
+                <strong>{{ data.section.section_name }}</strong>
+            </p>
+            <p style="color: #c33; font-size: 0.9rem; margin: 0.5rem 0 0 0;">This will permanently delete the section and all associated files. This action cannot be undone.</p>
+        </div>
+
+        <form method="POST" action="{{ url_for('admin_bp.delete_section', user_id=data.section.user_id, section_id=data.section.id) }}">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <div style="display: flex; gap: 1rem;">
+                <button type="button" onclick="closeDeleteSectionModal()" style="flex: 1; padding: 0.9rem; background: white; border: 2px solid #e0e0e0; border-radius: 10px; font-weight: 600; cursor: pointer; transition: all 0.3s ease;">
+                    Cancel
+                </button>
+                <button type="submit" style="flex: 1; padding: 0.9rem; background: linear-gradient(135deg, #ff4444 0%, #cc0000 100%); color: white; border: none; border-radius: 10px; font-weight: 600; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 4px 15px rgba(255, 68, 68, 0.3);">
+                    Delete Section
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+function toggleUserDropdown() {
+    const dropdown = document.getElementById('userDropdown');
+    dropdown.classList.toggle('show');
+}
+
+// Close dropdown when clicking outside
+window.addEventListener('click', function(e) {
+    if (!e.target.closest('.admindash-user-dropdown')) {
+        const dropdown = document.getElementById('userDropdown');
+        dropdown.classList.remove('show');
+    }
+});
+
+function confirmDeleteFile(fileId, sectionId, fileName) {
+    const modal = document.getElementById('deleteFileModal');
+    const form = document.getElementById('deleteFileForm');
+    const fileNameElement = document.getElementById('deleteFileFileName');
+    
+    fileNameElement.textContent = fileName;
+    form.action = `/admin/delete-file/${sectionId}/${fileId}`;
+    
+    modal.style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+}
+
+function closeDeleteFileModal() {
+    const modal = document.getElementById('deleteFileModal');
+    modal.style.display = 'none';
+    document.body.style.overflow = 'auto';
+}
+
+function confirmDeleteSection() {
+    const modal = document.getElementById('deleteSectionModal');
+    modal.style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+}
+
+function closeDeleteSectionModal() {
+    const modal = document.getElementById('deleteSectionModal');
+    modal.style.display = 'none';
+    document.body.style.overflow = 'auto';
+}
+
+// Close modals on ESC key
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+        closeDeleteFileModal();
+        closeDeleteSectionModal();
+    }
+});
+
+// Format file sizes on page load
+document.addEventListener('DOMContentLoaded', function() {
+    const fileSizes = document.querySelectorAll('.view-file-size');
+    fileSizes.forEach(function(element) {
+        const bytes = parseInt(element.getAttribute('data-size'));
+        element.textContent = formatFileSize(bytes);
+    });
+});
+
+function formatFileSize(bytes) {
+    if (bytes === 0) return '0 Bytes';
+    
+    const k = 1024;
+    const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    
+    return Math.round((bytes / Math.pow(k, i)) * 100) / 100 + ' ' + sizes[i];
+}
+</script>
+{% endblock %}

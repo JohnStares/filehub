@@ -1,6 +1,6 @@
 import logging
 from logging.handlers import RotatingFileHandler
-from flask import request
+from flask import request, render_template, redirect, url_for
 from flask_limiter.errors import RateLimitExceeded
 
 def set_logger(app, basedir):
@@ -102,6 +102,13 @@ def register_handlers(app):
         )
 
         return response
+    
+    @app.errorhandler(403)
+    def forbidden(error):
+        """This logs and handle all forbidden request"""
+        app.logger.info(f"403 error: {request.path} from {request.remote_addr}")
+
+        return redirect(url_for("auth_bp.admin_sign_in"))
 
 
     @app.errorhandler(404)
@@ -117,7 +124,7 @@ def register_handlers(app):
         """This handles all internal server error"""
         app.logger.error(f"Internal server error: {error} from {request.path}", exc_info=True)
 
-        return "Internal Server Error", 500
+        return render_template("errors/500.html")
 
 
 
@@ -126,12 +133,12 @@ def register_handlers(app):
         """This handles all unhandles exceptions"""
         app.logger.exception(f"Unexpected error: {error} from {request.path}", exc_info=True)
 
-        return "An error occured", 500
+        return render_template("errors/500.html")
     
     
     @app.errorhandler(RateLimitExceeded)
     def too_many_request(error):
         """This handles 429 status_code"""
-        app.logger.error(f"Too many request: {error} from {request.path}", exc_info=True)
+        app.logger.warning(f"Too many request: {error} from {request.path}", exc_info=True)
 
-        return f"{error}", 429
+        return render_template("errors/429.html", error=error)

@@ -1,0 +1,148 @@
+{% extends "base.html" %}
+
+{% block title %}429 - Too Many Requests - FileHub{% endblock %}
+
+{% block content %}
+<div class="error-page">
+    <div class="error-container">
+        <!-- Animated Error Icon -->
+        <div class="error-icon-wrapper">
+            <div class="error-icon error-icon-429">
+                <svg class="error-svg" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+                    <!-- Speed Gauge -->
+                    <circle cx="100" cy="100" r="70" fill="none" stroke="#e0e0e0" stroke-width="8"/>
+                    <circle cx="100" cy="100" r="70" fill="none" stroke="#667eea" stroke-width="8" 
+                            stroke-dasharray="440" stroke-dashoffset="110" stroke-linecap="round">
+                        <animate attributeName="stroke-dashoffset" values="110;220;110" dur="2s" repeatCount="indefinite"/>
+                    </circle>
+                    
+                    <!-- Warning Icon in Center -->
+                    <circle cx="100" cy="100" r="45" fill="#ffc107"/>
+                    <path d="M 100 75 L 100 105" stroke="white" stroke-width="8" stroke-linecap="round"/>
+                    <circle cx="100" cy="120" r="4" fill="white"/>
+                    
+                    <!-- Speed Lines -->
+                    <g opacity="0.6">
+                        <line x1="30" y1="50" x2="50" y2="60" stroke="#764ba2" stroke-width="4" stroke-linecap="round">
+                            <animate attributeName="x1" values="30;20;30" dur="1s" repeatCount="indefinite"/>
+                            <animate attributeName="x2" values="50;40;50" dur="1s" repeatCount="indefinite"/>
+                        </line>
+                        <line x1="30" y1="100" x2="50" y2="100" stroke="#764ba2" stroke-width="4" stroke-linecap="round">
+                            <animate attributeName="x1" values="30;20;30" dur="1s" begin="0.2s" repeatCount="indefinite"/>
+                            <animate attributeName="x2" values="50;40;50" dur="1s" begin="0.2s" repeatCount="indefinite"/>
+                        </line>
+                        <line x1="30" y1="150" x2="50" y2="140" stroke="#764ba2" stroke-width="4" stroke-linecap="round">
+                            <animate attributeName="x1" values="30;20;30" dur="1s" begin="0.4s" repeatCount="indefinite"/>
+                            <animate attributeName="x2" values="50;40;50" dur="1s" begin="0.4s" repeatCount="indefinite"/>
+                        </line>
+                    </g>
+                </svg>
+            </div>
+        </div>
+
+        <!-- Error Content -->
+        <div class="error-content">
+            <h1 class="error-code">429</h1>
+            <h2 class="error-title">Too Many Requests</h2>
+            <p class="error-message">Whoa there! You're moving too fast. Please slow down and try again in a moment.</p>
+            
+            <div class="error-details">
+                <div class="error-detail-item">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <polyline points="12 6 12 12 16 14"></polyline>
+                    </svg>
+                    <span>You've exceeded the rate limit for requests. {{ error }}</span>
+                </div>
+                <div class="error-detail-item">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                    </svg>
+                    <span>This helps us keep FileHub fast and secure for everyone</span>
+                </div>
+                <div class="error-detail-item">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                        <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                    </svg>
+                    <span>Wait a few moments and you'll be good to go</span>
+                </div>
+            </div>
+
+            <!-- Countdown Timer (optional - can be implemented with JS) -->
+            <div class="error-timer">
+                <svg viewBox="0 0 100 100" class="error-timer-svg">
+                    <circle cx="50" cy="50" r="45" fill="none" stroke="#e0e0e0" stroke-width="8"/>
+                    <circle cx="50" cy="50" r="45" fill="none" stroke="#667eea" stroke-width="8" 
+                            stroke-dasharray="283" stroke-dashoffset="0" stroke-linecap="round" 
+                            transform="rotate(-90 50 50)">
+                        <animate attributeName="stroke-dashoffset" from="0" to="283" dur="60s" fill="freeze"/>
+                    </circle>
+                </svg>
+                <div class="error-timer-text">
+                    <span class="error-timer-number" id="countdown">60</span>
+                    <span class="error-timer-label">seconds</span>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="error-actions">
+                {% if current_user.role == 'admin' or current_user.role == 'super_admin' %}
+                <a href="{{ url_for('admin_bp.dashboard') }}" class="error-btn error-btn-primary">
+                {% else %}
+                <a href="{{ url_for('main_bp.home') }}" class="error-btn error-btn-primary">
+                {% endif %}
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="3" y="3" width="7" height="7"></rect>
+                        <rect x="14" y="3" width="7" height="7"></rect>
+                        <rect x="14" y="14" width="7" height="7"></rect>
+                        <rect x="3" y="14" width="7" height="7"></rect>
+                    </svg>
+                    <span>Go to Dashboard</span>
+                </a>
+                <a href="/" class="error-btn error-btn-secondary">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                        <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                    </svg>
+                    <span>Go Home</span>
+                </a>
+            </div>
+
+            <!-- Help Section -->
+            <div class="error-help">
+                <p>Experiencing persistent issues?</p>
+                <a href="mailto:support@filehub.com" class="error-help-link">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                        <polyline points="22,6 12,13 2,6"></polyline>
+                    </svg>
+                    <span>Contact Support</span>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Countdown timer for 429 page
+let timeLeft = 60;
+const countdownElement = document.getElementById('countdown');
+
+const countdownTimer = setInterval(function() {
+    timeLeft--;
+    if (countdownElement) {
+        countdownElement.textContent = timeLeft;
+    }
+    
+    if (timeLeft <= 0) {
+        clearInterval(countdownTimer);
+        if (countdownElement) {
+            countdownElement.textContent = '0';
+        }
+        // Auto reload after countdown (optional)
+        // location.reload();
+    }
+}, 1000);
+</script>
+{% endblock %}
