@@ -1,0 +1,544 @@
+{% extends "admin-base.html" %}
+
+{% block title %}Admin Dashboard - FileHub{% endblock %}
+
+{% block content %}
+<!-- Top Navigation Bar -->
+<nav class="admindash-topnav">
+    <div class="admindash-topnav-left">
+        <button class="admindash-menu-toggle" onclick="toggleSidebar()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="3" y1="12" x2="21" y2="12"></line>
+                <line x1="3" y1="6" x2="21" y2="6"></line>
+                <line x1="3" y1="18" x2="21" y2="18"></line>
+            </svg>
+        </button>
+        <div class="admindash-logo">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path>
+                <polyline points="13 2 13 9 20 9"></polyline>
+            </svg>
+            <span>FileHub</span>
+        </div>
+    </div>
+
+    <div class="admindash-topnav-right">
+        <a href="" class="admindash-icon-btn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                <polyline points="22,6 12,13 2,6"></polyline>
+            </svg>
+            {% if data.unread_mails > 0 %}
+            <span class="admindash-badge">{{ data.unread_mails }}</span>
+            {% endif %}
+        </a>
+
+        <a href="" class="admindash-icon-btn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+            </svg>
+            {% if data.unread_notifications > 0 %}
+            <span class="admindash-badge">{{ data.unread_notifications }}</span>
+            {% endif %}
+        </a>
+
+        <div class="admindash-user-dropdown">
+            <button class="admindash-user-btn" onclick="toggleUserDropdown()">
+                <div class="admindash-user-avatar-small">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="12" cy="7" r="4"></circle>
+                    </svg>
+                </div>
+                <span>{{ current_user.username }}</span>
+                <svg class="admindash-dropdown-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="6 9 12 15 18 9"></polyline>
+                </svg>
+            </button>
+
+            <div class="admindash-dropdown-menu" id="userDropdown">
+                <a href="{{ url_for('admin_bp.profile', user_id=current_user.id) }}" class="admindash-dropdown-item">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="12" cy="7" r="4"></circle>
+                    </svg>
+                    <span>Profile</span>
+                </a>
+                <a href="{{ url_for('admin_bp.settings') }}" class="admindash-dropdown-item">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="3"></circle>
+                        <path d="M12 1v6m0 6v6"></path>
+                    </svg>
+                    <span>Settings</span>
+                </a>
+                <div class="admindash-dropdown-divider"></div>
+                <form method="POST" action="{{ url_for('auth_bp.logout') }}" style="margin: 0;">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    <button type="submit" class="admindash-dropdown-item admindash-logout">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                            <polyline points="16 17 21 12 16 7"></polyline>
+                            <line x1="21" y1="12" x2="9" y2="12"></line>
+                        </svg>
+                        <span>Logout</span>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<!-- Dashboard Content -->
+<div class="admindash-content">
+    <div class="admindash-header">
+        <h1 class="admindash-title">User Management</h1>
+        <p class="admindash-subtitle">Manage all users and monitor system activity</p>
+    </div>
+
+    {% if error %}
+    <div class="admindash-alert admindash-alert-error">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="12" y1="8" x2="12" y2="12"></line>
+            <line x1="12" y1="16" x2="12.01" y2="16"></line>
+        </svg>
+        <span>{{ error }}</span>
+    </div>
+    {% endif %}
+
+    {% if success %}
+    <div class="admindash-alert admindash-alert-success">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="20 6 9 17 4 12"></polyline>
+        </svg>
+        <span>{{ success }}</span>
+    </div>
+    {% endif %}
+
+    <!-- Stats Cards -->
+    <div class="admindash-stats-grid">
+        <div class="admindash-stat-card">
+            <div class="admindash-stat-icon admindash-stat-primary">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="9" cy="7" r="4"></circle>
+                    <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                    <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                </svg>
+            </div>
+            <div class="admindash-stat-info">
+                <div class="admindash-stat-label">Total Users</div>
+                <div class="admindash-stat-value">{{ data.all_users.total }}</div>
+            </div>
+        </div>
+
+        <div class="admindash-stat-card">
+            <div class="admindash-stat-icon admindash-stat-success">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="12" cy="7" r="4"></circle>
+                </svg>
+            </div>
+            <div class="admindash-stat-info">
+                <div class="admindash-stat-label">Regular Users</div>
+                <div class="admindash-stat-value">{{ data.non_admin }}</div>
+            </div>
+        </div>
+
+        <div class="admindash-stat-card">
+            <div class="admindash-stat-icon admindash-stat-warning">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                    <path d="M9 12l2 2 4-4"></path>
+                </svg>
+            </div>
+            <div class="admindash-stat-info">
+                <div class="admindash-stat-label">Admin Users</div>
+                <div class="admindash-stat-value">{{ data.admin }}</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Search and Filter Section -->
+    <div class="admindash-search-section">
+        <form method="GET" action="{{ url_for('admin_bp.dashboard') }}" class="admindash-search-form">
+            <div class="admindash-search-group">
+                <svg class="admindash-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="11" cy="11" r="8"></circle>
+                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                </svg>
+                <input type="text" name="search" class="admindash-search-input" placeholder="Search users..." value="{{ request.args.get('search', '') }}">
+            </div>
+
+            <select name="filter" class="admindash-filter-select">
+                <option value="all" {% if request.args.get('filter') == 'all' %}selected{% endif %}>All Fields</option>
+                <option value="name" {% if request.args.get('filter') == 'name' %}selected{% endif %}>Username</option>
+                <option value="email" {% if request.args.get('filter') == 'email' %}selected{% endif %}>Email</option>
+                <option value="role" {% if request.args.get('filter') == 'role' %}selected{% endif %}>Role</option>
+            </select>
+
+            <button type="submit" class="admindash-search-btn">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="11" cy="11" r="8"></circle>
+                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                </svg>
+                <span>Search</span>
+            </button>
+
+            {% if request.args.get('search') %}
+            <a href="{{ url_for('admin_bp.dashboard') }}" class="admindash-clear-btn">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+                <span>Clear</span>
+            </a>
+            {% endif %}
+        </form>
+    </div>
+
+    <!-- Pagination Controls (Top) -->
+    {% if not request.args.get('search') and data.all_users.items %}
+    <div class="admindash-pagination-container">
+        <div class="admindash-pagination">
+            {% if data.all_users.has_prev %}
+            <a href="{{ data.prev }}" class="admindash-pagination-btn admindash-prev-btn">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="15 18 9 12 15 6"></polyline>
+                </svg>
+                <span>Previous</span>
+            </a>
+            {% else %}
+            <button class="admindash-pagination-btn admindash-prev-btn" disabled>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="15 18 9 12 15 6"></polyline>
+                </svg>
+                <span>Previous</span>
+            </button>
+            {% endif %}
+
+            <div class="admindash-pagination-info">
+                <span>Page <strong>{{ data.all_users.page }}</strong> of <strong>{{ data.all_users.pages }}</strong></span>
+            </div>
+
+            {% if data.all_users.has_next %}
+            <a href="{{ data.next }}" class="admindash-pagination-btn admindash-next-btn">
+                <span>Next</span>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="9 18 15 12 9 6"></polyline>
+                </svg>
+            </a>
+            {% else %}
+            <button class="admindash-pagination-btn admindash-next-btn" disabled>
+                <span>Next</span>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="9 18 15 12 9 6"></polyline>
+                </svg>
+            </button>
+            {% endif %}
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Users Table -->
+    <div class="admindash-table-container">
+        <table class="admindash-table">
+            <thead>
+                <tr>
+                    <th>S/N</th>
+                    <th>Username</th>
+                    <th>Email</th>
+                    <th>Role</th>
+                    <th>Date Joined</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% if request.args.get('search') %}
+                    {# Search by Name - Single User #}
+                    {% if data.user_by_name %}
+                        <tr class="admindash-table-row" onclick="window.location.href='{{ url_for('admin_bp.user_details', user_id=data.user_by_name.id) }}'">
+                            <td>1</td>
+                            <td>
+                                <div class="admindash-user-cell">
+                                    <div class="admindash-user-icon">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                                            <circle cx="12" cy="7" r="4"></circle>
+                                        </svg>
+                                    </div>
+                                    <span class="admindash-username">{{ data.user_by_name.username }}</span>
+                                </div>
+                            </td>
+                            <td>{{ data.user_by_name.email }}</td>
+                            <td>
+                                {% if data.user_by_name.role == 'admin' %}
+                                <span class="admindash-role-badge admindash-role-admin">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                                    </svg>
+                                    Admin
+                                </span>
+                                {% else %}
+                                <span class="admindash-role-badge admindash-role-user">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                                        <circle cx="12" cy="7" r="4"></circle>
+                                    </svg>
+                                    User
+                                </span>
+                                {% endif %}
+                            </td>
+                            <td>{{ data.user_by_name.role }}</td>
+                            <td onclick="event.stopPropagation()">
+                                <a href="{{ url_for('admin_bp.user_details', user_id=data.user_by_name.id) }}" class="admindash-action-btn">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                        <circle cx="12" cy="12" r="3"></circle>
+                                    </svg>
+                                </a>
+                            </td>
+                        </tr>
+                    
+                    {# Search by Email - Single User #}
+                    {% elif data.user_by_email %}
+                        <tr class="admindash-table-row" onclick="window.location.href='{{ url_for('admin_bp.user_details', user_id=data.user_by_email.id) }}'">
+                            <td>1</td>
+                            <td>
+                                <div class="admindash-user-cell">
+                                    <div class="admindash-user-icon">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                                            <circle cx="12" cy="7" r="4"></circle>
+                                        </svg>
+                                    </div>
+                                    <span class="admindash-username">{{ data.user_by_email.username }}</span>
+                                </div>
+                            </td>
+                            <td>{{ data.user_by_email.email }}</td>
+                            <td>
+                                {% if data.user_by_email.role == 'admin' %}
+                                <span class="admindash-role-badge admindash-role-admin">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                                    </svg>
+                                    Admin
+                                </span>
+                                {% else %}
+                                <span class="admindash-role-badge admindash-role-user">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                                        <circle cx="12" cy="7" r="4"></circle>
+                                    </svg>
+                                    User
+                                </span>
+                                {% endif %}
+                            </td>
+                            <td>{{ data.user_by_email.role }}</td>
+                            <td onclick="event.stopPropagation()">
+                                <a href="{{ url_for('admin_bp.user_details', user_id=data.user_by_email.id) }}" class="admindash-action-btn">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                        <circle cx="12" cy="12" r="3"></circle>
+                                    </svg>
+                                </a>
+                            </td>
+                        </tr>
+                    
+                    {# Search by Role - Multiple Users #}
+                    {% elif data.user_by_role %}
+                        {% for user in data.user_by_role %}
+                        <tr class="admindash-table-row" onclick="window.location.href='{{ url_for('admin_bp.user_details', user_id=user.id) }}'">
+                            <td>{{ loop.index }}</td>
+                            <td>
+                                <div class="admindash-user-cell">
+                                    <div class="admindash-user-icon">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                                            <circle cx="12" cy="7" r="4"></circle>
+                                        </svg>
+                                    </div>
+                                    <span class="admindash-username">{{ user.username }}</span>
+                                </div>
+                            </td>
+                            <td>{{ user.email }}</td>
+                            <td>
+                                {% if user.role == 'admin' %}
+                                <span class="admindash-role-badge admindash-role-admin">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                                    </svg>
+                                    Admin
+                                </span>
+                                {% elif user.role == 'super_admin' %}
+                                <span class="admindash-role-badge admindash-role-admin">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                                    </svg>
+                                    Super Admin
+                                </span>
+                                {% else %}
+                                <span class="admindash-role-badge admindash-role-user">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                                        <circle cx="12" cy="7" r="4"></circle>
+                                    </svg>
+                                    User
+                                </span>
+                                {% endif %}
+                            </td>
+                            <td>{{ user.role }}</td>
+                            <td onclick="event.stopPropagation()">
+                                <a href="{{ url_for('admin_bp.user_details', user_id=user.id) }}" class="admindash-action-btn">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                        <circle cx="12" cy="12" r="3"></circle>
+                                    </svg>
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    
+                    {# No Results Found #}
+                    {% else %}
+                        <tr>
+                            <td colspan="6" class="admindash-empty-state">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <circle cx="11" cy="11" r="8"></circle>
+                                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                                </svg>
+                                <p>No users found matching your search</p>
+                            </td>
+                        </tr>
+                    {% endif %}
+                
+                {# No Search - Show All Users #}
+                {% else %}
+                    {% if data.all_users.items %}
+                        {% for user in data.all_users.items %}
+                        <tr class="admindash-table-row" onclick="window.location.href='{{ url_for('admin_bp.user_details', user_id=user.id) }}'">
+                            <td>{{ loop.index }}</td>
+                            <td>
+                                <div class="admindash-user-cell">
+                                    <div class="admindash-user-icon">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                                            <circle cx="12" cy="7" r="4"></circle>
+                                        </svg>
+                                    </div>
+                                    <span class="admindash-username">{{ user.username }}</span>
+                                </div>
+                            </td>
+                            <td>{{ user.email }}</td>
+                            <td>
+                                {% if user.role == 'admin' %}
+                                <span class="admindash-role-badge admindash-role-admin">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                                    </svg>
+                                    Admin
+                                </span>
+                                {% elif user.role == 'super_admin' %}
+                                <span class="admindash-role-badge admindash-role-admin">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                                    </svg>
+                                    Super Admin
+                                </span>
+                                {% else %}
+                                <span class="admindash-role-badge admindash-role-user">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                                        <circle cx="12" cy="7" r="4"></circle>
+                                    </svg>
+                                    User
+                                </span>
+                                {% endif %}
+                            </td>
+                            <td>{{ user.role }}</td>
+                            <td onclick="event.stopPropagation()">
+                                <a href="{{ url_for('admin_bp.user_details', user_id=user.id) }}" class="admindash-action-btn">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                                        <circle cx="12" cy="12" r="3"></circle>
+                                    </svg>
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    {% else %}
+                        <tr>
+                            <td colspan="6" class="admindash-empty-state">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <circle cx="11" cy="11" r="8"></circle>
+                                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                                </svg>
+                                <p>No users found</p>
+                            </td>
+                        </tr>
+                    {% endif %}
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Pagination Controls (Bottom) -->
+    {% if not request.args.get('search') and data.all_users.items %}
+    <div class="admindash-pagination-container">
+        <div class="admindash-pagination">
+            {% if data.all_users.has_prev %}
+            <a href="{{ data.prev }}" class="admindash-pagination-btn admindash-prev-btn">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="15 18 9 12 15 6"></polyline>
+                </svg>
+                <span>Previous</span>
+            </a>
+            {% else %}
+            <button class="admindash-pagination-btn admindash-prev-btn" disabled>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="15 18 9 12 15 6"></polyline>
+                </svg>
+                <span>Previous</span>
+            </button>
+            {% endif %}
+
+            <div class="admindash-pagination-info">
+                <span>Page <strong>{{ data.all_users.page }}</strong> of <strong>{{ data.all_users.pages }}</strong></span>
+            </div>
+
+            {% if data.all_users.has_next %}
+            <a href="{{ data.next }}" class="admindash-pagination-btn admindash-next-btn">
+                <span>Next</span>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="9 18 15 12 9 6"></polyline>
+                </svg>
+            </a>
+            {% else %}
+            <button class="admindash-pagination-btn admindash-next-btn" disabled>
+                <span>Next</span>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="9 18 15 12 9 6"></polyline>
+                </svg>
+            </button>
+            {% endif %}
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+<script>
+function toggleUserDropdown() {
+    const dropdown = document.getElementById('userDropdown');
+    dropdown.classList.toggle('show');
+}
+
+// Close dropdown when clicking outside
+window.addEventListener('click', function(e) {
+    if (!e.target.closest('.admindash-user-dropdown')) {
+        const dropdown = document.getElementById('userDropdown');
+        dropdown.classList.remove('show');
+    }
+});
+</script>
+{% endblock %}
