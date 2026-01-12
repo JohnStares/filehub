@@ -183,11 +183,17 @@ def user_details(user_id):
         "user": user
     }
 
+    if not user:
+        flash("No user found", "warning")
+        current_app.logger.warning(f"{current_user.username} tried searching for a user that doesn't exit with the ID {user_id}")
+        return redirect(url_for("admin_bp.dashboard"))
+
     if user and current_user.id == user.id:
         return render_template("admin/user-detail.html", data=data)
         
     if user and current_user.role == "admin" and user.role in ["admin", "super_admin"]:
         flash("You can't view the content of other admins", "warning")
+        current_app.logger.info(f"{current_user.username}:: Tried accessing an {user.role} page")
         return redirect(url_for("admin_bp.dashboard"))
 
 
