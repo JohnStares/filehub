@@ -461,3 +461,8 @@ def download_file(file_id):
 @main_bp.get("/privacy-policy")
 def privacy_policy():
     return render_template("main/privacy.html")
+
+
+@main_bp.get("/terms")
+def terms():
+    return render_template("main/terms.html")
