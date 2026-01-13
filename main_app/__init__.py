@@ -3,6 +3,7 @@ from typing import Optional
 
 from main_app.logging import set_logger
 from config import get_config, config
+from main_app.utils import initialize_sentry
 
 
 def create_app(config_name: Optional[str] = None):
@@ -19,6 +20,7 @@ def create_app(config_name: Optional[str] = None):
    
    # Initialize extensions
     from .extensions import (db, migrate, login_manager, limiter, csrf, mail)
+    initialize_sentry()
 
     db.init_app(app)
     migrate.init_app(app, db)
