@@ -912,7 +912,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Password strength checker
     if (password1Input) {
         password1Input.addEventListener('input', function() {
-            checkPasswordStrength(this.value);
+            checkPasswordStrength1(this.value);
         });
     }
 
@@ -946,9 +946,9 @@ document.addEventListener('DOMContentLoaded', function() {
 /**
  * Check password strength and update indicator
  */
-function checkPasswordStrength(password) {
-    const strengthBar = document.getElementById('passwordStrength');
-    const strengthText = document.getElementById('strengthText');
+function checkPasswordStrength1(password) {
+    const strengthBar = document.getElementById('passwordStrengths');
+    const strengthText = document.getElementById('strengthTexts');
     
     if (!strengthBar || !strengthText) return;
     
@@ -1036,7 +1036,7 @@ function checkPasswordMatch() {
 /**
  * Toggle password visibility
  */
-function togglePassword(fieldId) {
+function togglePassword1(fieldId) {
     const input = document.getElementById(fieldId);
     
     if (!input) {
