@@ -3,7 +3,7 @@ from typing import Optional
 
 from main_app.logging import set_logger
 from config import get_config, config
-from main_app.utils import initialize_sentry
+from main_app.utils import initialize_sentry, initialize_extensions, register_blueprints
 
 
 def create_app(config_name: Optional[str] = None):
@@ -11,25 +11,15 @@ def create_app(config_name: Optional[str] = None):
 
     if config_name:
         config_obj = config[config_name]
-        config_obj().init_app(app)
-        app.config.from_object(config_obj)
     else:
         config_obj = get_config()
-        config_obj().init_app(app)
-        app.config.from_object(config_obj)
-   
+        
+    config_obj().init_app(app)
+    app.config.from_object(config_obj)
+
    # Initialize extensions
-    from .extensions import (db, migrate, login_manager, limiter, csrf, mail)
+    initialize_extensions(app)
     initialize_sentry()
-
-    db.init_app(app)
-    migrate.init_app(app, db)
-
-    login_manager.init_app(app)
-    limiter.init_app(app)
-
-    csrf.init_app(app)
-    mail.init_app(app)
 
     # set up logging functionality
     set_logger(app=app, basedir=app.config["BASEDIR"])
@@ -39,16 +29,11 @@ def create_app(config_name: Optional[str] = None):
     register_handlers(app)
 
     # Register blueprints
-    from main_app.auth import auth_bp
-    from main_app.main import main_bp
-    from main_app.admin import admin_bp
-
-    app.register_blueprint(auth_bp, url_prefix="/auth")
-    app.register_blueprint(main_bp)
-    app.register_blueprint(admin_bp, url_prefix="/admin")
+    register_blueprints(app)
 
     @app.cli.command("create-db")
     def create_db():
+        from main_app.extensions import db
         """Create database tables for development only"""
         print("Creating database tables...")
         db.create_all()

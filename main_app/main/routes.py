@@ -105,19 +105,19 @@ def upload_file(username, section_name):
                     if duplicate_submission(name=form.full_name.data, section_obj=section):
                         flash("Already uploaded file on this section", "warning")
                         current_app.logger.info(f"{form.full_name.data} tried uploading twice to this route")
-                        return render_template("main/upload.html", form=form)
+                        return render_template("main/upload.html", form=form, username=username, section_name=section_name)
 
                 if duplicate_submission(mat_no=form.mat_no.data, section_obj=section):
                     flash("Already uploaded file on this section", "warning")
                     current_app.logger.info(f"{form.full_name.data} tried uploading twice to this route")
-                    return render_template("main/upload.html", form=form)
+                    return render_template("main/upload.html", form=form, username=username, section_name=section_name)
 
                 file = form.file.data
 
                 if file.filename == "" or (isinstance(file.filename, str) and not file.filename.strip("")):
                     flash("Empty filename", "error")
                     current_app.logger.warning(f"An empty filename was submitted")
-                    return render_template("main/upload.html", form=form)
+                    return render_template("main/upload.html", form=form, username=username, section_name=section_name)
 
 
                 # Secure the filename to prevent malicious attack in the server
@@ -127,7 +127,7 @@ def upload_file(username, section_name):
                 if not allowed_extension(filename):
                     flash("Invalid file extention", "error")
                     current_app.logger.warning(f"File submitted have a wrong extension type")
-                    return render_template("main/upload.html", form=form)
+                    return render_template("main/upload.html", form=form, username=username, section_name=section_name)
 
 
                 # Save file to upload directory

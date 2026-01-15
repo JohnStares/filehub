@@ -191,7 +191,7 @@ def reset_password(token: str):
             if not valid:
                 flash("Invalid Reset Link", "error")
                 current_app.logger.warning(f"An invalid reset link was provided in the reset_password route. Token - {token}")
-                return redirect(url_for("auth_bp.sign_in"))
+                return render_template("auth/password-reset.html", form=form, token=token)
             
             if form.validate_on_submit():
 
@@ -218,7 +218,7 @@ def reset_password(token: str):
             current_app.logger.error(f"An unexpected error occured due to {str(e)}", exc_info=True)
             return render_template("auth/password-reset.html", form=form)
 
-    return render_template("auth/password-reset.html", form=form)
+    return render_template("auth/password-reset.html", form=form, token=token)
 
 
 @auth_bp.route("/admin/sign-up", methods=["GET", "POST"])

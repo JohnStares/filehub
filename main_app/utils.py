@@ -5,16 +5,29 @@ from sentry_sdk.integrations.redis import RedisIntegration
 
 import os
 
+from main_app.extensions import (db, migrate, login_manager, limiter, csrf, mail)
+from main_app.auth import auth_bp
+from main_app.main import main_bp
+from main_app.admin import admin_bp
 
 def initialize_extensions(app):
-    pass
+    db.init_app(app)
+    migrate.init_app(app, db)
+
+    login_manager.init_app(app)
+    limiter.init_app(app)
+
+    csrf.init_app(app)
+    mail.init_app(app)
 
 
 def configure_path(app):
     pass
 
 def register_blueprints(app):
-    pass
+    app.register_blueprint(auth_bp, url_prefix="/auth")
+    app.register_blueprint(main_bp)
+    app.register_blueprint(admin_bp, url_prefix="/admin")
 
 
 def initialize_sentry():
