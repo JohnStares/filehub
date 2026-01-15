@@ -3,14 +3,46 @@ from main_app.extensions import mail, db
 from main_app.models import ResetToken
 import sqlalchemy as sql
 from datetime import datetime, timezone, timedelta
-from flask import Flask
+from flask import Flask, render_template
 from typing import Literal
 
 def send_email(receiver: str, token: str, host_url: str) -> None:
+
+    html_body = render_template("main/email.html", host_url=host_url, token=token)
+
+    # Plain text fallback
+    text_body = f"""
+        FileHub - Password Reset Request
+
+        Hello!
+
+        We received a request to reset your password for your FileHub account.
+
+        Reset your password by visiting this link:
+        {host_url}/auth/reset-password/{token}
+
+        ⏰ IMPORTANT: This link will expire in 10 minutes for security reasons.
+
+        Security Tips:
+        ✓ Never share your password with anyone
+        ✓ Use a strong, unique password
+        ✓ If you didn't request this reset, please ignore this email
+
+        If you didn't request a password reset, you can safely ignore this email. 
+        Your password will remain unchanged.
+
+        ---
+        This is an automated message from FileHub
+        Need help? Visit {host_url}
+
+        © 2026 FileHub. All rights reserved.
+    """
+
     msg = Message(
-        subject="Password Reset",
+        subject="Password Reset - FileHub",
         recipients=[receiver],
-        body=f"Here is your password reset link\n{host_url}/auth/reset-password/{token}\nNote: Link invalidates after 10 mins."
+        body=text_body,
+        html=html_body
     )
 
     try:
