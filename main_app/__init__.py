@@ -29,16 +29,11 @@ def create_app(config_name: Optional[str] = None):
     register_handlers(app)
 
     # Register blueprints
-    from main_app.auth import auth_bp
-    from main_app.main import main_bp
-    from main_app.admin import admin_bp
-
-    app.register_blueprint(auth_bp, url_prefix="/auth")
-    app.register_blueprint(main_bp)
-    app.register_blueprint(admin_bp, url_prefix="/admin")
+    register_blueprints(app)
 
     @app.cli.command("create-db")
     def create_db():
+        from main_app.extensions import db
         """Create database tables for development only"""
         print("Creating database tables...")
         db.create_all()
