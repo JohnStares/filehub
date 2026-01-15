@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Password Reset - FileHub</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: #f8f9fa;
+            padding: 20px;
+        }
+
+        .email-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+        }
+
+        .email-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 40px 30px;
+            text-align: center;
+            color: white;
+        }
+
+        .email-logo {
+            width: 60px;
+            height: 60px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 16px;
+            margin: 0 auto 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .email-logo svg {
+            width: 32px;
+            height: 32px;
+        }
+
+        .email-header h1 {
+            font-size: 28px;
+            font-weight: 800;
+            margin-bottom: 10px;
+        }
+
+        .email-header p {
+            font-size: 16px;
+            opacity: 0.95;
+        }
+
+        .email-body {
+            padding: 40px 30px;
+        }
+
+        .greeting {
+            font-size: 20px;
+            font-weight: 700;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .message {
+            font-size: 16px;
+            color: #666;
+            line-height: 1.8;
+            margin-bottom: 30px;
+        }
+
+        .info-box {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            border-radius: 8px;
+            padding: 15px 20px;
+            margin-bottom: 30px;
+        }
+
+        .info-box p {
+            font-size: 14px;
+            color: #856404;
+            margin: 0;
+        }
+
+        .info-box strong {
+            font-weight: 700;
+        }
+
+        .button-container {
+            text-align: center;
+            margin: 30px 0;
+        }
+
+        .reset-button {
+            display: inline-block;
+            padding: 16px 40px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 10px;
+            font-weight: 600;
+            font-size: 16px;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .alternative-link {
+            background: #f8f9fa;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            padding: 15px;
+            margin: 20px 0;
+            word-break: break-all;
+        }
+
+        .alternative-link p {
+            font-size: 13px;
+            color: #999;
+            margin-bottom: 8px;
+        }
+
+        .alternative-link a {
+            font-size: 14px;
+            color: #667eea;
+            text-decoration: none;
+            font-family: monospace;
+        }
+
+        .security-notice {
+            background: #e8f5e9;
+            border-left: 4px solid #4caf50;
+            border-radius: 8px;
+            padding: 15px 20px;
+            margin: 30px 0;
+        }
+
+        .security-notice h3 {
+            font-size: 16px;
+            font-weight: 700;
+            color: #2e7d32;
+            margin-bottom: 10px;
+        }
+    
+        .security-notice ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .security-notice li {
+            font-size: 14px;
+            color: #2e7d32;
+            padding-left: 20px;
+            position: relative;
+            margin-bottom: 6px;
+        }
+
+        .security-notice li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            font-weight: bold;
+        }
+
+        .email-footer {
+            background: #f8f9fa;
+            padding: 30px;
+            text-align: center;
+            border-top: 1px solid #e0e0e0;
+        }
+
+        .email-footer p {
+            font-size: 14px;
+            color: #999;
+            margin-bottom: 10px;
+        }
+
+        .email-footer a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .divider {
+            height: 1px;
+            background: linear-gradient(to right, transparent, #e0e0e0, transparent);
+            margin: 20px 0;
+        }
+
+        @media only screen and (max-width: 600px) {
+            .email-container {
+                border-radius: 0;
+            }
+            .email-header {
+                padding: 30px 20px;
+            }
+            .email-body {
+                padding: 30px 20px;
+            }
+            .email-footer {
+                padding: 20px;
+            }
+            .reset-button {
+                padding: 14px 30px;
+                font-size: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="email-container">
+        <!-- Header -->
+        <div class="email-header">
+            <div class="email-logo">
+                <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+                    <path d="M13 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"></path>
+                    <polyline points="13 2 13 9 20 9"></polyline>
+                </svg>
+            </div>
+            <h1>FileHub</h1>
+            <p>Password Reset Request</p>
+        </div>
+
+        <!-- Body -->
+        <div class="email-body">
+            <div class="greeting">Hello!</div>
+            
+            <div class="message">
+                We received a request to reset your password for your FileHub account. 
+                Click the button below to create a new password.
+            </div>
+
+            <div class="info-box">
+                <p><strong>⏰ Important:</strong> This link will expire in 10 minutes for security reasons.</p>
+            </div>
+
+            <div class="button-container">
+                <a href="{{ host_url }}/auth/reset-password/{{ token }}" class="reset-button">
+                    Reset Your Password
+                </a>
+            </div>
+
+            <div class="alternative-link">
+                <p>If the button doesn't work, copy and paste this link into your browser:</p>
+                <a href="{{ host_url }}/auth/reset-password/{{ token }}">{{ host_url }}/auth/reset-password/{{ token }}</a>
+            </div>
+
+            <div class="divider"></div>
+
+            <div class="security-notice">
+                <h3>🔒 Security Tips</h3>
+                <ul>
+                    <li>Never share your password with anyone</li>
+                    <li>Use a strong, unique password</li>
+                    <li>If you didn't request this reset, please ignore this email</li>
+                </ul>
+            </div>
+
+            <div class="message">
+                If you didn't request a password reset, you can safely ignore this email. 
+                Your password will remain unchanged.
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="email-footer">
+            <p>This is an automated message from FileHub</p>
+            <p>Need help? <a href="{{ host_url }}">Visit our support center</a></p>
+            <p style="margin-top: 15px; font-size: 12px;">
+                © 2026 FileHub. All rights reserved.
+            </p>
+        </div>
+    </div>
+</body>
+</html>
