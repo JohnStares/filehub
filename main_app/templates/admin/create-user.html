@@ -159,7 +159,7 @@
                                 </svg>
                                 <div class="createuser-password-wrapper">
                                     {{ form.password1(class="createuser-input", placeholder="Enter password", type="password", id="password1") }}
-                                    <button type="button" class="createuser-password-toggle" onclick="togglePassword('password1')">
+                                    <button type="button" class="createuser-password-toggle" onclick="togglePassword1('password1')">
                                         <svg class="createuser-eye-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                             <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
                                             <circle cx="12" cy="12" r="3"></circle>
@@ -177,9 +177,9 @@
                             <!-- Password Strength Indicator -->
                             <div class="createuser-strength-container">
                                 <div class="createuser-strength-bar">
-                                    <div class="createuser-strength-fill" id="passwordStrength"></div>
+                                    <div class="createuser-strength-fill" id="passwordStrengths"></div>
                                 </div>
-                                <div class="createuser-strength-text" id="strengthText">Password strength</div>
+                                <div class="createuser-strength-text" id="strengthTexts">Password strength</div>
                             </div>
                             <div class="createuser-hint">Minimum 8 characters with letters, numbers, and special characters</div>
                         </div>
@@ -196,7 +196,7 @@
                                 </svg>
                                 <div class="createuser-password-wrapper">
                                     {{ form.password2(class="createuser-input", placeholder="Confirm password", type="password", id="password2") }}
-                                    <button type="button" class="createuser-password-toggle" onclick="togglePassword('password2')">
+                                    <button type="button" class="createuser-password-toggle" onclick="togglePassword1('password2')">
                                         <svg class="createuser-eye-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                             <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
                                             <circle cx="12" cy="12" r="3"></circle>
