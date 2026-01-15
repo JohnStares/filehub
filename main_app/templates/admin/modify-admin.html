@@ -385,13 +385,13 @@ function filterAdmins(filter) {
 }
 
 // Delete Modal Functions
-function confirmDelete(adminId, adminName) {
+function confirmAdminDelete(adminId, adminName) {
     const modal = document.getElementById('deleteModal');
     const form = document.getElementById('deleteForm');
     const nameElement = document.getElementById('deleteAdminName');
     
     nameElement.textContent = adminName;
-    form.action = `/admin/delete-admin/${adminId}`;
+    form.action = `/admin/delete-user/${adminId}`;
     
     modal.style.display = 'flex';
     document.body.style.overflow = 'hidden';
