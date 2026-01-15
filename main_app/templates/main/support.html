@@ -1,0 +1,415 @@
+{% extends "base.html" %}
+
+{% block title %}Support - FileHub{% endblock %}
+
+
+{% block content %}
+<!-- Support Hero Section -->
+<section class="support-hero">
+    <div class="support-hero-container">
+        <div class="support-hero-content">
+            <h1 class="support-hero-title">How Can We Help You?</h1>
+            <p class="support-hero-subtitle">Our dedicated support team is here to assist you 24/7. Choose your preferred way to reach us.</p>
+            
+            <div class="support-response-badge">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <polyline points="12 6 12 12 16 14"></polyline>
+                </svg>
+                <span>Average Response Time: <strong>10-30 minutes</strong></span>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Contact Options Grid -->
+<section class="support-section">
+    <div class="support-container">
+        {% if error %}
+        <div class="support-alert support-alert-error">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="12" y1="8" x2="12" y2="12"></line>
+                <line x1="12" y1="16" x2="12.01" y2="16"></line>
+            </svg>
+            <span>{{ error }}</span>
+        </div>
+        {% endif %}
+
+        {% if success %}
+        <div class="support-alert support-alert-success">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="20 6 9 17 4 12"></polyline>
+            </svg>
+            <span>{{ success }}</span>
+        </div>
+        {% endif %}
+
+        <div class="support-options-grid">
+            <!-- Message Us Card -->
+            <div class="support-card support-card-primary">
+                <div class="support-card-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                    </svg>
+                </div>
+                <h3 class="support-card-title">Message Us</h3>
+                <p class="support-card-description">Send us a message and we'll respond within 10-30 minutes</p>
+                <a href="#message-form" class="support-card-btn support-btn-primary">
+                    <span>Send Message</span>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="22" y1="2" x2="11" y2="13"></line>
+                        <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                    </svg>
+                </a>
+            </div>
+
+            <!-- Email Card -->
+            <div class="support-card">
+                <div class="support-card-icon support-icon-email">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                        <polyline points="22,6 12,13 2,6"></polyline>
+                    </svg>
+                </div>
+                <h3 class="support-card-title">Email Support</h3>
+                <p class="support-card-description">Reach us via email for detailed inquiries</p>
+                <a href="mailto:support@filehub.com" class="support-card-btn support-btn-outline">
+                    <span>support@filehub.com</span>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                        <polyline points="15 3 21 3 21 9"></polyline>
+                        <line x1="10" y1="14" x2="21" y2="3"></line>
+                    </svg>
+                </a>
+            </div>
+
+            <!-- AI Chat Card -->
+            <div class="support-card support-card-coming-soon">
+                <div class="support-card-icon support-icon-ai">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                        <circle cx="9" cy="10" r="1"></circle>
+                        <circle cx="15" cy="10" r="1"></circle>
+                        <path d="M9 14c0 1 1.5 2 3 2s3-1 3-2"></path>
+                    </svg>
+                </div>
+                <div class="support-coming-soon-badge">Coming Soon</div>
+                <h3 class="support-card-title">AI Chat Assistant</h3>
+                <p class="support-card-description">Get instant answers from our AI-powered chatbot</p>
+                <button class="support-card-btn support-btn-disabled" disabled>
+                    <span>Chat with AI</span>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <polyline points="12 6 12 12 16 14"></polyline>
+                    </svg>
+                </button>
+            </div>
+
+            <!-- Phone Support Card -->
+            <div class="support-card">
+                <div class="support-card-icon support-icon-phone">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
+                    </svg>
+                </div>
+                <h3 class="support-card-title">Phone Support</h3>
+                <p class="support-card-description">Call us directly for immediate assistance</p>
+                <div class="support-phone-numbers">
+                    <a href="tel:+2348144608156" class="support-phone-link">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
+                        </svg>
+                        +234 8044608156
+                    </a>
+                    <a href="tel:+1987654321" class="support-phone-link">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
+                        </svg>
+                        +234 9155855793
+                    </a>
+                </div>
+            </div>
+
+            <!-- WhatsApp Card -->
+            <div class="support-card support-card-whatsapp">
+                <div class="support-card-icon support-icon-whatsapp">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
+                    </svg>
+                </div>
+                <h3 class="support-card-title">WhatsApp Support</h3>
+                <p class="support-card-description">Chat with us on WhatsApp for quick support</p>
+                <a href="https://wa.me/09155855793" target="_blank" class="support-card-btn support-btn-whatsapp">
+                    <span>Start WhatsApp Chat</span>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                        <polyline points="15 3 21 3 21 9"></polyline>
+                        <line x1="10" y1="14" x2="21" y2="3"></line>
+                    </svg>
+                </a>
+            </div>
+
+            <!-- Working Hours Card -->
+            <div class="support-card support-card-hours">
+                <div class="support-card-icon support-icon-clock">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <polyline points="12 6 12 12 16 14"></polyline>
+                    </svg>
+                </div>
+                <h3 class="support-card-title">Working Hours</h3>
+                <p class="support-card-description">Our support team is available:</p>
+                <div class="support-hours-list">
+                    <div class="support-hour-item">
+                        <span class="support-day">Monday - Friday</span>
+                        <span class="support-time">8:00 AM - 8:00 PM</span>
+                    </div>
+                    <div class="support-hour-item">
+                        <span class="support-day">Saturday</span>
+                        <span class="support-time">10:00 AM - 6:00 PM</span>
+                    </div>
+                    <div class="support-hour-item">
+                        <span class="support-day">Sunday</span>
+                        <span class="support-time">Closed</span>
+                    </div>
+                </div>
+                <div class="support-timezone">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="10"></circle>
+                        <path d="M2 12h20"></path>
+                        <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+                    </svg>
+                    <span>All times in EST (GMT-5)</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Message Form Section -->
+<section class="support-section support-section-alt" id="message-form">
+    <div class="support-container">
+        <div class="support-form-wrapper">
+            <div class="support-form-header">
+                <div class="support-form-icon">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                    </svg>
+                </div>
+                <h2 class="support-form-title">Send Us a Message</h2>
+                <p class="support-form-subtitle">Fill out the form below and we'll get back to you within 10-30 minutes</p>
+            </div>
+
+            <form method="POST" action="{{ url_for('main_bp.support') }}" class="support-form">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                
+                <div class="support-form-row">
+                    <div class="support-form-group">
+                        <label for="name" class="support-form-label">Full Name <span class="support-required">*</span></label>
+                        <div class="support-input-wrapper">
+                            <svg class="support-input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                                <circle cx="12" cy="7" r="4"></circle>
+                            </svg>
+                            <input type="text" id="name" name="name" class="support-form-input" placeholder="John Doe" required>
+                        </div>
+                    </div>
+
+                    <div class="support-form-group">
+                        <label for="email" class="support-form-label">Email Address <span class="support-required">*</span></label>
+                        <div class="support-input-wrapper">
+                            <svg class="support-input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                                <polyline points="22,6 12,13 2,6"></polyline>
+                            </svg>
+                            <input type="email" id="email" name="email" class="support-form-input" placeholder="john@example.com" required>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="support-form-group">
+                    <label for="subject" class="support-form-label">Subject <span class="support-required">*</span></label>
+                    <div class="support-input-wrapper">
+                        <svg class="support-input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M4 6h16M4 12h16M4 18h16"></path>
+                        </svg>
+                        <input type="text" id="subject" name="subject" class="support-form-input" placeholder="How can we help you?" required>
+                    </div>
+                </div>
+
+                <div class="support-form-group">
+                    <label for="category" class="support-form-label">Category <span class="support-required">*</span></label>
+                    <select id="category" name="category" class="support-form-select" required>
+                        <option value="">Select a category</option>
+                        <option value="technical">Technical Support</option>
+                        <option value="billing">Billing & Account</option>
+                        <option value="feature">Feature Request</option>
+                        <option value="bug">Bug Report</option>
+                        <option value="general">General Inquiry</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+
+                <div class="support-form-group">
+                    <label for="message" class="support-form-label">Message <span class="support-required">*</span></label>
+                    <textarea id="message" name="message" class="support-form-textarea" rows="6" placeholder="Please describe your issue or question in detail..." required></textarea>
+                    <div class="support-char-count">
+                        <span id="charCount">0</span> / 1000 characters
+                    </div>
+                </div>
+
+                <div class="support-form-actions">
+                    <button type="submit" class="support-submit-btn">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="22" y1="2" x2="11" y2="13"></line>
+                            <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                        </svg>
+                        <span>Send Message</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>
+
+<!-- FAQs Section -->
+<section class="support-section">
+    <div class="support-container">
+        <div class="support-faq-header">
+            <h2 class="support-section-title">Frequently Asked Questions</h2>
+            <p class="support-section-subtitle">Find quick answers to common questions</p>
+        </div>
+
+        <div class="support-faq-grid">
+            <div class="support-faq-item">
+                <button class="support-faq-question" onclick="toggleFAQ(this)">
+                    <span>How do I create a new section?</span>
+                    <svg class="support-faq-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="6 9 12 15 18 9"></polyline>
+                    </svg>
+                </button>
+                <div class="support-faq-answer">
+                    <p>To create a new section, navigate to your dashboard and click on the "Create Section" button. Fill in the section name and optional section code, then click "Create". Your unique upload link will be generated instantly.</p>
+                </div>
+            </div>
+
+            <div class="support-faq-item">
+                <button class="support-faq-question" onclick="toggleFAQ(this)">
+                    <span>What file types are supported?</span>
+                    <svg class="support-faq-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="6 9 12 15 18 9"></polyline>
+                    </svg>
+                </button>
+                <div class="support-faq-answer">
+                    <p>FileHub supports a wide range of file types including documents (PDF, DOC, DOCX), images (JPG, PNG, GIF) and compressed files (ZIP, RAR). The maximum file size is 25MB per upload.</p>
+                </div>
+            </div>
+
+            <div class="support-faq-item">
+                <button class="support-faq-question" onclick="toggleFAQ(this)">
+                    <span>How do I share files with others?</span>
+                    <svg class="support-faq-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="6 9 12 15 18 9"></polyline>
+                    </svg>
+                </button>
+                <div class="support-faq-answer">
+                    <p>Each section has a unique upload link. Simply copy this link from your dashboard and share it with anyone. They can use this link to upload files directly to your section without needing an account.</p>
+                </div>
+            </div>
+
+            <div class="support-faq-item">
+                <button class="support-faq-question" onclick="toggleFAQ(this)">
+                    <span>Can I delete uploaded files?</span>
+                    <svg class="support-faq-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="6 9 12 15 18 9"></polyline>
+                    </svg>
+                </button>
+                <div class="support-faq-answer">
+                    <p>Yes, you can delete individual files or all files in a section. From your dashboard, click "View Submissions" for the desired section, then use the delete button next to each file or the "Delete All" option.</p>
+                </div>
+            </div>
+
+            <div class="support-faq-item">
+                <button class="support-faq-question" onclick="toggleFAQ(this)">
+                    <span>How do I reset my password?</span>
+                    <svg class="support-faq-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="6 9 12 15 18 9"></polyline>
+                    </svg>
+                </button>
+                <div class="support-faq-answer">
+                    <p>Click on "Forgot Password?" on the login page. Enter your email address and we'll send you a reset link. Follow the instructions in the email to create a new password.</p>
+                </div>
+            </div>
+
+            <div class="support-faq-item">
+                <button class="support-faq-question" onclick="toggleFAQ(this)">
+                    <span>Is my data secure?</span>
+                    <svg class="support-faq-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="6 9 12 15 18 9"></polyline>
+                    </svg>
+                </button>
+                <div class="support-faq-answer">
+                    <p>Yes, we take security seriously. All files are encrypted during transfer and storage. We use industry-standard security practices to protect your data and never share it with third parties.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+// Character counter for message textarea
+document.addEventListener('DOMContentLoaded', function() {
+    const messageTextarea = document.getElementById('message');
+    const charCount = document.getElementById('charCount');
+    
+    if (messageTextarea && charCount) {
+        messageTextarea.addEventListener('input', function() {
+            const count = this.value.length;
+            charCount.textContent = count;
+            
+            if (count > 1000) {
+                charCount.style.color = '#ff4444';
+            } else {
+                charCount.style.color = '#999';
+            }
+        });
+    }
+});
+
+// FAQ Toggle Function
+function toggleFAQ(button) {
+    const faqItem = button.closest('.support-faq-item');
+    const answer = faqItem.querySelector('.support-faq-answer');
+    const icon = button.querySelector('.support-faq-icon');
+    
+    // Close all other FAQs
+    document.querySelectorAll('.support-faq-item').forEach(item => {
+        if (item !== faqItem && item.classList.contains('active')) {
+            item.classList.remove('active');
+            item.querySelector('.support-faq-answer').style.maxHeight = null;
+        }
+    });
+    
+    // Toggle current FAQ
+    faqItem.classList.toggle('active');
+    
+    if (faqItem.classList.contains('active')) {
+        answer.style.maxHeight = answer.scrollHeight + 'px';
+    } else {
+        answer.style.maxHeight = null;
+    }
+}
+
+// Smooth scroll to message form
+document.querySelectorAll('a[href="#message-form"]').forEach(link => {
+    link.addEventListener('click', function(e) {
+        e.preventDefault();
+        const target = document.getElementById('message-form');
+        if (target) {
+            target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+    });
+});
+</script>
+{% endblock %}

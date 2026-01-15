@@ -6704,10 +6704,9 @@ a {
     .terms-cta-btn {
         width: 100%;
         justify-content: center;
+        position: relative;
+        z-index: 1;
     }
-}
-    position: relative;
-    z-index: 1;
 }
 
 .terms-header-icon {
@@ -7781,4 +7780,730 @@ a {
     padding: 5rem 2rem;
     color: white;
     text-align: center;
+}
+
+
+
+
+/* ==================== Support Page Styles ==================== */
+
+/* Hero Section */
+.support-hero {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    padding: 5rem 2rem 4rem;
+    color: white;
+    position: relative;
+    overflow: hidden;
+}
+
+.support-hero::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('data:image/svg+xml,<svg width="100" height="100" xmlns="http://www.w3.org/2000/svg"><circle cx="50" cy="50" r="2" fill="white" opacity="0.1"/></svg>');
+    opacity: 0.3;
+}
+
+.support-hero-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 1;
+}
+
+.support-hero-content {
+    text-align: center;
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.support-hero-title {
+    font-size: 3.5rem;
+    font-weight: 800;
+    margin-bottom: 1.5rem;
+    line-height: 1.2;
+}
+
+.support-hero-subtitle {
+    font-size: 1.3rem;
+    margin-bottom: 2.5rem;
+    opacity: 0.95;
+    line-height: 1.6;
+}
+
+.support-response-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(10px);
+    padding: 1rem 2rem;
+    border-radius: 50px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    font-size: 1.1rem;
+}
+
+.support-response-badge svg {
+    width: 24px;
+    height: 24px;
+}
+
+.support-response-badge strong {
+    font-weight: 700;
+    color: #af514c;
+}
+
+/* Main Section */
+.support-section {
+    padding: 5rem 2rem;
+    background: #f8f9fa;
+}
+
+.support-section-alt {
+    background: white;
+}
+
+.support-container {
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+/* Alerts */
+.support-alert {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 1rem 1.25rem;
+    border-radius: 10px;
+    margin-bottom: 2rem;
+    font-size: 0.95rem;
+}
+
+.support-alert svg {
+    width: 20px;
+    height: 20px;
+    flex-shrink: 0;
+}
+
+.support-alert-error {
+    background: #fee;
+    color: #c33;
+    border: 1px solid #fcc;
+}
+
+.support-alert-error svg {
+    stroke: #c33;
+}
+
+.support-alert-success {
+    background: #e8f5e9;
+    color: #2e7d32;
+    border: 1px solid #a5d6a7;
+}
+
+.support-alert-success svg {
+    stroke: #4caf50;
+}
+
+/* Support Options Grid */
+.support-options-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 2rem;
+}
+
+.support-card {
+    background: white;
+    border-radius: 20px;
+    padding: 2.5rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+}
+
+.support-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 40px rgba(102, 126, 234, 0.15);
+    border-color: rgba(102, 126, 234, 0.2);
+}
+
+.support-card-primary {
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.05) 0%, rgba(118, 75, 162, 0.05) 100%);
+    border-color: rgba(102, 126, 234, 0.3);
+}
+
+.support-card-whatsapp {
+    background: linear-gradient(135deg, rgba(76, 175, 80, 0.05) 0%, rgba(69, 160, 73, 0.05) 100%);
+    border-color: rgba(76, 175, 80, 0.3);
+}
+
+.support-card-hours {
+    background: linear-gradient(135deg, rgba(255, 193, 7, 0.05) 0%, rgba(255, 152, 0, 0.05) 100%);
+    border-color: rgba(255, 193, 7, 0.3);
+}
+
+.support-card-coming-soon {
+    opacity: 0.7;
+    position: relative;
+}
+
+.support-coming-soon-badge {
+    position: absolute;
+    top: 1.5rem;
+    right: 1.5rem;
+    background: linear-gradient(135deg, #ffc107 0%, #ff9800 100%);
+    color: white;
+    padding: 0.4rem 1rem;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.support-card-icon {
+    width: 70px;
+    height: 70px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 1.5rem;
+}
+
+.support-card-icon svg {
+    width: 36px;
+    height: 36px;
+    stroke: white;
+}
+
+.support-icon-email {
+    background: linear-gradient(135deg, #2196f3 0%, #1976d2 100%);
+}
+
+.support-icon-ai {
+    background: linear-gradient(135deg, #9c27b0 0%, #7b1fa2 100%);
+}
+
+.support-icon-phone {
+    background: linear-gradient(135deg, #ff5722 0%, #f44336 100%);
+}
+
+.support-icon-whatsapp {
+    background: linear-gradient(135deg, #4caf50 0%, #45a049 100%);
+}
+
+.support-icon-clock {
+    background: linear-gradient(135deg, #ffc107 0%, #ff9800 100%);
+}
+
+.support-card-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 0.75rem;
+}
+
+.support-card-description {
+    font-size: 1rem;
+    color: #666;
+    line-height: 1.6;
+    margin-bottom: 1.5rem;
+    flex-grow: 1;
+}
+
+.support-card-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    padding: 1rem 1.5rem;
+    border-radius: 12px;
+    font-size: 1rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    border: none;
+    cursor: pointer;
+    text-decoration: none;
+    font-family: inherit;
+}
+
+.support-btn-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+}
+
+.support-btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+}
+
+.support-btn-outline {
+    background: white;
+    border: 2px solid #667eea;
+    color: #667eea;
+}
+
+.support-btn-outline:hover {
+    background: #667eea;
+    color: white;
+}
+
+.support-btn-whatsapp {
+    background: linear-gradient(135deg, #4caf50 0%, #45a049 100%);
+    color: white;
+}
+
+.support-btn-whatsapp:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(76, 175, 80, 0.3);
+}
+
+.support-btn-disabled {
+    background: #e0e0e0;
+    color: #999;
+    cursor: not-allowed;
+}
+
+.support-btn-disabled:hover {
+    transform: none;
+    box-shadow: none;
+}
+
+.support-card-btn svg {
+    width: 20px;
+    height: 20px;
+}
+
+/* Phone Numbers */
+.support-phone-numbers {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.support-phone-link {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.9rem 1.25rem;
+    background: #f8f9fa;
+    border-radius: 10px;
+    color: #333;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+}
+
+.support-phone-link:hover {
+    background: rgba(102, 126, 234, 0.1);
+    border-color: #667eea;
+    color: #667eea;
+    transform: translateX(5px);
+}
+
+.support-phone-link svg {
+    width: 20px;
+    height: 20px;
+}
+
+/* Working Hours */
+.support-hours-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    margin-bottom: 1.5rem;
+}
+
+.support-hour-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.9rem 1.25rem;
+    background: #f8f9fa;
+    border-radius: 10px;
+    border-left: 4px solid #ffc107;
+}
+
+.support-day {
+    font-weight: 600;
+    color: #333;
+}
+
+.support-time {
+    color: #666;
+    font-weight: 500;
+}
+
+.support-timezone {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1rem;
+    background: rgba(255, 193, 7, 0.1);
+    border-radius: 8px;
+    color: #856404;
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+.support-timezone svg {
+    width: 18px;
+    height: 18px;
+    stroke: #ffc107;
+}
+
+/* Message Form */
+.support-form-wrapper {
+    max-width: 900px;
+    margin: 0 auto;
+    background: white;
+    border-radius: 20px;
+    padding: 3rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+}
+
+.support-form-header {
+    text-align: center;
+    margin-bottom: 3rem;
+}
+
+.support-form-icon {
+    width: 80px;
+    height: 80px;
+    margin: 0 auto 1.5rem;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.support-form-icon svg {
+    width: 40px;
+    height: 40px;
+    stroke: white;
+}
+
+.support-form-title {
+    font-size: 2.5rem;
+    font-weight: 800;
+    color: #333;
+    margin-bottom: 0.75rem;
+}
+
+.support-form-subtitle {
+    font-size: 1.1rem;
+    color: #666;
+}
+
+.support-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.75rem;
+}
+
+.support-form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+}
+
+.support-form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.support-form-label {
+    font-weight: 600;
+    color: #333;
+    font-size: 0.95rem;
+}
+
+.support-required {
+    color: #ff4444;
+    font-weight: bold;
+}
+
+.support-input-wrapper {
+    position: relative;
+}
+
+.support-input-icon {
+    position: absolute;
+    left: 1.2rem;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 20px;
+    height: 20px;
+    stroke: #999;
+    pointer-events: none;
+}
+
+.support-form-input,
+.support-form-select {
+    width: 100%;
+    padding: 0.9rem 1.2rem 0.9rem 3.2rem;
+    border: 2px solid #e0e0e0;
+    border-radius: 10px;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    font-family: inherit;
+}
+
+.support-form-select {
+    padding-left: 1.2rem;
+    cursor: pointer;
+}
+
+.support-form-input:focus,
+.support-form-select:focus {
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.support-form-input:focus ~ .support-input-icon {
+    stroke: #667eea;
+}
+
+.support-form-textarea {
+    width: 100%;
+    padding: 1rem 1.2rem;
+    border: 2px solid #e0e0e0;
+    border-radius: 10px;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    font-family: inherit;
+    resize: vertical;
+}
+
+.support-form-textarea:focus {
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.support-char-count {
+    text-align: right;
+    font-size: 0.85rem;
+    color: #999;
+    margin-top: 0.25rem;
+}
+
+.support-form-actions {
+    margin-top: 1rem;
+}
+
+.support-submit-btn {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+    padding: 1.25rem 2rem;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-family: inherit;
+}
+
+.support-submit-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+}
+
+.support-submit-btn svg {
+    width: 22px;
+    height: 22px;
+}
+
+/* FAQs Section */
+.support-faq-header {
+    text-align: center;
+    margin-bottom: 4rem;
+}
+
+.support-section-title {
+    font-size: 2.8rem;
+    font-weight: 800;
+    color: #333;
+    margin-bottom: 1rem;
+}
+
+.support-section-subtitle {
+    font-size: 1.2rem;
+    color: #666;
+}
+
+.support-faq-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+    gap: 1.5rem;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.support-faq-item {
+    background: white;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+}
+
+.support-faq-item:hover {
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+}
+
+.support-faq-question {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem 2rem;
+    background: white;
+    border: none;
+    cursor: pointer;
+    text-align: left;
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #333;
+    transition: all 0.3s ease;
+    font-family: inherit;
+}
+
+.support-faq-question:hover {
+    background: #f8f9fa;
+}
+
+.support-faq-item.active .support-faq-question {
+    background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+    color: #667eea;
+}
+
+.support-faq-icon {
+    width: 24px;
+    height: 24px;
+    stroke: #999;
+    flex-shrink: 0;
+    transition: transform 0.3s ease;
+}
+
+.support-faq-item.active .support-faq-icon {
+    transform: rotate(180deg);
+    stroke: #667eea;
+}
+
+.support-faq-answer {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+}
+
+.support-faq-answer p {
+    padding: 0 2rem 1.5rem;
+    color: #666;
+    line-height: 1.8;
+    font-size: 1rem;
+}
+
+/* Responsive Design */
+@media (max-width: 1200px) {
+    .support-options-grid {
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    }
+
+    .support-faq-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 768px) {
+    .support-hero {
+        padding: 3rem 1.5rem 2.5rem;
+    }
+
+    .support-hero-title {
+        font-size: 2.5rem;
+    }
+
+    .support-hero-subtitle {
+        font-size: 1.1rem;
+    }
+
+    .support-response-badge {
+        font-size: 1rem;
+        padding: 0.75rem 1.5rem;
+    }
+
+    .support-section {
+        padding: 3rem 1.5rem;
+    }
+
+    .support-options-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .support-form-wrapper {
+        padding: 2rem 1.5rem;
+    }
+
+    .support-form-title {
+        font-size: 2rem;
+    }
+
+    .support-form-row {
+        grid-template-columns: 1fr;
+    }
+
+    .support-section-title {
+        font-size: 2rem;
+    }
+
+    .support-faq-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .support-faq-question {
+        font-size: 1rem;
+        padding: 1.25rem 1.5rem;
+    }
+
+    .support-faq-answer p {
+        padding: 0 1.5rem 1.25rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .support-hero-title {
+        font-size: 2rem;
+    }
+
+    .support-card {
+        padding: 2rem 1.5rem;
+    }
+
+    .support-card-icon {
+        width: 60px;
+        height: 60px;
+    }
+
+    .support-card-icon svg {
+        width: 30px;
+        height: 30px;
+    }
 }

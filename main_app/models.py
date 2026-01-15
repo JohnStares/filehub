@@ -173,6 +173,43 @@ class ResetToken(db.Model):
         return f"ResetToken: User_id-{self.user_id} || Token-{self.token} || Expires_at-{self.expires_at}"
 
 
+
+class Message(db.Model):
+    id: orm.Mapped[int] = orm.mapped_column(sql.Integer, primary_key=True, index=True)
+    fullname: orm.Mapped[str] = orm.mapped_column(sql.String(50))
+    email: orm.Mapped[str] = orm.mapped_column(sql.String(50))
+    subject: orm.Mapped[str] = orm.mapped_column(sql.String(50))
+    category: orm.Mapped[str] = orm.mapped_column(sql.String(15))
+    message: orm.Mapped[str] = orm.mapped_column(sql.String(1000))
+    read: orm.Mapped[bool] = orm.mapped_column(sql.Boolean, default=False)
+    created_at: orm.Mapped[datetime] = orm.mapped_column(sql.DateTime(timezone=True), default=lambda: datetime.now(timezone.utc))
+
+
+    @classmethod
+    def delete_read_messages(cls) -> None:
+        """
+        This deletes all messages that are read.
+        """
+        read_messages: list[Message] = cls.query.filter(cls.read == True).all()
+
+        try:
+            for message in read_messages:
+                db.session.delete(message)
+
+            db.session.commit()
+        
+        except Exception:
+            db.session.rollback()
+
+
+    def __repr__(self) -> str:
+        return f"<Message:fullname{self.fullname}|email={self.email}|subject={self.subject}|category={self.category}|message={self.message}|read={self.read}>"
+    
+    def __str__(self) -> str:
+        return f"Fullname: {self.fullname} | Email: {self.email} | Message: {self.message}"
+    
+
+
 # flask-login uses this to know to load a user
 @login_manager.user_loader
 def load_user(id):
