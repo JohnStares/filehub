@@ -7,7 +7,8 @@ from pathlib import Path
 
 from . import main_bp
 from .forms import SectionForm, FileUpload
-from main_app.models import Section, Submissions, User
+from main_app.models import Section, Submissions, User, Message
+from main_app.validation import free_from_special_characters,is_email_valid, is_username_validated
 
 from .helper import (
     allowed_extension, save_uploaded_file, bytes_converter, delete_multiple_files, 
@@ -466,3 +467,50 @@ def privacy_policy():
 @main_bp.get("/terms")
 def terms():
     return render_template("main/terms.html")
+
+@main_bp.route("/support", methods=["GET", "POST"])
+@limiter.limit("5 per minute")
+def support():
+    if request.method == "POST":
+        try:
+            fullname = request.form.get("name")
+            email = request.form.get("email")
+            subject = request.form.get("subject")
+            category = request.form.get("category")
+            message = request.form.get("message")
+
+            if not is_username_validated(fullname.strip()):
+                flash("Please provide a valid name", "warning")
+                current_app.logger.info(f"An invalid fullname was provided. This is it {fullname}")
+                return render_template("main/support.html")
+            
+            if not is_email_valid(email):
+                flash("Please provide a valid email", "warning")
+                current_app.logger.info(f"An invalid email was provided. The email {email}")
+                return render_template("main/support.html")
+
+            
+            if not free_from_special_characters([fullname, email, subject, message]):
+                flash("Malicious input detected", "warning")
+                current_app.logger.info(f"Detected a malicious input")
+                return render_template("main/support.html")
+
+            new_message = Message(
+                fullname=fullname, email=email,
+                subject=subject, category=category,
+                message=message
+            )
+
+            db.session.add(new_message)
+            db.session.commit()
+
+            flash("Message sent", "success")
+            current_app.logger.info(f"{fullname} sent a message")
+            return render_template("main/support.html")
+        
+        except Exception as e:
+            flash("An error occured", "error")
+            current_app.logger.error(f"An error occured when {fullname} was trying to send a message")
+            return render_template("main/support.html")
+        
+    return render_template("main/support.html")

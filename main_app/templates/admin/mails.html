@@ -1,0 +1,388 @@
+{% extends "admin-base.html" %}
+
+{% block title %}Messages - Admin Dashboard{% endblock %}
+
+{% block content %}
+<!-- Top Navigation Bar -->
+<nav class="messages-topnav">
+    <div class="messages-topnav-left">
+        <button class="messages-menu-toggle" onclick="toggleSidebar()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="3" y1="12" x2="21" y2="12"></line>
+                <line x1="3" y1="6" x2="21" y2="6"></line>
+                <line x1="3" y1="18" x2="21" y2="18"></line>
+            </svg>
+        </button>
+        <div class="messages-logo">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                <polyline points="22,6 12,13 2,6"></polyline>
+            </svg>
+            <span>Messages</span>
+        </div>
+    </div>
+
+    <div class="messages-topnav-right">
+        <a href="{{ url_for('admin_bp.dashboard') }}" class="messages-icon-btn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="3" y="3" width="7" height="7"></rect>
+                <rect x="14" y="3" width="7" height="7"></rect>
+                <rect x="14" y="14" width="7" height="7"></rect>
+                <rect x="3" y="14" width="7" height="7"></rect>
+            </svg>
+        </a>
+
+        <div class="messages-user-dropdown">
+            <button class="messages-user-btn" onclick="toggleUserDropdown()">
+                <div class="messages-user-avatar-small">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="12" cy="7" r="4"></circle>
+                    </svg>
+                </div>
+                <span>{{ current_user.username }}</span>
+                <svg class="messages-dropdown-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="6 9 12 15 18 9"></polyline>
+                </svg>
+            </button>
+
+            <div class="messages-dropdown-menu" id="userDropdown">
+                <a href="{{ url_for('admin_bp.profile',user_id=current_user.id) }}" class="messages-dropdown-item">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="12" cy="7" r="4"></circle>
+                    </svg>
+                    <span>Profile</span>
+                </a>
+                <a href="{{ url_for('admin_bp.settings') }}" class="messages-dropdown-item">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="12" cy="12" r="3"></circle>
+                        <path d="M12 1v6m0 6v6"></path>
+                    </svg>
+                    <span>Settings</span>
+                </a>
+                <div class="messages-dropdown-divider"></div>
+                <form method="POST" action="{{ url_for('auth_bp.logout') }}" style="margin: 0;">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                    <button type="submit" class="messages-dropdown-item messages-logout">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                            <polyline points="16 17 21 12 16 7"></polyline>
+                            <line x1="21" y1="12" x2="9" y2="12"></line>
+                        </svg>
+                        <span>Logout</span>
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<!-- Messages Content -->
+<div class="messages-content">
+    <div class="messages-header">
+        <h1 class="messages-title">Support Messages</h1>
+        <p class="messages-subtitle">Manage all support requests and inquiries</p>
+    </div>
+
+    {% if error %}
+    <div class="messages-alert messages-alert-error">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"></circle>
+            <line x1="12" y1="8" x2="12" y2="12"></line>
+            <line x1="12" y1="16" x2="12.01" y2="16"></line>
+        </svg>
+        <span>{{ error }}</span>
+    </div>
+    {% endif %}
+
+    {% if success %}
+    <div class="messages-alert messages-alert-success">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="20 6 9 17 4 12"></polyline>
+        </svg>
+        <span>{{ success }}</span>
+    </div>
+    {% endif %}
+
+    <!-- Stats Cards -->
+    <div class="messages-stats-grid">
+        <div class="messages-stat-card">
+            <div class="messages-stat-icon messages-stat-primary">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                    <polyline points="22,6 12,13 2,6"></polyline>
+                </svg>
+            </div>
+            <div class="messages-stat-info">
+                <div class="messages-stat-label">Total Messages</div>
+                <div class="messages-stat-value">{{ data.messages|length }}</div>
+            </div>
+        </div>
+
+        <div class="messages-stat-card">
+            <div class="messages-stat-icon messages-stat-warning">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <line x1="12" y1="8" x2="12" y2="12"></line>
+                    <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                </svg>
+            </div>
+            <div class="messages-stat-info">
+                <div class="messages-stat-label">Unread Messages</div>
+                <div class="messages-stat-value">{{ data.messages|selectattr('read', 'equalto', False)|list|length }}</div>
+            </div>
+        </div>
+
+        <div class="messages-stat-card">
+            <div class="messages-stat-icon messages-stat-success">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polyline points="20 6 9 17 4 12"></polyline>
+                </svg>
+            </div>
+            <div class="messages-stat-info">
+                <div class="messages-stat-label">Read Messages</div>
+                <div class="messages-stat-value">{{ data.messages|selectattr('read', 'equalto', True)|list|length }}</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filter Tabs -->
+    <div class="messages-filter-tabs">
+        <button class="messages-filter-tab active" data-filter="all">
+            All Messages
+            <span class="messages-tab-count">{{ data.messages|length }}</span>
+        </button>
+        <button class="messages-filter-tab" data-filter="unread">
+            Unread
+            <span class="messages-tab-count">{{ data.messages|selectattr('read', 'equalto', False)|list|length }}</span>
+        </button>
+        <button class="messages-filter-tab" data-filter="read">
+            Read
+            <span class="messages-tab-count">{{ data.messages|selectattr('read', 'equalto', True)|list|length }}</span>
+        </button>
+    </div>
+
+    <!-- Bulk Actions -->
+    {% if data.messages|selectattr('read', 'equalto', True)|list|length > 0 %}
+    <div class="messages-bulk-actions">
+        <button class="messages-bulk-btn" onclick="confirmDeleteAllRead()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="3 6 5 6 21 6"></polyline>
+                <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+            </svg>
+            <span>Delete All Read Messages</span>
+        </button>
+    </div>
+    {% endif %}
+
+    <!-- Messages List -->
+    <div class="messages-list">
+        {% if data.messages %}
+            {% for message in data.messages %}
+            <div class="messages-card {% if not message.read %}messages-card-unread{% endif %}" data-status="{% if message.read %}read{% else %}unread{% endif %}">
+                <div class="messages-card-header">
+                    <div class="messages-card-user">
+                        <div class="messages-user-avatar">
+                            {{ message.fullname[0]|upper }}
+                        </div>
+                        <div class="messages-user-info">
+                            <div class="messages-user-name">{{ message.fullname }}</div>
+                            <div class="messages-user-email">{{ message.email }}</div>
+                        </div>
+                    </div>
+                    <div class="messages-card-meta">
+                        <span class="messages-category messages-category-{{ message.category|lower|replace(' ', '-') }}">
+                            {{ message.category }}
+                        </span>
+                        {% if not message.read %}
+                        <span class="messages-unread-badge">New</span>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="messages-card-body">
+                    <h3 class="messages-subject">{{ message.subject }}</h3>
+                    <p class="messages-text">{{ message.message }}</p>
+                    <div class="messages-timestamp">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <polyline points="12 6 12 12 16 14"></polyline>
+                        </svg>
+                        <span>{{ message.created_at.strftime('%B %d, %Y at %I:%M %p') }}</span>
+                    </div>
+                </div>
+
+                <div class="messages-card-actions">
+                    {% if not message.read %}
+                    <form method="POST" action="{{ url_for('admin_bp.mark_message_read', message_id=message.id) }}" style="display: inline;">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                        <button type="submit" class="messages-action-btn messages-mark-read">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg>
+                            <span>Mark as Read</span>
+                        </button>
+                    </form>
+                    {% endif %}
+
+                    <a href="mailto:{{ message.email }}?subject=Re: {{ message.subject }}" class="messages-action-btn messages-reply">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
+                        </svg>
+                        <span>Reply</span>
+                    </a>
+
+                    <button class="messages-action-btn messages-delete" onclick="confirmDeleteMessage({{ message.id }}, '{{ message.subject }}')">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="3 6 5 6 21 6"></polyline>
+                            <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                        </svg>
+                        <span>Delete</span>
+                    </button>
+                </div>
+            </div>
+            {% endfor %}
+        {% else %}
+        <div class="messages-empty-state">
+            <div class="messages-empty-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                    <polyline points="22,6 12,13 2,6"></polyline>
+                </svg>
+            </div>
+            <h3 class="messages-empty-title">No Messages Yet</h3>
+            <p class="messages-empty-text">When users send support messages, they will appear here.</p>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Delete Message Modal -->
+<div class="messages-modal" id="deleteMessageModal">
+    <div class="messages-modal-overlay" onclick="closeDeleteMessageModal()"></div>
+    <div class="messages-modal-content">
+        <div class="messages-modal-header">
+            <div class="messages-modal-icon messages-modal-icon-danger">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <line x1="15" y1="9" x2="9" y2="15"></line>
+                    <line x1="9" y1="9" x2="15" y2="15"></line>
+                </svg>
+            </div>
+            <h2 class="messages-modal-title">Delete Message?</h2>
+            <p class="messages-modal-text">Are you sure you want to delete the message "<strong id="deleteMessageSubject"></strong>"? This action cannot be undone.</p>
+        </div>
+        <form method="POST" id="deleteMessageForm">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <div class="messages-modal-actions">
+                <button type="button" class="messages-modal-btn messages-cancel-btn" onclick="closeDeleteMessageModal()">Cancel</button>
+                <button type="submit" class="messages-modal-btn messages-confirm-btn">Delete Message</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Delete All Read Modal -->
+<div class="messages-modal" id="deleteAllReadModal">
+    <div class="messages-modal-overlay" onclick="closeDeleteAllReadModal()"></div>
+    <div class="messages-modal-content">
+        <div class="messages-modal-header">
+            <div class="messages-modal-icon messages-modal-icon-warning">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+                    <line x1="12" y1="9" x2="12" y2="13"></line>
+                    <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                </svg>
+            </div>
+            <h2 class="messages-modal-title">Delete All Read Messages?</h2>
+            <p class="messages-modal-text">This will permanently delete <strong>{{ data.messages|selectattr('read', 'equalto', True)|list|length }}</strong> read messages. This action cannot be undone.</p>
+        </div>
+        <form method="POST" action="{{ url_for('admin_bp.delete_all_read_messages') }}">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <div class="messages-modal-actions">
+                <button type="button" class="messages-modal-btn messages-cancel-btn" onclick="closeDeleteAllReadModal()">Cancel</button>
+                <button type="submit" class="messages-modal-btn messages-confirm-btn">Delete All Read</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script>
+// Toggle user dropdown
+function toggleUserDropdown() {
+    const dropdown = document.getElementById('userDropdown');
+    dropdown.classList.toggle('show');
+}
+
+// Close dropdown when clicking outside
+window.addEventListener('click', function(e) {
+    if (!e.target.closest('.messages-user-dropdown')) {
+        const dropdown = document.getElementById('userDropdown');
+        dropdown.classList.remove('show');
+    }
+});
+
+// Filter tabs functionality
+document.querySelectorAll('.messages-filter-tab').forEach(tab => {
+    tab.addEventListener('click', function() {
+        // Update active tab
+        document.querySelectorAll('.messages-filter-tab').forEach(t => t.classList.remove('active'));
+        this.classList.add('active');
+        
+        // Filter messages
+        const filter = this.getAttribute('data-filter');
+        const cards = document.querySelectorAll('.messages-card');
+        
+        cards.forEach(card => {
+            if (filter === 'all') {
+                card.style.display = 'block';
+            } else {
+                const status = card.getAttribute('data-status');
+                card.style.display = status === filter ? 'block' : 'none';
+            }
+        });
+    });
+});
+
+// Delete message modal functions
+function confirmDeleteMessage(messageId, subject) {
+    const modal = document.getElementById('deleteMessageModal');
+    const form = document.getElementById('deleteMessageForm');
+    const subjectElement = document.getElementById('deleteMessageSubject');
+    
+    subjectElement.textContent = subject;
+    form.action = `/admin/messages/delete/${messageId}`;
+    
+    modal.style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+}
+
+function closeDeleteMessageModal() {
+    const modal = document.getElementById('deleteMessageModal');
+    modal.style.display = 'none';
+    document.body.style.overflow = 'auto';
+}
+
+// Delete all read modal functions
+function confirmDeleteAllRead() {
+    const modal = document.getElementById('deleteAllReadModal');
+    modal.style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+}
+
+function closeDeleteAllReadModal() {
+    const modal = document.getElementById('deleteAllReadModal');
+    modal.style.display = 'none';
+    document.body.style.overflow = 'auto';
+}
+
+// Close modals on ESC key
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+        closeDeleteMessageModal();
+        closeDeleteAllReadModal();
+    }
+});
+</script>
+{% endblock %}
