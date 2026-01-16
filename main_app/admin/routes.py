@@ -7,7 +7,8 @@ from main_app.admin.validation import admin_required
 from main_app.admin.helper import (
     get_total_users, get_admin_count, get_non_admin_count, get_user_submissions, get_user_by_email,
     get_user_section, filter_user_by_role, get_user_by_name, get_user_by_id, is_section_deleted,
-    is_file_deleted, get_user_by_username_or_email, get_all_admins
+    is_file_deleted, get_user_by_username_or_email, get_all_admins, get_unread_message_count, get_messages,
+    mark_message_as_read
 )  
 
 from main_app.admin.logic import (
@@ -16,7 +17,7 @@ from main_app.admin.logic import (
 
 from main_app.admin.forms import RegisterUserForm, EditUser
 
-from main_app.admin.exception import CannotDeleteAdmin, UserAlreadyExist, EmailAlreadyExist
+from main_app.admin.exception import CannotDeleteAdmin, UserAlreadyExist, EmailAlreadyExist, MessageDoesNotExist
 
 
 @admin_bp.route("/dashboard", methods=["GET", "POST"])
@@ -163,6 +164,53 @@ def delete_user(user_id: str):
 @admin_bp.route("/settings", methods=["GET","POST"])
 def settings():
     pass
+
+
+
+@admin_bp.route("/mails", methods=["GET"])
+@login_required
+@admin_required
+def mails():
+    data = {
+        "messages": get_messages()
+    }
+    return render_template("admin/mails.html", data=data)
+
+
+
+@admin_bp.post("/mark-read-messages/<int:message_id>")
+@login_required
+@admin_required
+def mark_message_read(message_id: int):
+    try:
+        if not mark_message_as_read(message_id=message_id):
+            flash("Could not mark message as read", "error")
+            return redirect(url_for('admin_bp.mail'))
+        
+        flash("Message marked as read", "success")
+        return redirect(url_for('admin_bp.mails'))
+    
+    except MessageDoesNotExist:
+        flash("Somehow message doesn't exist", "error")
+        return redirect(url_for('admin_bp.mails'))
+    
+    except Exception as e:
+        flash("An unexpected error occured", "error")
+        return redirect(url_for("admin_bp.mails"))
+
+
+@admin_bp.post("/delete-messages")
+@login_required
+@admin_required
+def delete_all_read_messages():
+    ...
+
+
+@admin_bp.post("/delete/message/<int:message_id>")
+@login_required
+@admin_required
+def delete_message(message_id: int):
+    ...
 
 
 @admin_bp.route("/profile/<int:user_id>", methods=["GET","POST"])
