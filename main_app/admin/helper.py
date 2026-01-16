@@ -3,8 +3,9 @@ from flask import current_app
 
 from typing import Sequence
 
-from main_app.models import User, Section, Submissions
+from main_app.models import User, Section, Submissions, Message
 from main_app.extensions import db
+from main_app.admin.exception import MessageDoesNotExist
 
 
 def get_total_users() -> int | None:
@@ -222,3 +223,54 @@ def get_user_by_username_or_email(search: str) -> User | None:
 
 def get_all_admins():
     return db.session.scalars(sql.select(User).where(User.role == "admin")).all()
+
+
+def get_unread_message_count():
+    """
+    This counts all messages sent that are unread and returns the total count as an integer
+    """
+    unread_message_count = db.session.scalar(sql.select(sql.func.count()).select_from(Message).where(Message.read == False))
+
+    return unread_message_count
+
+
+def mark_message_as_read(message_id: int) -> bool:
+    """
+    This marks read messages as read
+    
+    :param message_id: Message ID you want to mark as read
+    :type message_id: int
+    :return: True if successfully marked else False
+    :rtype: bool
+    """
+    message = db.session.get(Message, message_id)
+
+    try:
+        if message:
+            message.read = True
+
+            db.session.commit()
+
+            return True
+        
+        raise MessageDoesNotExist(f"Message with ID {message_id} does not exist")
+    
+    except MessageDoesNotExist:
+        raise 
+
+    except Exception:
+        raise Exception
+    
+
+
+def get_messages() -> Sequence[Message]:
+    """
+    Returns all messages
+    
+    :return: A sequence of messages
+    :rtype: Sequence[Message]
+    """
+
+    messages = db.session.scalars(sql.select(Message)).all()
+
+    return messages
