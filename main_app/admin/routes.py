@@ -48,7 +48,7 @@ def dashboard():
             "all_users": users,
             "user_by_name": get_user_by_name(search.strip()) if search is not None and filter == "name"  else None,
             "user_by_email": get_user_by_email(search.strip()) if search is not None and filter == "email" else None,
-            "unread_mails": 4,
+            "unread_mails": get_unread_message_count(),
             "unread_notifications": 4,
             "user_by_role": filter_user_by_role(search.strip()) if search is not None and filter == "role" else None,
             "next": next_url,
