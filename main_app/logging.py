@@ -3,7 +3,7 @@ from logging.handlers import RotatingFileHandler
 from flask import request, render_template, redirect, url_for
 from flask_limiter.errors import RateLimitExceeded
 
-def set_logger(app, basedir):
+def set_logger(app, homedir):
     """
     This function sets up logging and its neccesities that the app needs to log a log.
 
@@ -13,7 +13,7 @@ def set_logger(app, basedir):
     """
 
     # Create a directory if it doesn't exist
-    log_directory = basedir / "logs"
+    log_directory = homedir / "logs"
 
     try:
         if not log_directory.exists():
