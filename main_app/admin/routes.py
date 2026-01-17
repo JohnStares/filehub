@@ -176,6 +176,7 @@ def mails():
     data = {
         "messages": get_messages()
     }
+    current_app.logger.info(f"{current_user.username} is accessing the mails route")
     return render_template("admin/mails.html", data=data)
 
 
@@ -187,17 +188,21 @@ def mark_message_read(message_id: int):
     try:
         if not mark_message_as_read(message_id=message_id):
             flash("Could not mark message as read", "error")
+            current_app.logger.warning(f"{current_user.username} found it difficult to mark a message with the ID {message_id} as read", exc_info=True)
             return redirect(url_for('admin_bp.mail'))
         
         flash("Message marked as read", "success")
+        current_app.logger.info(f"{current_user.username} marked a message with the ID {message_id} as read")
         return redirect(url_for('admin_bp.mails'))
     
     except MessageDoesNotExist:
         flash("Somehow message doesn't exist", "error")
+        current_app.logger.error(f"{current_user.username} unable to marked a message with the ID {message_id} as read because it doesn't exit", exc_info=True)
         return redirect(url_for('admin_bp.mails'))
     
     except Exception as e:
         flash("An unexpected error occured", "error")
+        current_app.logger.error(f"{current_user.username} unable to marked a message with the ID {message_id} as read due to {str(e)}", exc_info=True)
         return redirect(url_for("admin_bp.mails"))
 
 
