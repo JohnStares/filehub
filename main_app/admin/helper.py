@@ -257,3 +257,39 @@ def get_messages() -> Sequence[Message]:
     messages = db.session.scalars(sql.select(Message)).all()
 
     return messages
+
+
+def deleted_read_messages() -> bool:
+    """
+    This deletes all messages that are read
+    """
+    try:
+        Message.delete_read_messages()
+
+        return True
+    except Exception:
+        raise
+
+
+def deleted_message(message_id: int) -> bool:
+    """
+    This deletes a message
+    
+    :param message_id: The ID of the message you want to delete
+    :type message_id: int
+    :rtype: bool
+    """
+
+    message = db.session.get(Message, message_id)
+
+    if not message:
+        raise MessageDoesNotExist("Message does not exist")
+    
+    try:
+        db.session.delete(message)
+        db.session.commit()
+
+        return True
+    
+    except Exception:
+        raise
