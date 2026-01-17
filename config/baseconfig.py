@@ -51,11 +51,13 @@ class BaseConfig(object):
     def init_app(self, app: Flask):
         # Create Base Directory
         base_dir = Path(app.root_path).resolve().parent
+        home_dir = base_dir.parent
         app.config["BASEDIR"] = base_dir
+        app.config["HOME_DIR"] = home_dir
 
         # Add upload path for the files to app
         dir_path = Path("/var/www/uploaded_files")
-        upload_dir = app.config["BASEDIR"] / dir_path
+        upload_dir = app.config["HOME_DIR"] / dir_path
         app.config["UPLOAD_PATH"] = upload_dir
 
         # Additional Mail Setup
