@@ -8,35 +8,18 @@ from main_app.extensions import db
 from main_app.admin.exception import MessageDoesNotExist
 
 
-def get_total_users() -> int | None:
+
+def count():
     """
-    This function returns the total count of all users in the database
-
-    :rtype: int | None
+    This returns the count of total user, total admins, total non-admins
     """
-    users_count = db.session.scalar(sql.select(sql.func.count()).select_from(User))
+    counts = db.session.query(
+        sql.func.count(User.id).label('total_users'),
+        sql.func.count(sql.case((User.is_admin == True, User.id))).label("admin"),
+        sql.func.count(sql.case((User.role == "user", User.id))).label("non_admin")
+    ).first()
 
-    return users_count
-
-def get_non_admin_count() -> int | None:
-    """
-    This returns the total number of users that are not admin
-
-    :rtype: int | None
-    """
-    non_admin = db.session.scalar(sql.select(sql.func.count()).select_from(User).where(User.role == "user"))
-
-    return non_admin
-
-def get_admin_count() -> int | None:
-    """
-    Returns the total count of admins
-
-    :rtype: int | None
-    """
-    admin = db.session.scalar(sql.select(sql.func.count()).select_from(User).where(User.role == "admin"))
-
-    return admin
+    return counts
 
 
 def get_all_users() -> Sequence[User]:
@@ -274,3 +257,39 @@ def get_messages() -> Sequence[Message]:
     messages = db.session.scalars(sql.select(Message)).all()
 
     return messages
+
+
+def deleted_read_messages() -> bool:
+    """
+    This deletes all messages that are read
+    """
+    try:
+        Message.delete_read_messages()
+
+        return True
+    except Exception:
+        raise
+
+
+def deleted_message(message_id: int) -> bool:
+    """
+    This deletes a message
+    
+    :param message_id: The ID of the message you want to delete
+    :type message_id: int
+    :rtype: bool
+    """
+
+    message = db.session.get(Message, message_id)
+
+    if not message:
+        raise MessageDoesNotExist("Message does not exist")
+    
+    try:
+        db.session.delete(message)
+        db.session.commit()
+
+        return True
+    
+    except Exception:
+        raise

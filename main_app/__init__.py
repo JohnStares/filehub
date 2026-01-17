@@ -22,7 +22,7 @@ def create_app(config_name: Optional[str] = None):
     initialize_sentry()
 
     # set up logging functionality
-    set_logger(app=app, basedir=app.config["BASEDIR"])
+    set_logger(app=app, homedir=app.config["HOME_DIR"])
 
     # Register handlers
     from main_app.logging import register_handlers

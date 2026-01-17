@@ -5,10 +5,10 @@ from flask_login import login_required, current_user
 from main_app.admin import admin_bp
 from main_app.admin.validation import admin_required
 from main_app.admin.helper import (
-    get_total_users, get_admin_count, get_non_admin_count, get_user_submissions, get_user_by_email,
+    get_user_submissions, get_user_by_email,
     get_user_section, filter_user_by_role, get_user_by_name, get_user_by_id, is_section_deleted,
     is_file_deleted, get_user_by_username_or_email, get_all_admins, get_unread_message_count, get_messages,
-    mark_message_as_read
+    mark_message_as_read, count, deleted_read_messages, deleted_message
 )  
 
 from main_app.admin.logic import (
@@ -41,10 +41,12 @@ def dashboard():
         if search and filter:
             current_app.logger.info(f"{current_user.username}:: Searched for {search} in {filter}")
 
+        counts = count()
+
         data = {
-            "users": get_total_users(),
-            "non_admin": get_non_admin_count(),
-            "admin": get_admin_count(),
+            "users": counts.total_users if counts else 0,
+            "non_admin": counts.non_admin if counts else 0,
+            "admin": counts.admin if counts else 0,
             "all_users": users,
             "user_by_name": get_user_by_name(search.strip()) if search is not None and filter == "name"  else None,
             "user_by_email": get_user_by_email(search.strip()) if search is not None and filter == "email" else None,
@@ -174,6 +176,7 @@ def mails():
     data = {
         "messages": get_messages()
     }
+    current_app.logger.info(f"{current_user.username} is accessing the mails route")
     return render_template("admin/mails.html", data=data)
 
 
@@ -185,17 +188,21 @@ def mark_message_read(message_id: int):
     try:
         if not mark_message_as_read(message_id=message_id):
             flash("Could not mark message as read", "error")
+            current_app.logger.warning(f"{current_user.username} found it difficult to mark a message with the ID {message_id} as read", exc_info=True)
             return redirect(url_for('admin_bp.mail'))
         
         flash("Message marked as read", "success")
+        current_app.logger.info(f"{current_user.username} marked a message with the ID {message_id} as read")
         return redirect(url_for('admin_bp.mails'))
     
     except MessageDoesNotExist:
         flash("Somehow message doesn't exist", "error")
+        current_app.logger.error(f"{current_user.username} unable to marked a message with the ID {message_id} as read because it doesn't exit", exc_info=True)
         return redirect(url_for('admin_bp.mails'))
     
     except Exception as e:
         flash("An unexpected error occured", "error")
+        current_app.logger.error(f"{current_user.username} unable to marked a message with the ID {message_id} as read due to {str(e)}", exc_info=True)
         return redirect(url_for("admin_bp.mails"))
 
 
@@ -203,14 +210,46 @@ def mark_message_read(message_id: int):
 @login_required
 @admin_required
 def delete_all_read_messages():
-    ...
+    try:
+        if not deleted_read_messages():
+            flash("Messages couldn't be deleted", "error")
+            current_app.logger.error(f"{current_user.username} found it difficult deleting read messages", exc_info=True)
+            return redirect(url_for("admin_bp.mails"))
+
+        flash("Messages deleted", "success")
+        current_app.logger.info(f"{current_user.username} deleted read messages")
+        return redirect(url_for("admin_bp.mails"))
+    
+    except Exception as e:
+        flash("An error occured. Please try again later!", "error")
+        current_app.logger.error(f"{current_user.username} found it difficult deleting read messages due to {str(e)}", exc_info=True)
+        return redirect(url_for("admin_bp.mails"))
 
 
-@admin_bp.post("/delete/message/<int:message_id>")
+
+@admin_bp.post("/messages/delete/<int:message_id>")
 @login_required
 @admin_required
 def delete_message(message_id: int):
-    ...
+    try:
+        if not deleted_message(message_id):
+            flash("Message couldn't be deleted", "error")
+            current_app.logger.error(f"{current_user.username} found it difficult deleting message with ID {message_id}", exc_info=True)
+            return redirect(url_for("admin_bp.mails"))
+        
+        flash("Message deleted", "success")
+        current_app.logger.info(f"{current_user.username} deleted message with the ID {message_id}")
+        return redirect(url_for("admin_bp.mails"))
+    
+    except MessageDoesNotExist:
+        flash("Message doesn't exist", "error")
+        current_app.logger.error(f"{current_user.username} trying to delete a message that doesn't exist with an ID {message_id}")
+        return redirect(url_for("admin_bp.mails"))
+    
+    except Exception as e:
+        flash("An unexpected error occured. Please try again later", "error")
+        current_app.logger.error(f"{current_user.username} found it difficult deleting message with the ID {message_id} due to {str(e)}", exc_info=True)
+        return redirect(url_for("admin_bp.mails"))
 
 
 @admin_bp.route("/profile/<int:user_id>", methods=["GET","POST"])

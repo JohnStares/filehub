@@ -1,6 +1,6 @@
 import os
 from pathlib import Path
-from flask import Flask
+from typing import Union, Tuple
 
 from .baseconfig import BaseConfig
 
@@ -21,6 +21,6 @@ class ProductionConfig(BaseConfig):
     # Mail Setup
     MAIL_USERNAME: str | None = None
     MAIL_PASSWORD: str | None = None
-    MAIL_DEFAULT_SENDER: str | None = None
+    MAIL_DEFAULT_SENDER:  Union[Tuple[str, str], None] = None
 
     
