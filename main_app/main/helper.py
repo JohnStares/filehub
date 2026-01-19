@@ -254,3 +254,93 @@ def get_file_extension(file_path: str) -> str:
     extension = file_path.split(".")
     
     return extension[1]
+
+
+def special_alphanum() -> str:
+    """
+    Generates alphabets, numbers and few special characters
+    
+    :return: A string of alphabets, numbers and few special characters
+    :rtype: str
+    """
+    from string import ascii_letters, digits
+
+    return ascii_letters + digits + ".-_"
+
+
+
+def username_to_gibberish(username: str, key: int = 10) -> str:
+    """
+    This takes a username and returns a gibberish version that using key as a mixer
+    
+    :param username: The username you want to convert
+    :type username: str
+    :param key: A key that is used to cipher how the gibberish will be produced
+    :type key: int
+    :return: Returns gibberish
+    :rtype: str
+    """
+    list_of_special_alphanum = special_alphanum()
+    len_list_of_special_alphanum = len(list_of_special_alphanum)
+    char_to_index = {char: idx for idx, char in enumerate(list_of_special_alphanum)}
+
+    gibberish = []
+
+    key = key % len_list_of_special_alphanum
+    
+    for char in username:
+        if char not in char_to_index:
+            if char == " ":
+                gibberish.append("%")
+                continue
+            elif char == "'":
+                gibberish.append("~")
+                continue
+            else:
+                gibberish.append(char)
+                continue
+        
+        idx = char_to_index[char]
+        new_idx = (key + idx) % len_list_of_special_alphanum
+        gibberish.append(list_of_special_alphanum[new_idx])
+        
+    return "".join(gibberish)
+
+
+def gibberish_to_username(gibberish: str, key: int = 10) -> str:
+    """
+    Takes in a gibberish it ealier converted using the username_to_gibberish function and returns a username
+    
+    :param gibberish: The gibberish version of a username
+    :type gibberish: str
+    :param key: The key used in converting it to a gibberish
+    :type key: int
+    :return: Returns a username
+    :rtype: str
+    """
+    list_of_special_alphanum = special_alphanum()
+    len_list_of_special_alphanum = len(list_of_special_alphanum)
+    char_to_index = {char: idx for idx, char in enumerate(list_of_special_alphanum)}
+
+    username = []
+
+    key = key % len_list_of_special_alphanum
+    
+    for char in gibberish:
+        if char not in char_to_index:
+            if char == "%":
+                username.append(" ")
+                continue
+            elif char == "~":
+                username.append("'")
+                continue
+            else:
+                username.append(char)
+                continue
+
+        idx = char_to_index[char]
+        new_idx = (idx - key) % len_list_of_special_alphanum
+
+        username.append(list_of_special_alphanum[new_idx])
+
+    return "".join(username)
