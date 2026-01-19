@@ -156,7 +156,7 @@
                 <div class="dashboard-link-section">
                     <label class="dashboard-link-label">Submission Link:</label>
                     <div class="dashboard-link-box">
-                        <input type="text" class="dashboard-link-input" value="{{ url_base }}/upload-file/{{ current_user.username }}/{{ section.section_name }}" readonly id="link-{{ section.id }}">
+                        <input type="text" class="dashboard-link-input" value="{{ url_base }}/upload-file/{{ gibberish(current_user.username) }}/{{ section.section_name }}" readonly id="link-{{ section.id }}">
                         <button type="button" class="dashboard-link-copy" onclick="copyLink('{{ section.id }}')">
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                                 <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
