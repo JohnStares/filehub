@@ -11,12 +11,14 @@ from .extensions import login_manager
 from typing import Optional
 
 class User(UserMixin, db.Model):
-    id: orm.Mapped[int] = orm.mapped_column(primary_key=True)
+    id: orm.Mapped[int] = orm.mapped_column(primary_key=True, index=True)
     username: orm.Mapped[str] = orm.mapped_column(sql.String(20), unique=True, index=True, nullable=False)
     email: orm.Mapped[str] = orm.mapped_column(sql.String(30), unique=True, index=True, nullable=False)
-    role: orm.Mapped[str] = orm.mapped_column(sql.String(5), nullable=True, default="user")
+    role: orm.Mapped[str] = orm.mapped_column(sql.String(5), nullable=False, default="user", index=True)
     is_admin: orm.Mapped[bool] = orm.mapped_column(sql.Boolean, nullable=True, default=False, index=True)
     password_hash: orm.Mapped[Optional[str]] = orm.mapped_column(sql.String(300))
+    created_at: orm.Mapped[datetime] = orm.mapped_column(sql.DateTime(timezone=True), default=lambda: datetime.now(timezone.utc), index=True)
+    last_login: orm.Mapped[datetime] = orm.mapped_column(sql.DateTime(timezone=True), index=True, nullable=True)
 
     # Ensures when a user is deleted, all of itself is removed from the database that referenced it
     sections: orm.Mapped[list["Section"]] = orm.relationship(
@@ -181,7 +183,7 @@ class Message(db.Model):
     subject: orm.Mapped[str] = orm.mapped_column(sql.String(50))
     category: orm.Mapped[str] = orm.mapped_column(sql.String(15))
     message: orm.Mapped[str] = orm.mapped_column(sql.String(1000))
-    read: orm.Mapped[bool] = orm.mapped_column(sql.Boolean, default=False)
+    read: orm.Mapped[bool] = orm.mapped_column(sql.Boolean, default=False, index=True)
     created_at: orm.Mapped[datetime] = orm.mapped_column(sql.DateTime(timezone=True), default=lambda: datetime.now(timezone.utc))
 
 
