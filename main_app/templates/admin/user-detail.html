@@ -117,7 +117,7 @@
                     </div>
                     <div>
                         <div class="user-detail-info-label">Last Active</div>
-                        <div class="user-detail-info-value" data-timestamp="{{ data.last_login if data.last_login else data.created_at }}">
+                        <div class="user-detail-info-value" data-timestamp="{{ data.user.last_login if data.user.last_login else data.created_at }}">
                             {{ data.user.last_login.strftime('%B %d, %Y') if data.user.last_login else 'Never' }}
                         </div>
                     </div>
