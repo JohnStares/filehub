@@ -1,6 +1,8 @@
 from flask import request, render_template, url_for, redirect, flash, current_app
 from flask_login import login_user, current_user, logout_user, login_required
 
+from datetime import datetime, timezone
+
 from main_app.models import User, ResetToken
 from main_app.extensions import db, login_manager, limiter
 import sqlalchemy as sql
@@ -62,6 +64,9 @@ def sign_in():
             
             if form.validate_on_submit():
                 user = form.user
+
+                user.last_login = datetime.now(timezone.utc)
+                db.session.commit()
 
                 flash("Login Sucessful", "success")
                 login_user(user)
