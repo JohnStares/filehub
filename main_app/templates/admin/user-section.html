@@ -175,6 +175,7 @@
                     <th>File Name</th>
                     <th>File Size</th>
                     <th>Uploaded At</th>
+                    <th>By</th>
                     <th>Actions</th>
                 </tr>
             </thead>
@@ -198,6 +199,7 @@
                             <span class="view-file-size" data-size="{{ file.file_size }}">{{ file.file_size }} bytes</span>
                         </td>
                         <td>{{ file.uploaded_at.strftime('%b %d, %Y %I:%M %p') if file.uploaded_at else 'N/A' }}</td>
+                        <td>{{ file.uploader_name }}</td>
                         <td>
                             <div style="display: flex; gap: 0.5rem;">
                                 <a href="{{ url_for('admin_bp.download_file', section_id=data.section.id, file_id=file.id) }}" class="admindash-action-btn" title="Download">
