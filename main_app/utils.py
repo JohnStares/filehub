@@ -5,7 +5,7 @@ from sentry_sdk.integrations.redis import RedisIntegration
 
 import os
 
-from main_app.extensions import (db, migrate, login_manager, limiter, csrf, mail)
+from main_app.extensions import (db, migrate, login_manager, limiter, csrf, mail, talisman)
 from main_app.auth import auth_bp
 from main_app.main import main_bp
 from main_app.admin import admin_bp
@@ -19,6 +19,32 @@ def initialize_extensions(app):
 
     csrf.init_app(app)
     mail.init_app(app)
+    talisman.init_app(
+        app,
+
+        # Force hsts in production
+        force_https=True if not app.debug or not app.testing else False,
+        force_https_permanent=True if not app.debug or not app.testing else False,
+
+        strict_transport_security_max_age=31536000 if not app.debug or not app.testing else 300,
+
+        #CSP
+        content_security_policy={
+            'default-src': "'self'",
+            'style-src': ["'self'", "'unsafe-inline'"],
+            'script-src': [
+                "'self'",
+                "'unsafe-inline'",
+            ],
+            'img-src': ["'self'", "data:", "https:"],
+        },
+
+        feature_policy={
+            'geolocation': "'none'",
+            'camera': "'none'",
+            'microphone': "'none'",
+        },
+    )
 
 
 def configure_path(app):
