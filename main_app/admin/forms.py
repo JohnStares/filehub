@@ -5,6 +5,7 @@ import sqlalchemy as sql
 
 from main_app.models import User
 from main_app.extensions import db
+from main_app.validation import is_username_validated
 
 
 class RegisterUserForm(FlaskForm):
@@ -16,6 +17,9 @@ class RegisterUserForm(FlaskForm):
     submit = SubmitField()
 
     def validate_username(self, username):
+        if not is_username_validated(username.data):
+            raise ValidationError("Please provide a valid username")
+        
         user = db.session.scalar(sql.select(User).where(User.username == username.data))
 
         if user:
