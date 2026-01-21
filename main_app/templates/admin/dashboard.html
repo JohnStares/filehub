@@ -290,7 +290,7 @@
                                 </span>
                                 {% endif %}
                             </td>
-                            <td>{{ data.user_by_name.role }}</td>
+                            <td>{{ data.user_by_name.created_at.strftime('%Y-%m-%d') }}</td>
                             <td onclick="event.stopPropagation()">
                                 <a href="{{ url_for('admin_bp.user_details', user_id=data.user_by_name.id) }}" class="admindash-action-btn">
                                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -335,7 +335,7 @@
                                 </span>
                                 {% endif %}
                             </td>
-                            <td>{{ data.user_by_email.role }}</td>
+                            <td>{{ data.user_by_email.created_at.strftime('%Y-%m-%d') }}</td>
                             <td onclick="event.stopPropagation()">
                                 <a href="{{ url_for('admin_bp.user_details', user_id=data.user_by_email.id) }}" class="admindash-action-btn">
                                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -388,7 +388,7 @@
                                 </span>
                                 {% endif %}
                             </td>
-                            <td>{{ user.role }}</td>
+                            <td>{{ user.created_at.strftime('%Y-%m-%d') }}</td>
                             <td onclick="event.stopPropagation()">
                                 <a href="{{ url_for('admin_bp.user_details', user_id=user.id) }}" class="admindash-action-btn">
                                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -456,7 +456,7 @@
                                 </span>
                                 {% endif %}
                             </td>
-                            <td>{{ user.role }}</td>
+                            <td>{{ user.created_at.strftime('%Y-%m-%d') }}</td>
                             <td onclick="event.stopPropagation()">
                                 <a href="{{ url_for('admin_bp.user_details', user_id=user.id) }}" class="admindash-action-btn">
                                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
