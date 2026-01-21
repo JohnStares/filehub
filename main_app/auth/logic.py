@@ -1,7 +1,7 @@
 from flask_login import login_user
 from flask import flash
 
-from typing import Any
+from datetime import datetime, timezone
 
 from main_app.models import User
 from main_app.auth.forms import AdminRegisterForm, AdminLoginForm
@@ -47,6 +47,8 @@ def process_admin_login(form: AdminLoginForm) -> bool:
             if user.is_admin != True:
                 raise AdminNotApproved("You are not approved to be an Admin")
 
+            user.last_login = datetime.now(timezone.utc)
+            db.session.commit()
             login_user(user)
 
             return True
