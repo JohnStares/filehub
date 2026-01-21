@@ -14,7 +14,7 @@ class User(UserMixin, db.Model):
     id: orm.Mapped[int] = orm.mapped_column(primary_key=True, index=True)
     username: orm.Mapped[str] = orm.mapped_column(sql.String(20), unique=True, index=True, nullable=False)
     email: orm.Mapped[str] = orm.mapped_column(sql.String(30), unique=True, index=True, nullable=False)
-    role: orm.Mapped[str] = orm.mapped_column(sql.String(5), nullable=False, default="user", index=True)
+    role: orm.Mapped[str] = orm.mapped_column(sql.String(11), nullable=False, default="user", index=True)
     is_admin: orm.Mapped[bool] = orm.mapped_column(sql.Boolean, nullable=True, default=False, index=True)
     password_hash: orm.Mapped[Optional[str]] = orm.mapped_column(sql.String(300))
     created_at: orm.Mapped[datetime] = orm.mapped_column(sql.DateTime(timezone=True), default=lambda: datetime.now(timezone.utc), index=True)
@@ -67,8 +67,8 @@ class User(UserMixin, db.Model):
 class Section(db.Model):
     id: orm.Mapped[int] = orm.mapped_column(primary_key=True)
     user_id: orm.Mapped[int] = orm.mapped_column(sql.ForeignKey(User.id, name="fk_section_user_id"), index=True)
-    section_name: orm.Mapped[str] = orm.mapped_column(sql.String(30), index=True, unique=True)
-    section_code: orm.Mapped[str] = orm.mapped_column(sql.String(15), index=True, unique=True, nullable=True)
+    section_name: orm.Mapped[str] = orm.mapped_column(sql.String(50), index=True, unique=True)
+    section_code: orm.Mapped[str] = orm.mapped_column(sql.String(25), index=True, unique=True, nullable=True)
     expected_submission: orm.Mapped[int] = orm.mapped_column(sql.Integer, index=True, nullable=True)
     created_at: orm.Mapped[datetime] = orm.mapped_column(index=True, default=lambda: datetime.now(timezone.utc))
 
@@ -93,7 +93,7 @@ class Submissions(db.Model):
     id: orm.Mapped[int] = orm.mapped_column(primary_key=True)
     section_id: orm.Mapped[int] = orm.mapped_column(sql.ForeignKey(Section.id, name="fk_submission_section_id", ondelete="CASCADE"), index=True)
     uploader_name: orm.Mapped[str] = orm.mapped_column(sql.String(30), index=True)
-    mat_no: orm.Mapped[str] = orm.mapped_column(sql.String(10), nullable=True)
+    mat_no: orm.Mapped[str] = orm.mapped_column(sql.String(25), nullable=True)
     level: orm.Mapped[str] = orm.mapped_column(sql.String(10), nullable=True)
     group: orm.Mapped[str] = orm.mapped_column(sql.String(20), nullable=True)
     original_filename: orm.Mapped[str] = orm.mapped_column(sql.String(30))
