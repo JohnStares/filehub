@@ -28,6 +28,17 @@ def initialize_extensions(app):
 
         strict_transport_security_max_age=31536000 if not app.debug or not app.testing else 300,
 
+        #CSP
+        content_security_policy={
+            'default-src': "'self'",
+            'style-src': ["'self'", "'unsafe-inline'"],
+            'script-src': [
+                "'self'",
+                "'unsafe-inline'",
+            ],
+            'img-src': ["'self'", "data:", "https:"],
+        },
+
         feature_policy={
             'geolocation': "'none'",
             'camera': "'none'",
