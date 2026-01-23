@@ -44,6 +44,8 @@ def initialize_extensions(app):
             'camera': "'none'",
             'microphone': "'none'",
         },
+
+        session_cookie_samesite="Lax" if app.debug or app.testing else "Strict",
     )
 
 
