@@ -27,6 +27,7 @@ def registered_user(form: RegisterUserForm) -> bool:
             return True
         
         except Exception:
+            db.session.rollback()
             raise
     
     return False
@@ -55,6 +56,7 @@ def user_deleted(user_id: str) -> bool:
 
         return True
     except Exception:
+        db.session.rollback()
         raise
 
 
@@ -109,6 +111,7 @@ def is_user_edited(form: EditUser, user: User) -> bool:
             return True
         
         except Exception:
+            db.session.rollback()
             raise
 
     return False
