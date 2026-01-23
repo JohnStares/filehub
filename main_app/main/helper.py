@@ -290,10 +290,7 @@ def username_to_gibberish(username: str, key: int = 10) -> str:
     
     for char in username:
         if char not in char_to_index:
-            if char == " ":
-                gibberish.append("%")
-                continue
-            elif char == "'":
+            if char == "'":
                 gibberish.append("~")
                 continue
             else:
@@ -328,10 +325,7 @@ def gibberish_to_username(gibberish: str, key: int = 10) -> str:
     
     for char in gibberish:
         if char not in char_to_index:
-            if char == "%":
-                username.append(" ")
-                continue
-            elif char == "~":
+            if char == "~":
                 username.append("'")
                 continue
             else:
