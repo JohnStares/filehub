@@ -136,6 +136,7 @@ def change_password():
             return render_template("auth/changepassword.html", form=form)
         
         except Exception as e:
+            db.session.rollback()
             current_app.logger.error(f"{current_user.username} encountered an error on the change password route due to {str(e)}", exc_info=True)
             flash("An error occured! Please try again after sometime.", "warning")
             return render_template("auth/changepassword.html", form=form)
@@ -220,6 +221,7 @@ def reset_password(token: str):
         
         except Exception as e:
             flash("An error occured", "error")
+            db.session.rollback()
             current_app.logger.error(f"An unexpected error occured due to {str(e)}", exc_info=True)
             return render_template("auth/password-reset.html", form=form)
 
