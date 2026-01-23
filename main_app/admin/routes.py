@@ -67,6 +67,9 @@ def dashboard():
 
 
 @admin_bp.route("/create-user", methods=["GET","POST"])
+@limiter.limit("5 per minute")
+@login_required
+@admin_required
 def create_user():
     form = RegisterUserForm()
 
@@ -91,6 +94,9 @@ def create_user():
 
 
 @admin_bp.route("/edit-user/<int:user_id>", methods=["GET","POST"])
+@limiter.limit("5 per minute")
+@login_required
+@admin_required
 def edit_user(user_id):
     try:
         search = request.args.get("search")
@@ -138,6 +144,8 @@ def edit_user(user_id):
 
 
 @admin_bp.route("/delete-user/<int:user_id>", methods=["POST"])
+@limiter.limit("5 per minute")
+@login_required
 @admin_required
 def delete_user(user_id: str):
     try:
@@ -164,12 +172,16 @@ def delete_user(user_id: str):
 
 
 @admin_bp.route("/settings", methods=["GET","POST"])
+@limiter.limit("5 per minute")
+@login_required
+@admin_required
 def settings():
     pass
 
 
 
 @admin_bp.route("/mails", methods=["GET"])
+@limiter.limit("5 per minute")
 @login_required
 @admin_required
 def mails():
@@ -182,6 +194,7 @@ def mails():
 
 
 @admin_bp.post("/mark-read-messages/<int:message_id>")
+@limiter.limit("5 per minute")
 @login_required
 @admin_required
 def mark_message_read(message_id: int):
@@ -207,6 +220,7 @@ def mark_message_read(message_id: int):
 
 
 @admin_bp.post("/delete-messages")
+@limiter.limit("5 per minute")
 @login_required
 @admin_required
 def delete_all_read_messages():
@@ -228,6 +242,7 @@ def delete_all_read_messages():
 
 
 @admin_bp.post("/messages/delete/<int:message_id>")
+@limiter.limit("5 per minute")
 @login_required
 @admin_required
 def delete_message(message_id: int):
@@ -253,6 +268,9 @@ def delete_message(message_id: int):
 
 
 @admin_bp.route("/profile/<int:user_id>", methods=["GET","POST"])
+@limiter.limit("10 per minute")
+@login_required
+@admin_required
 def profile(user_id):
     data = {
         "admin": get_user_by_id(user_id)
@@ -262,6 +280,9 @@ def profile(user_id):
 
 
 @admin_bp.route("/user-details/<int:user_id>", methods=["GET"])
+@limiter.limit("10 per minute")
+@login_required
+@admin_required
 def user_details(user_id):
     current_app.logger.info(f"The get user-detail route is being accessed by {current_user.username} for user with ID {user_id}")
     user = get_user_by_id(int(user_id))
@@ -288,6 +309,8 @@ def user_details(user_id):
 
 
 @admin_bp.route("/user-section/<int:section_id>", methods=["GET", "POST"])
+@limiter.limit("10 per minute")
+@login_required
 @admin_required
 def user_section(section_id: str):
     try:
@@ -323,6 +346,8 @@ def user_section(section_id: str):
 
 
 @admin_bp.route("/delete-section/<int:user_id>/<int:section_id>", methods=["POST"])
+@limiter.limit("5 per minute")
+@login_required
 @admin_required
 def delete_section(user_id, section_id):
     try:
@@ -343,6 +368,8 @@ def delete_section(user_id, section_id):
 
 
 @admin_bp.route("/delete-file/<int:section_id>/<int:file_id>", methods=["POST"])
+@limiter.limit("5 per minute")
+@login_required
 @admin_required
 def delete_file(section_id, file_id):
     try:
@@ -364,6 +391,8 @@ def delete_file(section_id, file_id):
 
 
 @admin_bp.route("/download-file/<int:section_id>/<int:file_id>", methods=["GET"])
+@limiter.limit("1 per hour")
+@login_required
 @admin_required
 def download_file(section_id, file_id):
     flash("Unauthorized", "error")
@@ -373,6 +402,8 @@ def download_file(section_id, file_id):
 
 
 @admin_bp.route("/manage-admins", methods=["GET"])
+@limiter.limit("7 per minute")
+@login_required
 @admin_required
 def manage_admins():
     data = {
@@ -384,6 +415,8 @@ def manage_admins():
 
 
 @admin_bp.route("/approve-admin/<admin_id>", methods=["POST"])
+@limiter.limit("3 per minute")
+@login_required
 @admin_required
 def approve_admin(admin_id):
     try:
@@ -403,6 +436,8 @@ def approve_admin(admin_id):
 
 
 @admin_bp.route("/revoke-admin/<admin_id>", methods=["POST"])
+@limiter.limit("3 per minute")
+@login_required
 @admin_required
 def revoke_admin(admin_id):
     try:
