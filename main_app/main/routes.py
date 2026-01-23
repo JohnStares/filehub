@@ -23,6 +23,7 @@ import io
 
 
 @main_bp.route("/")
+@limiter.limit("7 per minute")
 def welcome():
     try:
         current_app.logger.info("The welcome page is being accessed")
@@ -33,7 +34,7 @@ def welcome():
 
 
 @main_bp.route("/home", methods=["GET"])
-@limiter.limit("5 per minute")
+@limiter.limit("10 per minute")
 @login_required
 def home():
     try:
@@ -230,7 +231,7 @@ def delete_section(section_id):
 
 
 @main_bp.route("/view-files/<section_id>", methods=["GET"])
-@limiter.limit("5 per minute")
+@limiter.limit("10 per minute")
 @login_required
 def view_files(section_id):
     try:
