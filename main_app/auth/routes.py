@@ -239,12 +239,12 @@ def admin_sign_up():
                 return render_template("auth/admin-sign-up.html", form=form)
             
             flash("Registration Successful", "success")
-            current_app.logger.warning(f"Successfully {form.username.data} as an admin")
+            current_app.logger.info(f"Successfully register {form.username.data} as an admin")
             return redirect(url_for("auth_bp.admin_sign_in")) 
         
         except Exception as e:
             flash("An error occur. Try again!", "error")
-            print("This caused the error", str(e))
+            db.session.rollback()
             current_app.logger.error(f"An unexpected error occured in the admin sign-up due to {str(e)}", exc_info=True)
             return render_template("auth/admin-sign-up.html", form=form)
     
@@ -265,7 +265,7 @@ def admin_sign_in():
                 return render_template("auth/admin-sign-in.html", form=form)
             
             flash("Sign in Successful", "success")
-            current_app.logger.warning(f"Successfully {form.username.data} as an admin")
+            current_app.logger.info(f"Successfully sign in {form.username.data} as an admin")
             return redirect(url_for("admin_bp.dashboard"))
         
         except AdminNotApproved:
