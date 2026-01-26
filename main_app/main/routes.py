@@ -435,8 +435,15 @@ def download_file(file_id):
         current_app.logger.info(f"{current_user.username} is downloading a single file with file id {file_id}")
         file = db.session.scalar(sql.select(Submissions).where(Submissions.id == file_id))
 
+
         if not file:
             raise FileNotFoundError
+        
+        if file.section.user_id != current_user.id:
+            flash("Unathroized", "error")
+            current_app.logger.warning(f"{current_user.id} trying to download file with the ID {file.id} it doesn't posssed")
+            return redirect(url_for("main_bp.view_file", section_id=file.section_id))
+            
 
         ext = get_file_extension(file.file_path)
 
