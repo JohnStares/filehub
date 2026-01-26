@@ -23,6 +23,7 @@ import io
 
 
 @main_bp.route("/")
+@limiter.limit("7 per minute")
 def welcome():
     try:
         current_app.logger.info("The welcome page is being accessed")
@@ -33,7 +34,7 @@ def welcome():
 
 
 @main_bp.route("/home", methods=["GET"])
-@limiter.limit("5 per minute")
+@limiter.limit("10 per minute")
 @login_required
 def home():
     try:
@@ -230,7 +231,7 @@ def delete_section(section_id):
 
 
 @main_bp.route("/view-files/<section_id>", methods=["GET"])
-@limiter.limit("5 per minute")
+@limiter.limit("10 per minute")
 @login_required
 def view_files(section_id):
     try:
@@ -434,8 +435,15 @@ def download_file(file_id):
         current_app.logger.info(f"{current_user.username} is downloading a single file with file id {file_id}")
         file = db.session.scalar(sql.select(Submissions).where(Submissions.id == file_id))
 
+
         if not file:
             raise FileNotFoundError
+        
+        if file.section.user_id != current_user.id:
+            flash("Unathroized", "error")
+            current_app.logger.warning(f"{current_user.id} trying to download file with the ID {file.id} it doesn't posssed")
+            return redirect(url_for("main_bp.view_file", section_id=file.section_id))
+            
 
         ext = get_file_extension(file.file_path)
 

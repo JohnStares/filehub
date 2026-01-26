@@ -242,6 +242,7 @@ def mark_message_as_read(message_id: int) -> bool:
         raise 
 
     except Exception:
+        db.session.rollback()
         raise Exception
     
 
@@ -268,6 +269,7 @@ def deleted_read_messages() -> bool:
 
         return True
     except Exception:
+        db.session.rollback()
         raise
 
 
@@ -292,4 +294,5 @@ def deleted_message(message_id: int) -> bool:
         return True
     
     except Exception:
+        db.session.rollback()
         raise

@@ -136,6 +136,7 @@ def change_password():
             return render_template("auth/changepassword.html", form=form)
         
         except Exception as e:
+            db.session.rollback()
             current_app.logger.error(f"{current_user.username} encountered an error on the change password route due to {str(e)}", exc_info=True)
             flash("An error occured! Please try again after sometime.", "warning")
             return render_template("auth/changepassword.html", form=form)
@@ -220,6 +221,7 @@ def reset_password(token: str):
         
         except Exception as e:
             flash("An error occured", "error")
+            db.session.rollback()
             current_app.logger.error(f"An unexpected error occured due to {str(e)}", exc_info=True)
             return render_template("auth/password-reset.html", form=form)
 
@@ -239,12 +241,12 @@ def admin_sign_up():
                 return render_template("auth/admin-sign-up.html", form=form)
             
             flash("Registration Successful", "success")
-            current_app.logger.warning(f"Successfully {form.username.data} as an admin")
+            current_app.logger.info(f"Successfully register {form.username.data} as an admin")
             return redirect(url_for("auth_bp.admin_sign_in")) 
         
         except Exception as e:
             flash("An error occur. Try again!", "error")
-            print("This caused the error", str(e))
+            db.session.rollback()
             current_app.logger.error(f"An unexpected error occured in the admin sign-up due to {str(e)}", exc_info=True)
             return render_template("auth/admin-sign-up.html", form=form)
     
@@ -265,7 +267,7 @@ def admin_sign_in():
                 return render_template("auth/admin-sign-in.html", form=form)
             
             flash("Sign in Successful", "success")
-            current_app.logger.warning(f"Successfully {form.username.data} as an admin")
+            current_app.logger.info(f"Successfully sign in {form.username.data} as an admin")
             return redirect(url_for("admin_bp.dashboard"))
         
         except AdminNotApproved:
